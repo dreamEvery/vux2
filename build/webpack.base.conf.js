@@ -73,7 +73,12 @@ let webpackConfig = {
           limit: 10000,
           name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
         }
-      }
+      },
+      /*{
+        test:/\.css$/,
+        loader:'style-loader!css-loader!stylus-loader',
+        include: []
+      }*/
     ]
   }
 }

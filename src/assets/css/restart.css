@@ -1,0 +1,111 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+
+*, ::before, ::after {
+  margin: 0;
+  padding: 0;
+  /*清除移动端默认的点击高亮效果*/
+  -webkit-tap-highlight-color: transparent;
+  /*设置以边框开始计算宽度*/
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+body {
+  font-size: 14px;
+  font-family: "Microsoft YaHei", sans-serif; /*设备默认字体*/
+  color: #333;
+  margin: 0;
+  background-color: #f8f8f8;
+}
+
+a {
+  color: #333;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+input {
+  border: none;
+  outline: none;
+  /*清除移动端默认的表单样式*/
+  -webkit-appearance: none;
+}
+
+/*common css*/
+.fl {
+  float: left;
+}
+
+.fr {
+  float: right;
+}
+/*公共样式*/
+.con {
+  padding: 0 20px;
+}
+.public-top {
+  width: 100%;
+  padding: 10px 20px;
+  background-color: #fff;
+  overflow: hidden;
+}
+
+.public-top .public-back {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  border: 1px solid #797979;
+  text-align: center;
+  line-height: 30px;
+  font-size: 12px;
+  float: left;
+}
+
+.public-top .public-fr {
+  float: right;
+  display: inline-block;
+}
+
+.public-fr div {
+  border: 1px solid #999;
+  padding: 5px 18px;
+  float: left;
+  border-radius: 30px;
+  margin-left: 8px;
+}
+.my-message {
+  text-align: center;
+  font-size: 16px;
+  line-height: 40px;
+  border-bottom: 1px solid #999999;
+}
+.tab ul {
+  overflow: hidden;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  display: flex;
+}
+
+.tab ul li {
+  float: left;
+  width: 20%;
+  height: 25px;
+  line-height: 25px;
+  text-align: center;
+  margin-right: 20px;
+  background-color: #797979;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 12px;
+}
+.tab .red{background-color: #fff;color: #797979;}
