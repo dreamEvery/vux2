@@ -33,13 +33,13 @@
           {text: '送出'},
           {text: '送出'}
         ],
-        changeRed:0
+        changeRed: 0
       }
     },
     methods: {
-      change(index){
-        this.changeRed = index;
-      },
+      change (index) {
+        this.changeRed = index
+      }
     }
   }
 </script>

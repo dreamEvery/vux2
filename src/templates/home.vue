@@ -28,7 +28,7 @@
       Tabbar,
       TabbarItem,
       Group,
-      Cell,
+      Cell
     },
     name: 'home'
   }

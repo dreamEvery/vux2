@@ -1,13 +1,19 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
+// style
+import './assets/css/restart.css'
 import Vue from 'vue'
+import Vuex from 'vuex'
+
 import FastClick from 'fastclick'
 import VueRouter from 'vue-router'
 import App from './App'
 import router from './router'
+import { AlertPlugin } from 'vux'
 
-// style
-import './assets/css/restart.css'
+Vue.use(Vuex)
+Vue.use(AlertPlugin)
+
 Vue.use(VueRouter)
 
 FastClick.attach(document.body)

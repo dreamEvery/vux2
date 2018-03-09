@@ -35,29 +35,37 @@
       GroupTitle
     },
     name: 'gift',
-    data(){
+    data () {
       return {
         tabs: [
           {text: '全部'},
           {text: '未领取'},
           {text: '收到'},
-          {text: '送出'},
+          {text: '送出'}
         ],
-        changeRed:0
+        changeRed: 0
       }
     },
     methods: {
       goIndex: function () {
         this.$router.push({path: '/home/index'})
       },
-      change(index){
-        this.changeRed = index;
+      change: function (index) {
+        this.changeRed = index
       }
     }
   }
 </script>
 
 <style>
-  .tab-con{background-color: #fff;width: 100%;height: 100%;padding: 20px;}
-  .tab-con .weui-grid{padding: 38px 10px;}
+  .tab-con {
+    background-color: #fff;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+  }
+
+  .tab-con .weui-grid {
+    padding: 38px 10px;
+  }
 </style>

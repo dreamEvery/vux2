@@ -4,7 +4,7 @@
       <div class="back">
         <p>退出</p>
       </div>
-      <div class="header-pic" @click="goHead"></div>
+      <div class="header-pic" @click="handleSidebar('head')"></div>
       <div class="introduce">
         <p class="name">童晓雪</p>
         <p class="class">一年级二班</p>
@@ -16,7 +16,7 @@
         <img slot="icon" src="">
         <span slot="label">我的礼品</span>
       </grid-item>
-      <grid-item label="排行">
+      <grid-item label="排行" link="/among">
         <img slot="icon" src="">
         <span slot="label">排行</span>
       </grid-item>
@@ -82,10 +82,16 @@
   </div>
 </template>
 <script>
-  import { Grid, GridItem, GroupTitle } from 'vux'
-  import { Flexbox, FlexboxItem, Divider } from 'vux'
-  import { Badge } from 'vux'
-  import { Tabbar, TabbarItem, Group, Cell } from 'vux'
+  import {
+    Grid,
+    GridItem,
+    GroupTitle,
+    Flexbox,
+    FlexboxItem,
+    Divider,
+    Badge
+  } from 'vux'
+
   export default {
     components: {
       Grid,
@@ -94,23 +100,22 @@
       Flexbox,
       FlexboxItem,
       Divider,
-      Badge,
+      Badge
     },
     name: 'Index',
-    data()
-    {
+    data () {
       return {}
     },
-    methods:{
-      goHead:function () {
-        this.$router.push({ path: '/head' })
+    methods: {
+      handleSidebar (name) {
+        this.$router.push({path: '/' + name})
       },
       onHide () {
         console.log('on hide')
       },
       onShow () {
         console.log('on show')
-      },
+      }
     }
   }
 </script>

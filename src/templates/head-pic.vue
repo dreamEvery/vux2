@@ -91,8 +91,8 @@
   </div>
 </template>
 <script>
-  import { Flexbox, FlexboxItem, Divider } from 'vux'
-  import { Grid, GridItem, GroupTitle } from 'vux'
+  import { Flexbox, FlexboxItem, Divider, Grid, GridItem, GroupTitle } from 'vux'
+
   export default {
     components: {
       Flexbox,
@@ -103,11 +103,11 @@
       GroupTitle
     },
     name: 'head',
-    data(){
+    data () {
       return {}
     },
-    methods:{
-      goIndex:function () {
+    methods: {
+      goIndex: function () {
         this.$router.push({ path: '/home/index' })
       }
     }
