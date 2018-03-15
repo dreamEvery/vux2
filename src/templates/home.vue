@@ -24,6 +24,10 @@
 <script>
   import { Tabbar, TabbarItem, Group, Cell } from 'vux'
   export default {
+    data () {
+      return {
+      }
+    },
     components: {
       Tabbar,
       TabbarItem,

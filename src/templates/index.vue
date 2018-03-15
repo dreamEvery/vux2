@@ -6,14 +6,14 @@
       </div>
       <div class="header-pic" @click="handleSidebar('head')"></div>
       <div class="introduce">
-        <p class="name">童晓雪</p>
-        <p class="class">一年级二班</p>
+        <p class="name">{{data.stuname}}</p>
+        <p class="class">{{data.classname}}</p>
       </div>
     </div>
     <!--top end-->
     <grid>
       <grid-item link="/gift" label="我的礼品">
-        <img slot="icon" src="">
+        <img slot="icon">
         <span slot="label">我的礼品</span>
       </grid-item>
       <grid-item label="排行" link="/among">
@@ -35,20 +35,20 @@
         <flexbox :gutter="0">
           <flexbox-item>
             <div class="flex-demo">
-              <p class="num">2518</p>
+              <p class="num">{{data.currentintegral}}</p>
               <p class="num-title">积分</p>
             </div>
           </flexbox-item>
           <flexbox-item>
             <div class="flex-demo">
-              <p class="num">2518</p>
-              <p class="num-title">积分</p>
+              <p class="num">{{data.level}}</p>
+              <p class="num-title">等级</p>
             </div>
           </flexbox-item>
           <flexbox-item>
             <div class="flex-demo">
-              <p class="num">2518</p>
-              <p class="num-title">积分</p>
+              <p class="num">{{data.itemsnum}}</p>
+              <p class="num-title">礼品</p>
             </div>
           </flexbox-item>
         </flexbox>
@@ -60,20 +60,20 @@
         <flexbox :gutter="0">
           <flexbox-item>
             <div class="flex-demo">
-              <p class="num">91%</p>
+              <p class="num">{{data.classstandings}}</p>
               <p class="num-title">击败本班人数</p>
             </div>
           </flexbox-item>
           <flexbox-item>
             <div class="flex-demo">
-              <p class="num">2518</p>
-              <p class="num-title">积分</p>
+              <p class="num">{{data.gradestandings}}</p>
+              <p class="num-title">击败本年级人数</p>
             </div>
           </flexbox-item>
           <flexbox-item>
             <div class="flex-demo">
-              <p class="num">2518</p>
-              <p class="num-title">积分</p>
+              <p class="num">{{data.schoolstandings}}</p>
+              <p class="num-title">击败全校人数</p>
             </div>
           </flexbox-item>
         </flexbox>
@@ -82,6 +82,7 @@
   </div>
 </template>
 <script>
+  import { Base64 } from 'js-base64'
   import {
     Grid,
     GridItem,
@@ -104,7 +105,41 @@
     },
     name: 'Index',
     data () {
-      return {}
+      return {
+        data: {}
+      }
+    },
+    created: function () {
+      this.$http.get('/api/vendingMachineInventoryManage_listVendingMachineInventory.do?method=getUserInfoForVendingMachineLogin', {
+        params: {
+          cardno: '000001440144379', sid: 4, userid: 206277360
+
+        }
+      }).then(res => {
+        // 成功的状态
+        let successCode = '0'
+        // 失败的状态
+        let errorCode = '1'
+        console.log(res, '原始数据')
+        let body = res.body
+        console.log(body, '后台返回的数据')
+        // 先判断状态
+        // "code":返回状态码,"data":"应该业务数据","msg":"错误提示"
+        // 所以我优先判断 code
+        if (body.code === successCode) {
+          // 处理数据
+          console.log(body.stuname)
+          body.stuname = Base64.decode(body.stuname)
+          body.classname = Base64.decode(body.classname)
+          this.data = body
+        } else if (body.code === errorCode) {
+          // 处理失败
+          console.log('错误提示：' + body.msg)
+        }
+      }, error => {
+        // error callback
+        console.log(error)
+      })
     },
     methods: {
       handleSidebar (name) {
@@ -224,9 +259,8 @@
     border-bottom: 1px solid #f1f1f1;
   }
 
-  tabbar {
+  .tabbar {
     position: fixed;
   }
-
-
 </style>
+ni

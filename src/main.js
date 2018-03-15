@@ -4,16 +4,16 @@
 import './assets/css/restart.css'
 import Vue from 'vue'
 import Vuex from 'vuex'
-
 import FastClick from 'fastclick'
 import VueRouter from 'vue-router'
 import App from './App'
 import router from './router'
 import { AlertPlugin } from 'vux'
+import VueResource from 'vue-resource'
 
+Vue.use(VueResource)
 Vue.use(Vuex)
 Vue.use(AlertPlugin)
-
 Vue.use(VueRouter)
 
 FastClick.attach(document.body)

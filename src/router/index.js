@@ -12,7 +12,6 @@ import Index from '@/templates/index'
 import Interaction from '@/templates/interaction'
 import Market from '@/templates/market'
 import Among from '@/templates/among'
-
 Vue.use(Router)
 
 // export 的意思是暴露出来东西

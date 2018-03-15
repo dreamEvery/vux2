@@ -1,7 +1,7 @@
 <template>
   <div class="Among">
     <div class="public-top">
-      <div class="public-back" @click="handleSidebar('index')">返回</div>
+      <div class="public-back" @click="goIndex">返回</div>
       <div class="public-fr">
         <div>礼品</div>
         <div>积分</div>
@@ -63,6 +63,9 @@
     methods: {
       handleSidebar (name) {
         this.$router.push({path: '/' + name})
+      },
+      goIndex: function () {
+        this.$router.push({path: '/home/index'})
       }
     }
   }
