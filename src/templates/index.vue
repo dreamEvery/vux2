@@ -110,7 +110,7 @@
       }
     },
     created: function () {
-      this.$http.get('/api/vendingMachineInventoryManage_listVendingMachineInventory.do?method=getUserInfoForVendingMachineLogin', {
+      this.$http.get('http://192.168.0.227:8080/vendingMachineInventoryManage_listVendingMachineInventory.do?method=getUserInfoForVendingMachineLogin', {
         params: {
           cardno: '000001440144379', sid: 4, userid: 206277360
 
