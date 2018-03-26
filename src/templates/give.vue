@@ -1,50 +1,29 @@
 <template>
-  <div class="gift">
+  <div class="give">
     <div class="public-top">
       <div class="public-back" @click="goIndex">返回</div>
-      <div class="public-fr">
-        <div>礼品</div>
-        <div>积分</div>
-      </div>
     </div>
-    <div class="con">
-      <div class="my-message">
-        <p>我的礼品</p>
-      </div>
-      <div class="tab">
-        <ul>
-          <li v-for="(item,index) in tabs" :class="{ red:changeRed == index}" @click="change(index)">{{item.text}}</li>
-        </ul>
-        <div class="tab-con">
-          <grid :cols="3">
-            <grid-item v-for="i in 9" :key="i">
-              <span class="grid-center">{{i}}</span>
-            </grid-item>
-          </grid>
+    <div class="give-con">
+      <div class="give-list" v-for="item in items">
+        <div class="give-gift">
+          <span class="give-gift">{{item.text}}</span>
+          <span class="choose-gift">{{item.choose}}</span>
+          <i> > </i>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script>
-  import { Grid, GridItem, GroupTitle } from 'vux'
   export default {
-    components: {
-      Grid,
-      GridItem,
-      GroupTitle
-    },
-    name: 'gift',
+    name: 'give',
     data () {
       return {
-        tabs: [
-          {text: '全部'},
-          {text: '未领取'},
-          {text: '收到'},
-          {text: '送出'}
-        ],
-        changeRed: 0,
-        message: {}
+        items: [
+          { text: '赠送礼品', choose: '选择礼品' },
+          // 失败的状态
+          { text: '赠送积分', choose: ' 输入积分' }
+        ]
       }
     },
     created: function () {
@@ -55,7 +34,6 @@
       }).then(res => {
         // 成功的状态
         let successCode = 0
-        // 失败的状态
         let errorCode = 1
         console.log(res, '原始数据')
         let body = res.body
@@ -87,14 +65,25 @@
 </script>
 
 <style>
-  .tab-con {
+  body {
     background-color: #fff;
-    width: 100%;
-    height: 100%;
-    padding: 20px;
+  }
+  .give-con{padding: 0 20px;}
+  .give-list {
+    line-height: 45px;
+    height: 45px;
+    font-size: 12px;
+    position: relative;
+    border-bottom: 1px solid #cccccc;
   }
 
-  .tab-con .weui-grid {
-    padding: 38px 10px;
+  .give-list .give-gift {
+    color: #4e4e4e;
+    margin-right: 10px;
   }
+  .give-list .choose-gift{color: #cccccc;}
+  .give-list i{position: absolute;right: 3px;}
+
+
+
 </style>

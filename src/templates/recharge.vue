@@ -1,5 +1,5 @@
-<template class="sepcil">
-  <div class="Recharge">
+<template>
+  <div class="recharge">
     <div class="re-top">
       <div class="re-pic">
         <img src="" alt="">
@@ -17,7 +17,7 @@
 </template>
 <script>
   export default {
-    name: 'Recharge',
+    name: 'recharge',
     data () {
       return {}
     }
@@ -30,11 +30,15 @@
     background-color: #fff;
   }
 
+  .recharge {
+    width: 100%;
+  }
+
   .re-top {
     width: 100%;
     display: inline-block;
     background-color: #cccccc;
-    height: 102px;
+    height: 100px;
     padding: 0 20px;
   }
 
@@ -63,6 +67,11 @@
     background-color: #fff;
     padding: 70px 20px 0 20px;
     text-align: center;
+    height: auto;
+    position: absolute;
+    bottom: 0;
+    top: 100px;
+    width: 100%;
   }
 
   .re-con p {

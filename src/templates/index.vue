@@ -1,10 +1,15 @@
 <template>
   <div class="Index">
+    <!-- showName 向子组件传入一个字符串 ‘isAlertBox’，
+    v-if="isAlertBox"这个是控制子组件显示隐藏的变量 -->
+    <alert-box v-if="isAlertBox" :showName="'isAlertBox'"></alert-box>
     <div class="top">
       <div class="back">
         <p>退出</p>
       </div>
-      <div class="header-pic" @click="handleSidebar('head')"></div>
+      <div class="header-pic" @click="handleSidebar('head')">
+        <img :src="data.picsummary" alt="">
+      </div>
       <div class="introduce">
         <p class="name">{{data.stuname}}</p>
         <p class="class">{{data.classname}}</p>
@@ -34,7 +39,7 @@
         </div>
         <flexbox :gutter="0">
           <flexbox-item>
-            <div class="flex-demo">
+            <div class="flex-demo" @click="showAlert">
               <p class="num">{{data.currentintegral}}</p>
               <p class="num-title">积分</p>
             </div>
@@ -83,6 +88,8 @@
 </template>
 <script>
   import { Base64 } from 'js-base64'
+  import alertBox from '../components/alertBox'
+
   import {
     Grid,
     GridItem,
@@ -101,19 +108,20 @@
       Flexbox,
       FlexboxItem,
       Divider,
-      Badge
+      Badge,
+      alertBox
     },
     name: 'Index',
     data () {
       return {
-        data: {}
+        data: {},
+        isAlertBox: false
       }
     },
     created: function () {
-      this.$http.get('http://192.168.0.227:8080/vendingMachineInventoryManage_listVendingMachineInventory.do?method=getUserInfoForVendingMachineLogin', {
+      this.$http.get('http://192.168.0.227:8080/vendingMachineInventoryManage_listVendingMachineInventory.do?method=getUserInfoForMobilePhoneLogin', {
         params: {
-          cardno: '000001440144379', sid: 4, userid: 206277360
-
+          sid: 4, userid: 533422211, studentid: 222
         }
       }).then(res => {
         // 成功的状态
@@ -142,6 +150,10 @@
       })
     },
     methods: {
+      showAlert () {
+        this.isAlertBox = true
+        // 使用父组件来控制子组件的显示
+      },
       handleSidebar (name) {
         this.$router.push({path: '/' + name})
       },
@@ -263,4 +275,3 @@
     position: fixed;
   }
 </style>
-ni

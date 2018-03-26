@@ -1,55 +1,34 @@
 <template>
   <div class="message">
     <div class="public-top">
-      <div class="public-back" @click="goIndex">返回</div>
+      <div class="public-back" @click="handleSidebar('home/index')">返回</div>
       <div class="public-fr">
-        <div>礼品</div>
+        <div @click="handleSidebar('gift')">礼品</div>
         <div>积分</div>
       </div>
     </div>
     <div class="my-message">
       <p>我的消息</p>
     </div>
-    <div class="message-state">
-      <div class="icon"></div>
-      <div class="mess-list">
-        <p>{{items.message}}</p>
-        <span>{{items.exchangetime}}</span>
+    <div class="message-state" v-for="(item, index) in obj.data">
+      <div class="icon">
+        <img src="" alt="" class="chongzhi" v-if="item.status==='1'">
+        <img src="" alt="" class="duihuan" v-if="item.status==='2'">
+        <img src="" alt="" class="liwu" v-if="item.status==='3'||item.status==='4'">
+      </div>
+      <div class="mess-list" >
+        <p class="mess-list-title" v-if="item.status==='1'||item.status==='2'">成功兑换了隐形的斗篷</p>
+        <p class="mess-list-title" v-else-if="item.status==='3'&&item.type==='songchu'"><a href="">神秘人物</a> 送你 科学故事书。</p>
+        <p class="mess-list-title" v-else-if="item.status==='3'&&item.type==='shouru'">你 送给了 <a href="">刘晓晓</a> 隐形的斗篷 </p>
+        <span class="timer">2018.3.7</span>
       </div>
       <div class="delect">
         删除
       </div>
-    </div>
-    <div class="message-state">
-      <div class="icon"></div>
-      <div class="mess-list">
-        <p>成功兑换了隐形的斗篷</p>
-        <span>2018.3.7</span>
-      </div>
-      <div class="delect">
-        删除
-      </div>
-    </div>
-    <div class="message-state">
-      <div class="icon"></div>
-      <div class="mess-list">
-        <p>成功兑换了隐形的斗篷</p>
-        <span>2018.3.7</span>
-      </div>
-      <div class="delect">
-        删除
-      </div>
-    </div>
-    <div class="message-state">
-      <div class="icon"></div>
-      <div class="mess-list">
-        <p>成功兑换了隐形的斗篷</p>
-        <span>2018.3.7</span>
-      </div>
-      <div class="delect">
-        删除
-      </div>
-      <div class="toReceive" @click="goGift">领取</div>
+      <span class="text">已领取</span>
+      <span class="text" v-if="liwu && fasong">{{isLingqu?'已领取':'未领取'}}</span>
+      <span class="text">对方未领取</span>
+      <span class="toReceive" @click="handleSidebar('Gift')">领取</span>
     </div>
     <div class="footer">
       <div class="all">全部删除</div>
@@ -61,15 +40,52 @@
     name: 'message',
     data () {
       return {
-        items: []
+        items: [
+        ],
+        obj: {
+          data: [
+            {
+              message: '成功兑换了 隐形的斗篷1',
+              status: 'duihuan',
+              exchangetime: '2018-03-06 13:47:33',
+              studentname: '童雪',
+              studentid: 12,
+              id: 1
+            },
+            {
+              message: '充值',
+              status: 'chongzhi',
+              exchangetime: '2018-03-06 13:47:33',
+              studentname: '童雪',
+              studentid: 12,
+              id: 2
+            },
+            {
+              message: '礼物',
+              status: 'liwu',
+              isSend: false,
+              islingqu: false,
+              exchangetime: '2018-03-06 13:47:33',
+              studentname: '童雪',
+              studentid: 12,
+              id: 3
+            },
+            {
+              message: '成功兑换了 隐形的斗篷4',
+              status: '4',
+              exchangetime: '2018-03-06 13:47:33',
+              studentname: '童雪',
+              studentid: 12,
+              id: 4
+            }],
+          code: 0,
+          msg: ''
+        }
       }
     },
     methods: {
-      goIndex: function () {
-        this.$router.push({path: '/home/index'})
-      },
-      goGift: function () {
-        this.$router.push({path: '/gift'})
+      handleSidebar (name) {
+        this.$router.push({path: '/' + name})
       }
     },
     created: function () {
@@ -82,9 +98,9 @@
         }
       }).then(res => {
         // 成功的状态
-        let successCode = '0'
+        let successCode = 0
         // 失败的状态
-        let errorCode = '1'
+        let errorCode = 1
         console.log(res, '原始数据')
         let body = res.body
         console.log(body, '后台返回的数据')
@@ -93,7 +109,8 @@
         // 所以我优先判断 code
         if (body.code === successCode) {
           // 处理数据
-          this.items = body.bodyText
+          this.items = body.data
+          console.log(this.items, '1111')
         } else if (body.code === errorCode) {
           // 处理失败
           console.log('错误提示：' + body.msg)
@@ -152,12 +169,14 @@
   }
 
   .footer {
-    position: absolute;
+    background-color: #ffffff;
+    overflow: hidden;
     bottom: 0;
     left: 0;
     border-top: 1px solid #ccc;
-    padding: 15px 15px 15px 0;
+    padding: 8px 15px 8px 0;
     width: 100%;
+    position: fixed;
   }
 
   .footer .all {

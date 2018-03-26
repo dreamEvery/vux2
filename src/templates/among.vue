@@ -43,6 +43,7 @@
 </template>
 <script>
   import { Flexbox, FlexboxItem, Divider } from 'vux'
+
   export default {
     components: {
       Flexbox,
@@ -66,6 +67,9 @@
       },
       goIndex: function () {
         this.$router.push({path: '/home/index'})
+      },
+      change: function (index) {
+        this.changeRed = index
       }
     }
   }
@@ -84,8 +88,33 @@
     height: auto;
     background-color: #fff;
   }
-  .flex-demo{padding: 50px 0;vertical-align: bottom;position: relative;}
-  .small-pic{width: 60px;height: 60px;background-color: #797979;border-radius: 50%;position: absolute;bottom: 0;margin-left: -30px;left: 50%;}
-  .big-pic{width: 80px;height: 80px;border-radius: 50%;background-color: #797979;position: absolute;bottom: 0;margin-left: -40px;left: 50%;}
+
+  .flex-demo {
+    padding: 50px 0;
+    vertical-align: bottom;
+    position: relative;
+  }
+
+  .small-pic {
+    width: 60px;
+    height: 60px;
+    background-color: #797979;
+    border-radius: 50%;
+    position: absolute;
+    bottom: 0;
+    margin-left: -30px;
+    left: 50%;
+  }
+
+  .big-pic {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #797979;
+    position: absolute;
+    bottom: 0;
+    margin-left: -40px;
+    left: 50%;
+  }
 
 </style>

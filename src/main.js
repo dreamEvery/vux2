@@ -10,11 +10,13 @@ import App from './App'
 import router from './router'
 import { AlertPlugin } from 'vux'
 import VueResource from 'vue-resource'
+import VueScroller from 'vue-scroller'
 
 Vue.use(VueResource)
 Vue.use(Vuex)
 Vue.use(AlertPlugin)
 Vue.use(VueRouter)
+Vue.use(VueScroller)
 
 FastClick.attach(document.body)
 

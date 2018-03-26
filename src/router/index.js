@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
-import Alert from '@/components/alert'
 import Page from '@/components/page'
 import Head from '@/templates/head-pic'
 import Gift from '@/templates/gift'
@@ -12,6 +11,7 @@ import Index from '@/templates/index'
 import Interaction from '@/templates/interaction'
 import Market from '@/templates/market'
 import Among from '@/templates/among'
+import Give from '@/templates/give'
 Vue.use(Router)
 
 // export 的意思是暴露出来东西
@@ -21,11 +21,6 @@ export default new Router({
       path: '/hhh',
       name: 'HelloWorld',
       component: HelloWorld
-    },
-    {
-      path: '/alert',
-      name: 'Alert',
-      component: Alert
     },
     {
       path: '/head',
@@ -46,6 +41,11 @@ export default new Router({
       path: '/among',
       name: 'Among',
       component: Among
+    },
+    {
+      path: '/give',
+      name: 'Give',
+      component: Give
     },
     {
       path: '/message',

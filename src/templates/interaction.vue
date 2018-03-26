@@ -5,7 +5,7 @@
         头像
         <img src="" alt="">
       </div>
-      <div class="back">返回</div>
+      <div class="back" @click="handleSidebar('home/index')">返回</div>
     </div>
     <div class="in-con">
       <div class="my-message">
@@ -37,6 +37,11 @@
           {text: '未领取'},
           {text: '收到'}
         ]
+      }
+    },
+    methods: {
+      handleSidebar (name) {
+        this.$router.push({path: '/' + name})
       }
     }
   }

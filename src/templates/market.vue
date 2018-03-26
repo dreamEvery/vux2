@@ -5,7 +5,7 @@
         头像
         <img src="" alt="">
       </div>
-      <div class="back">返回</div>
+      <div class="back" @click="handleSidebar('home/index')">返回</div>
     </div>
     <div class="con">
       <div class="my-message">
@@ -64,7 +64,8 @@
           {text: '第五层'}
         ],
         nowIndex: 1,
-        changeList: 0
+        changeList: 0,
+        data: {}
       }
     },
     methods: {
@@ -76,7 +77,45 @@
       },
       changelist (index) {
         this.changeList = index
+      },
+      handleSidebar (name) {
+        this.$router.push({path: '/' + name})
+      },
+      onHide () {
+        console.log('on hide')
+      },
+      onShow () {
+        console.log('on show')
       }
+    },
+    created: function () {
+      this.$http.get('http://192.168.0.227:8080/vendingMachineInventoryManage_listVendingMachineInventory.do?method=getMallItemsList', {
+        params: {
+          sid: 4, userid: 533422211, studentid: 222, malltypeid: 573, vendingmachineid: 1
+        }
+      }).then(res => {
+        // 成功的状态
+        let successCode = '0'
+        // 失败的状态
+        let errorCode = '1'
+        console.log(res, '原始数据')
+        let body = res.body
+        console.log(body, '后台返回的数据')
+        // 先判断状态
+        // "code":返回状态码,"data":"应该业务数据","msg":"错误提示"
+        // 所以我优先判断 code
+        if (body.code === successCode) {
+          // 处理数据
+          this.data = body.data
+          console.log(this.data, '1111')
+        } else if (body.code === errorCode) {
+          // 处理失败
+          console.log('错误提示：' + body.msg)
+        }
+      }, error => {
+        // error callback
+        console.log(error)
+      })
     }
   }
 </script>
