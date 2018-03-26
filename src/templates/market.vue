@@ -5,7 +5,7 @@
         头像
         <img src="" alt="">
       </div>
-      <div class="back" @click="handleSidebar('home/index')">返回</div>
+      <div class="back">返回</div>
     </div>
     <div class="con">
       <div class="my-message">
@@ -89,7 +89,7 @@
       }
     },
     created: function () {
-      this.$http.get('http://192.168.0.227:8080/vendingMachineInventoryManage_listVendingMachineInventory.do?method=getMallItemsList', {
+      this.$http.get('http://192.168.0.218:8080/vendingMachineInventoryManage_listVendingMachineInventory.do?method=getMallItemsList', {
         params: {
           sid: 4, userid: 533422211, studentid: 222, malltypeid: 573, vendingmachineid: 1
         }

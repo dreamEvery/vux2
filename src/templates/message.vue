@@ -46,7 +46,7 @@
           data: [
             {
               message: '成功兑换了 隐形的斗篷1',
-              status: 'duihuan',
+              status: '1',
               exchangetime: '2018-03-06 13:47:33',
               studentname: '童雪',
               studentid: 12,

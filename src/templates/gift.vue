@@ -19,6 +19,7 @@
           <grid :cols="3">
             <grid-item v-for="i in 9" :key="i">
               <span class="grid-center">{{i}}</span>
+              <img src="" alt="">
             </grid-item>
           </grid>
         </div>
@@ -48,7 +49,7 @@
       }
     },
     created: function () {
-      this.$http.get('http://192.168.0.227:8080/mallItemsManage_listMallItems.do?method=getMyMallItemsList', {
+      this.$http.get('http://192.168.0.218:8080/mallItemsManage_listMallItems.do?method=getMyMallItemsList', {
         params: {
           sid: 4, userid: 533422211, studentid: 222
         }

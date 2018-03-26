@@ -119,7 +119,7 @@
       }
     },
     created: function () {
-      this.$http.get('http://192.168.0.227:8080/vendingMachineInventoryManage_listVendingMachineInventory.do?method=getUserInfoForMobilePhoneLogin', {
+      this.$http.get('http://192.168.0.218:8080/vendingMachineInventoryManage_listVendingMachineInventory.do?method=getUserInfoForMobilePhoneLogin', {
         params: {
           sid: 4, userid: 533422211, studentid: 222
         }
