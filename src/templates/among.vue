@@ -150,6 +150,7 @@
 </template>
 <script>
   import { Base64 } from 'js-base64'
+
   export default {
     name: 'among',
     data () {
@@ -166,6 +167,9 @@
     methods: {
       handleSidebar (name) {
         this.$router.push({path: '/' + name})
+      },
+      change (index) {
+        this.changeRed = index
       }
     },
     components: {
@@ -222,10 +226,19 @@
     flex-direction: row;
   }
 
+  .ranking-list {
+    padding-top: 40px;
+  }
+
   .ranking-list div {
     margin: 0 auto;
     text-align: center;
-    flex: 1;;
+    flex: 1;
+    padding-top: 20px;
+  }
+
+  .ranking-list div.second {
+    padding-top: 0;
   }
 
   .ranking-list div .ranking-pic {

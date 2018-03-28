@@ -10,26 +10,42 @@
     <div class="my-message">
       <p>我的消息</p>
     </div>
-    <div class="message-state" v-for="(item, index) in obj.data">
-      <div class="icon">
-        <img src="" alt="" class="chongzhi" v-if="item.status==='1'">
-        <img src="" alt="" class="duihuan" v-if="item.status==='2'">
-        <img src="" alt="" class="liwu" v-if="item.status==='3'||item.status==='4'">
-      </div>
-      <div class="mess-list" >
-        <p class="mess-list-title" v-if="item.status==='1'||item.status==='2'">成功兑换了隐形的斗篷</p>
-        <p class="mess-list-title" v-else-if="item.status==='3'&&item.type==='songchu'"><a href="">神秘人物</a> 送你 科学故事书。</p>
-        <p class="mess-list-title" v-else-if="item.status==='3'&&item.type==='shouru'">你 送给了 <a href="">刘晓晓</a> 隐形的斗篷 </p>
-        <span class="timer">2018.3.7</span>
-      </div>
-      <div class="delect">
-        删除
-      </div>
-      <span class="text">已领取</span>
-      <span class="text" v-if="liwu && fasong">{{isLingqu?'已领取':'未领取'}}</span>
-      <span class="text">对方未领取</span>
-      <span class="toReceive" @click="handleSidebar('Gift')">领取</span>
+    <div class="scroller-box" style="position: relative;height: 100%">
+      <scroller :on-refresh="refresh" :on-infinite="infinite">
+        <!-- content goes here -->
+        <div class="my-scroll">
+          <div class="message-state" v-for="(item, index) in obj.data">
+            <div class="icon">
+              <img src="" alt="" v-if="item.status==='1'">
+              <img src="" alt="" v-if="item.status==='2'">
+              <img src="" alt="" v-if="item.status==='3'||item.status==='4'">
+            </div>
+            <div class="mess-list">
+              <p class="mess-list-title" v-if="item.status==='1'||item.status==='2'">成功兑换了隐形的斗篷</p>
+              <p class="mess-list-title" v-else-if="item.status==='3'&&item.type==='songchu'"><a href="">神秘人物</a> 送你
+                科学故事书。</p>
+              <p class="mess-list-title" v-else-if="item.status==='3'&&item.type==='shouru'">你 送给了 <a href="">刘晓晓</a>
+                隐形的斗篷 </p>
+              <span class="timer">2018.3.7</span>
+            </div>
+            <div class="delect">
+              删除
+            </div>
+            <span class="text">已领取</span>
+            <span class="text" v-if="true">{{true?'已领取':'未领取'}}</span>
+            <span class="text">对方未领取</span>
+            <span class="toReceive" @click="handleSidebar('Gift')">领取</span>
+          </div>
+        </div>
+      </scroller>
     </div>
+    <!--<scroller :on-refresh="refresh" :on-infinite="infinite">-->
+    <!--<div class="scroller-box">-->
+    <!--<div class="item" v-for="item in num">-->
+    <!--{{item}}-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</scroller>-->
     <div class="footer">
       <div class="all">全部删除</div>
     </div>
@@ -40,8 +56,7 @@
     name: 'message',
     data () {
       return {
-        items: [
-        ],
+        items: [],
         obj: {
           data: [
             {
@@ -80,50 +95,84 @@
             }],
           code: 0,
           msg: ''
-        }
+        },
+        num: 10,
+        page: 1
       }
     },
     methods: {
       handleSidebar (name) {
         this.$router.push({path: '/' + name})
+      },
+      refresh (done) {
+        console.log('refresh')
+        this.page = 1
+        this.getData(function () {
+          done(true)
+        })
+      },
+      infinite (done) {
+        console.log('infinite')
+        this.page++
+        let that = this
+        this.getData(function (data) {
+          for (let i = 0; i < data.length; i++) {
+            that.items.push(data[i])
+          }
+          done(true)
+        })
+      },
+      getData (succse) {
+        let that = this
+        this.$http.get('http://192.168.0.218:8080/mallItemsManage_listMallItems.do?method=getMallMessage', {
+          // 你想用
+          params: {
+            userid: 628830418,
+            studentid: 820,
+            sid: 4,
+            page: that.page
+          }
+        }).then(res => {
+          // 成功的状态
+          let successCode = 0
+          //   // 失败的状态
+          let errorCode = 1
+          console.log(res, '原始数据')
+          let body = res.body
+          console.log(body, '后台返回的数据')
+          // 先判断状态
+          // "code":返回状态码,"data":"应该业务数据","msg":"错误提示"
+          // 所以我优先判断 code
+          if (body.code === successCode) {
+            // 处理数据
+            if (succse) succse(body.data)
+          } else if (body.code === errorCode) {
+            // 处理失败
+            console.log('错误提示：' + body.msg)
+          }
+        }, error => {
+          //   // error callback
+          console.log(error)
+        })
       }
     },
-    created: function () {
-      this.$http.get('http://192.168.0.227:8080/mallItemsManage_listMallItems.do?method=getMallMessage', {
-        // 你想用
-        params: {
-          userid: 628830418,
-          studentid: 820,
-          sid: 4
-        }
-      }).then(res => {
-        // 成功的状态
-        let successCode = 0
-        // 失败的状态
-        let errorCode = 1
-        console.log(res, '原始数据')
-        let body = res.body
-        console.log(body, '后台返回的数据')
-        // 先判断状态
-        // "code":返回状态码,"data":"应该业务数据","msg":"错误提示"
-        // 所以我优先判断 code
-        if (body.code === successCode) {
-          // 处理数据
-          this.items = body.data
-          console.log(this.items, '1111')
-        } else if (body.code === errorCode) {
-          // 处理失败
-          console.log('错误提示：' + body.msg)
-        }
-      }, error => {
-        // error callback
-        console.log(error)
-      })
+    created () {
+      this.getData()
     }
   }
 </script>
 
 <style scoped>
+  .message {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+  }
+
   .my-message {
     text-align: center;
     font-size: 16px;
