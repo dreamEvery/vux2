@@ -2,20 +2,20 @@
   <div class="home">
     <tabbar>
       <tabbar-item link="/home/recharge">
-        <img slot="icon" >
-        <span slot="label">充值</span>
+          <img slot="icon" src="../assets/img/map/tab_recharge_n.png" class="tab-icon">
+          <img slot="icon-active" src="../assets/img/map/tab_recharge_pre.png">
       </tabbar-item>
-      <tabbar-item  link="/home/market">
-        <img slot="icon" >
-        <span slot="label">市集</span>
+      <tabbar-item link="/home/market">
+        <img slot="icon" src="../assets/img/map/tab_a-market_n.png">
+        <img slot="icon-active" src="../assets/img/map/tab_a-market_pre.png" >
       </tabbar-item>
       <tabbar-item link="/home/interaction">
-        <img slot="icon">
-        <span slot="label">游戏互动</span>
+        <img slot="icon" src="../assets/img/map/tab_game-interaction_n.png">
+        <img slot="icon-active" src="../assets/img/map/tab_game-interaction_pre.png" alt="">
       </tabbar-item>
-      <tabbar-item badge="2" link="/home/index">
-        <img slot="icon">
-        <span slot="label">我的</span>
+      <tabbar-item link="/home/index">
+        <img slot="icon" src="../assets/img/map/tab_my_n.png">
+        <img slot="icon-active" src="../assets/img/map/tab_my_pre.png" alt="">
       </tabbar-item>
     </tabbar>
     <router-view></router-view>
@@ -23,9 +23,11 @@
 </template>
 <script>
   import { Tabbar, TabbarItem, Group, Cell } from 'vux'
+
   export default {
     data () {
       return {
+        active: false
       }
     },
     components: {
@@ -37,6 +39,9 @@
     name: 'home'
   }
 </script>
-<style scoped>
-
+<style>
+  .weui-tabbar .weui-tabbar__icon {
+    width: 1.4rem;
+    height: 1.4rem;
+  }
 </style>

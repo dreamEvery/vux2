@@ -4,6 +4,9 @@ import HelloWorld from '@/components/HelloWorld'
 import Page from '@/components/page'
 import Head from '@/templates/head-pic'
 import Gift from '@/templates/gift'
+import Give from '@/templates/give'
+import giveSel from '@/templates/giveSel'
+import Standby from '@/templates/standby'
 import Message from '@/templates/message'
 import Recharge from '@/templates/recharge'
 import Home from '@/templates/home'
@@ -11,7 +14,6 @@ import Index from '@/templates/index'
 import Interaction from '@/templates/interaction'
 import Market from '@/templates/market'
 import Among from '@/templates/among'
-import Give from '@/templates/give'
 Vue.use(Router)
 
 // export 的意思是暴露出来东西
@@ -38,19 +40,29 @@ export default new Router({
       component: Gift
     },
     {
+      path: '/give',
+      name: 'Give',
+      component: Give,
+      children: [{
+        path: '/give/giveSel',
+        name: 'giveSel',
+        component: giveSel
+      }]
+    },
+    {
       path: '/among',
       name: 'Among',
       component: Among
     },
     {
-      path: '/give',
-      name: 'Give',
-      component: Give
-    },
-    {
       path: '/message',
       name: 'Message',
       component: Message
+    },
+    {
+      path: '/standby',
+      name: 'standby',
+      component: Standby
     },
     {
       path: '/',

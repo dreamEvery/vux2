@@ -1,61 +1,54 @@
 <template>
   <div class="message">
-    <div class="public-top">
-      <div class="public-back" @click="handleSidebar('home/index')">返回</div>
-      <div class="public-fr">
-        <div @click="handleSidebar('gift')">礼品</div>
-        <div>积分</div>
+    <public-top></public-top>
+    <router-link to="/home/index">
+      <div class="public-back">
+        <img src="../assets/img/map/my_icon_Return.png" alt="">
       </div>
-    </div>
-    <div class="my-message">
-      <p>我的消息</p>
-    </div>
-    <div class="scroller-box" style="position: relative;height: 100%">
-      <scroller :on-refresh="refresh" :on-infinite="infinite">
+    </router-link>
+    <div class="scroller-box" style="position: relative;height: 80%">
+      <scroller :on-refresh="refresh" :on-infinite="infinite" class="scroller">
         <!-- content goes here -->
         <div class="my-scroll">
-          <div class="message-state" v-for="(item, index) in obj.data">
+          <div class="message-state" v-for="(item, index) in items">
             <div class="icon">
-              <img src="" alt="" v-if="item.status==='1'">
-              <img src="" alt="" v-if="item.status==='2'">
-              <img src="" alt="" v-if="item.status==='3'||item.status==='4'">
+              <img src="../assets/img/map/my-news_icon_exchange.png" alt="">
+              <!--<img src="" alt="" v-if="item.status==='1'">-->
+              <!--<img src="" alt="" v-if="item.status==='2'">-->
+              <!--<img src="" alt="" v-if="item.status==='3'||item.status==='4'">-->
             </div>
             <div class="mess-list">
-              <p class="mess-list-title" v-if="item.status==='1'||item.status==='2'">成功兑换了隐形的斗篷</p>
-              <p class="mess-list-title" v-else-if="item.status==='3'&&item.type==='songchu'"><a href="">神秘人物</a> 送你
-                科学故事书。</p>
-              <p class="mess-list-title" v-else-if="item.status==='3'&&item.type==='shouru'">你 送给了 <a href="">刘晓晓</a>
-                隐形的斗篷 </p>
-              <span class="timer">2018.3.7</span>
+              <p class="mess-list-title">{{item.message}}</p>
+              <span class="timer">{{item.exchangetime}}</span>
             </div>
-            <div class="delect">
-              删除
+            <div class="delect" @click="deleteMsg('index')">
+              <img src="../assets/img/map/my-news_button_Delete_n.png" alt="">
+              <img src="../assets/img/map/my_icon_lingqu.png" alt="" v-if="item.status === '0'">
             </div>
-            <span class="text">已领取</span>
-            <span class="text" v-if="true">{{true?'已领取':'未领取'}}</span>
-            <span class="text">对方未领取</span>
-            <span class="toReceive" @click="handleSidebar('Gift')">领取</span>
+            <!--<span class="text">已领取</span>-->
+            <!--<span class="text" v-if="true">{{true?'已领取':'未领取'}}</span>-->
+            <!--<span class="text">对方未领取</span>-->
+            <!--<span class="toReceive" @click="handleSidebar('Gift')">领取</span>-->
           </div>
         </div>
       </scroller>
     </div>
-    <!--<scroller :on-refresh="refresh" :on-infinite="infinite">-->
-    <!--<div class="scroller-box">-->
-    <!--<div class="item" v-for="item in num">-->
-    <!--{{item}}-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</scroller>-->
     <div class="footer">
-      <div class="all">全部删除</div>
+      <div class="all" @click="delectBtn">
+        <img src="../assets/img/map/my-news_button_Delete-all_n.png" alt="" v-if="isShow">
+        <img src="../assets/img/map/my-news_button_Delete-all_pre.png" alt="" v-else="!isShow">
+      </div>
     </div>
   </div>
 </template>
 <script>
+  import publicTop from '../components/publicTop'
+
   export default {
     name: 'message',
     data () {
       return {
+        isShow: true,
         items: [],
         obj: {
           data: [
@@ -101,30 +94,27 @@
       }
     },
     methods: {
-      handleSidebar (name) {
-        this.$router.push({path: '/' + name})
-      },
       refresh (done) {
         console.log('refresh')
         this.page = 1
+        done(true)
         this.getData(function () {
-          done(true)
         })
       },
       infinite (done) {
         console.log('infinite')
         this.page++
-        let that = this
+         // let that = this
+        done(true)
         this.getData(function (data) {
           for (let i = 0; i < data.length; i++) {
-            that.items.push(data[i])
+            this.items.push(data[i])
           }
-          done(true)
         })
       },
       getData (succse) {
         let that = this
-        this.$http.get('http://192.168.0.218:8080/mallItemsManage_listMallItems.do?method=getMallMessage', {
+        this.$http.get('/api/mallItemsManage_listMallItems.do?method=getMallMessage', {
           // 你想用
           params: {
             userid: 628830418,
@@ -145,7 +135,11 @@
           // 所以我优先判断 code
           if (body.code === successCode) {
             // 处理数据
-            if (succse) succse(body.data)
+            // if (succse) succse(body.data)
+            this.items = body.data
+            for (let i = 0; i < this.items.length; i++) {
+              console.log(this.items[i].status, '1223')
+            }
           } else if (body.code === errorCode) {
             // 处理失败
             console.log('错误提示：' + body.msg)
@@ -154,15 +148,46 @@
           //   // error callback
           console.log(error)
         })
+      },
+      delectBtn () {
+        this.isShow = false
+        this.$http.post('/api/mallItemsManage_listMallItems.do?method=deleteAllMallMessage', {
+          userid: 628830418,
+          studentid: 820,
+          sid: 4
+        }).then(response => {
+          // get body data
+          this.items = []
+        }, response => {
+          // error callback
+        })
+      },
+      deleteMsg: function (index) {
+        this.items.splice(index, 1)
       }
     },
+    components: {
+      publicTop
+    },
     created () {
-      this.getData()
+      // this.getData()
     }
   }
 </script>
 
 <style scoped>
+  .integral {
+    background-image: url("../assets/img/map/integral.png");
+    background-size: 100% 100%;
+    line-height: 0.7rem;
+  }
+
+  .gift {
+    background-image: url("../assets/img/map/exchange_icon_liwu.png");
+    background-size: 100% 100%;
+    line-height: 0.7rem;
+  }
+
   .message {
     width: 100%;
     height: 100%;
@@ -171,41 +196,74 @@
     top: 0;
     bottom: 0;
     right: 0;
+    background-image: url("../assets/img/map/message-bg.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
   }
 
-  .my-message {
-    text-align: center;
-    font-size: 16px;
-    line-height: 40px;
+  .scroller {
+    padding: 0.2rem 0.4rem
+  }
+
+  .scroller-box {
+    position: relative;
+  }
+
+  .my-scroll {
+    background-color: #f1e3bb;
+    padding: 0.2rem 0.1rem 0.05rem;
+    border-radius: 10px;
+    margin-top: .4rem;
   }
 
   .icon {
-    width: 35px;
-    height: 35px;
-    background-color: #4c4c4c;
+    width: 1rem;
+    height: 1rem;
     display: inline-block;
-    margin: 20px;
+    margin-top: 0.2rem;
+    margin-right: 0.1rem;
     float: left;
   }
 
+  .icon img {
+    width: 100%;
+    height: 100%;
+  }
+
+  .mess-list-title {
+    font-size: 0.30rem;
+    color: #6b3a0f;
+    font-weight: bold;
+  }
+
   .message-state {
-    background-color: #fff;
     overflow: hidden;
     padding: 0 10px;
-    border-bottom: 1px solid #cccccc;
+    background-color: #fffbe8;
+    border-radius: 20px;
+    margin-bottom: 0.2rem;
+  }
+
+  .timer {
+    font-size: 0.24rem;
+    color: #A6765C;
   }
 
   .message-state .mess-list {
-    margin-top: 20px;
+    margin-top: 0.2rem;
     float: left;
   }
 
   .message-state .delect {
     float: right;
-    padding: 2px 12px;
-    margin-top: 40px;
-    border: 1px solid #797979;
-    font-size: 12px;
+    width: 1.4rem;
+    height: 0.6rem;
+    margin-top: 0.75rem;
+  }
+
+  .message-state .delect img {
+    width: 100%;
+    height: 100%;
   }
 
   .message-state .toReceive {
@@ -218,22 +276,21 @@
   }
 
   .footer {
-    background-color: #ffffff;
     overflow: hidden;
     bottom: 0;
     left: 0;
-    border-top: 1px solid #ccc;
-    padding: 8px 15px 8px 0;
     width: 100%;
     position: fixed;
   }
 
   .footer .all {
-    width: 100px;
-    line-height: 40px;
-    text-align: center;
+    width: 2rem;
     float: right;
-    border: 1px solid #999999;
+  }
+
+  .all img {
+    width: 100%;
+    height: 100%;
   }
 
 

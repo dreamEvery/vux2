@@ -1,117 +1,228 @@
 <template>
   <div class="interaction">
-    <div class="in-top">
-      <div class="top-head">
-        头像
-        <img src="" alt="">
-      </div>
-      <div class="back" @click="handleSidebar('home/index')">返回</div>
-    </div>
+    <public-top></public-top>
+    <router-link class="go-back" to="/home/index">
+      <img src="../assets/img/map/Game_icon_fanhui.png"/>
+    </router-link>
     <div class="in-con">
-      <div class="my-message">
-        <p>游戏互动</p>
-      </div>
-      <div class="ranking">
-        <p>已经击败90%小伙伴</p>
+      <h3 class="ranking">已经击败90%小伙伴 </h3>
+      <div class="game-box">
+        <a class="game-1" href="javascript:;">
+          <img src="../assets/img/Game_img_Luck-draw.png"/>
+          <p>幸运大转盘</p>
+        </a>
+        <a class="game-2" href="javascript:;">
+          <img src="../assets/img/Game_img_adventure.png"/>
+          <p>奇幻冒险</p>
+        </a>
       </div>
       <div class="record">
-        <div class="title">
-          <span>我的获奖记录（我的战绩）:</span>
-          <a href="javascript:;">查看更多</a>
+        <div class="record-title">
+          <span>我的获奖记录:</span>
+          <a href="javascript:;">
+            <img src="../assets/img/Game_icon_See.png"/>
+          </a>
         </div>
         <ul>
-          <li v-for="list in lists">{{list.text}}</li>
+          <li v-for="list in lists">
+            <span class="record-text">{{list.text}}</span>
+            <span class="record-time">{{list.time}}</span>
+          </li>
         </ul>
       </div>
     </div>
+
   </div>
 </template>
 
 <script>
+  import publicTop from '../components/publicTop'
   export default {
     name: 'interaction',
     data () {
       return {
-        lists: [
-          {text: '获得10积分'},
-          {text: '未领取'},
-          {text: '收到'}
+        lists: [{
+          text: '小幸运! 幸运大抽奖游戏获得10积分!',
+          time: '12：05'
+        },
+        {
+          text: '小幸运! 幸运大抽奖游戏获得30积分!',
+          time: '11：05'
+        },
+        {
+          text: '小幸运! 幸运大抽奖游戏获得20积分!',
+          time: '10：05'
+        }
         ]
       }
     },
+    components: {
+      publicTop
+    },
     methods: {
       handleSidebar (name) {
-        this.$router.push({path: '/' + name})
+        this.$router.push({
+          path: '/' + name
+        })
       }
+    },
+    created: function () {
+      this.$http.get('/api/winningRecordManage_listWinningRecord.do?method=getWinningRecordList', {
+        params: {
+          userid: 628830418,
+          studentid: 820,
+          sid: 4
+        }
+      }).then(res => {
+        // 成功的状态
+        let successCode = 0
+        // 失败的状态
+        let errorCode = 1
+        console.log(res, '原始数据')
+        let body = res.body
+        console.log(body, '后台返回的数据')
+        // 先判断状态
+        // "code":返回状态码,"data":"应该业务数据","msg":"错误提示"
+        // 所以我优先判断 code
+        if (body.code === successCode) {
+          // 处理数据
+          this.items = body.data
+          console.log(this.items, '1111')
+        } else if (body.code === errorCode) {
+          // 处理失败
+          console.log('错误提示：' + body.msg)
+        }
+      }, error => {
+        // error callback
+        console.log(error)
+      })
     }
   }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .in-top {
+  .interaction {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url(../assets/img/game-interaction_bg.jpg) no-repeat;
+    background-size: 100% 100%;
+  }
+
+  .integral {
+    background-image: url("../assets/img/map/integral.png");
+    background-size: 100% 100%;
+  }
+
+  .gift {
+    background-image: url("../assets/img/map/exchange_icon_liwu.png");
+    background-size: 100% 100%;
+  }
+
+  .go-back {
+    position: fixed;
+    top: 10%;
+    left: 0.3rem;
+    width: 1.4rem;
+    height: 0.8rem;
+  }
+
+  .go-back img {
     width: 100%;
-    height: 60px;
-    background-color: #e4e4e4;
-    padding: 10px 20px;
-  }
-
-  .top-head {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: #797979;
-    float: left;
-    text-align: center;
-  }
-
-  .in-top .back {
-    width: 45px;
-    height: 20px;
-    border-radius: 5px;
-    background-color: #999999;
-    text-align: center;
-    font-size: 12px;
-    float: right;
-    margin-top: 10px;
+    height: 100%;
   }
 
   .in-con {
-    padding: 0 20px;
+    padding: 0 0.4rem;
+    margin-top: 34%;
   }
 
   .in-con .ranking {
-    margin-top: 10px;
-    width: 100%;
-    height: 30px;
-    background-color: #fff;
+    width: 60%;
+    background: #F5F5E3;
+    border-radius: 0.2rem;
+    margin: 0 auto;
+    height: 0.4rem;
     text-align: center;
-    line-height: 30px;
-    font-size: 14px;
+    line-height: 0.4rem;
+    font-size: 0.28rem;
+    color: #2B2626;
+  }
+
+  .game-box {
+    overflow: hidden;
+    width: 60%;
+    margin: 0.6rem auto 0;
+  }
+
+  .game-box a.game-1 {
+    text-align: center;
+    float: left;
+    color: #3C3939;
+    font-weight: 600;
+  }
+
+  .game-box a.game-2 {
+    text-align: center;
+    float: right;
+    color: #3C3939;
+    font-weight: 600;
+  }
+
+  .game-box a img {
+    width: 1.52rem;
+    height: 1.56rem;
+  }
+
+  .game-box a.game-2 img {
+    width: 1.78rem;
   }
 
   .record {
     position: absolute;
     bottom: 53px;
     left: 0;
-    background-color: #fff;
     width: 100%;
-    padding: 0 20px;
+    padding: 0.6rem 0.8rem;
   }
 
-  .record .title {
-    padding-top: 20px;
-    padding-bottom: 5px;
+  .record-title {
+    padding-bottom: 0.24rem;
+    color: #3C3939;
+    font-size: 0.28rem;
+    font-weight: 600;
   }
 
-  .record a {
+  .record-title a {
     float: right;
-    color: lightskyblue;
+    width: 1rem;
+    height: 0.4rem;
+  }
+
+  .record-title a img {
+    width: 100%;
+    height: 100%;
+    vertical-align: middle;
   }
 
   .record li {
-    line-height: 30px;
-    border-top: 1px solid #ccc;
-    font-size: 12px;
+    overflow: hidden;
+    line-height: 0.6rem;
+    border-top: 2px dashed #D2B0A8;
+    font-size: 0.28rem;
+    font-weight: 600;
+    color: #3C3939;
+  }
+
+  .record-text {
+    float: left;
+  }
+
+  .record-time {
+    float: right;
+    font-size: 0.24rem;
   }
 </style>

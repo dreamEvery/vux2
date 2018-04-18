@@ -5,13 +5,16 @@
         <img src="" alt="">
       </div>
       <div class="re-now">
-        当前拥有：<span>154</span>积分
+        154
       </div>
     </div>
     <div class="re-con">
       <p>扫描二维码进行扫描</p>
       <div class="code">二维码</div>
-      <button>开始扫描</button>
+      <div class="button" @click=" arrowChange ">
+        <img src="../assets/img/map/recharge_button_start_scanning_n.png" alt="" v-if="isup">
+        <img src="../assets/img/map/recharge_button_start-scanning_pre.png" alt="" v-else="!isup">
+      </div>
     </div>
   </div>
 </template>
@@ -19,42 +22,59 @@
   export default {
     name: 'recharge',
     data () {
-      return {}
+      return {
+        isup: true
+      }
+    },
+    methods: {
+      arrowChange: function () {
+        this.isup = false
+      }
     }
   }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  body {
-    background-color: #fff;
-  }
+
 
   .recharge {
     width: 100%;
+    background-image: url("../assets/img/map/recharge_bg.png");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    height: 100%;
   }
 
   .re-top {
     width: 100%;
     display: inline-block;
-    background-color: #cccccc;
     height: 100px;
-    padding: 0 20px;
+    padding: 0.3rem 0.3rem;
   }
 
   .re-pic {
-    width: 75px;
-    height: 75px;
+    width: 1.2rem;
+    height: 1.2rem;
     border-radius: 50%;
     background-color: #797979;
     float: left;
-    margin-top: 15px;
   }
 
   /*.re-pic img{width: 100%;height: 100%;}*/
   .re-now {
     float: right;
-    line-height: 105px;
+    background-image: url("../assets/img/map/integral.png");
+    width: 2.5rem;
+    height: 0.8rem;
+    background-size: 100% 100%;
+    text-align: center;
+    color: #fff;
+    line-height: 0.8rem;
+    margin-top: 0.2rem;
   }
 
   .re-now span {
@@ -64,13 +84,9 @@
   }
 
   .re-con {
-    background-color: #fff;
-    padding: 70px 20px 0 20px;
     text-align: center;
     height: auto;
-    position: absolute;
-    bottom: 0;
-    top: 100px;
+    flex: 1;
     width: 100%;
   }
 
@@ -83,17 +99,20 @@
   .re-con .code {
     width: 220px;
     height: 250px;
-    border: 1px solid #999999;
+    border: 2px dashed skyblue;
     margin: 0 auto;
     margin-bottom: 20px;
   }
 
-  .re-con button {
-    width: 220px;
-    height: 50px;
-    text-align: center;
-    border: none;
-    font-size: 16px;
-    color: #4c4c4c;
+  .re-con .button {
+    width: 2.6rem;
+    height: 0.8rem;
+    margin-top: 0.4rem;
+    margin: 0 auto;
+  }
+
+  .re-con .button img {
+    width: 100%;
+    height: 100%;
   }
 </style>

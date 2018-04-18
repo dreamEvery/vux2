@@ -34,6 +34,11 @@ ul, ol {
   list-style: none;
 }
 
+img {
+  width: 100%;
+  height: 100%;
+}
+
 input {
   border: none;
   outline: none;
@@ -49,63 +54,69 @@ input {
 .fr {
   float: right;
 }
+
 /*公共样式*/
 .con {
   padding: 0 20px;
 }
-.public-top {
-  width: 100%;
-  padding: 10px 20px;
-  background-color: #fff;
-  overflow: hidden;
-}
 
-.public-top .public-back {
-  width: 35px;
-  height: 35px;
-  border-radius: 50%;
-  border: 1px solid #797979;
-  text-align: center;
-  line-height: 30px;
-  font-size: 12px;
-  float: left;
-}
-
-.public-top .public-fr {
-  float: right;
-  display: inline-block;
-}
-
-.public-fr div {
-  border: 1px solid #999;
-  padding: 5px 18px;
-  float: left;
-  border-radius: 30px;
-  margin-left: 8px;
-}
 .my-message {
   text-align: center;
   font-size: 16px;
   line-height: 40px;
   border-bottom: 1px solid #999999;
 }
+
 .tab ul {
-  overflow: hidden;
   margin-top: 20px;
-  margin-bottom: 20px;
   display: flex;
+  overflow-x: scroll;
+  /* 内容会被裁剪，会以滚动条显示 */
+  overflow-y: hidden;  /* 超出内容不可见 */
+  white-space: nowrap;  /* 不换行 */
+  /* 文本不会换行，会在同一行上继续，直到遇到<br>为止 */
 }
 
 .tab ul li {
   float: left;
-  width: 20%;
   height: 25px;
+  width: 28%;
   line-height: 25px;
   text-align: center;
-  margin-right: 20px;
-  background-color: #797979;
-  border-radius: 5px;
-  color: #fff;
+  margin-right: 0.1rem;
+  border-radius: 0.2rem 0.2rem 0 0;
+  color: #6b3a0f;
   font-size: 12px;
 }
-.tab .red{background-color: #fff;color: #797979;}
+
+.tab .red {
+  color: #fff;
+}
+
+.home .weui-tabbar {
+  background-color: transparent;
+}
+
+.home .weui-tabbar:before {
+  border-top: none;
+}
+
+/*字体颜色*/
+
+.num-title {
+  color: #958475
+}
+
+.num {
+  color: #6b3a0f
+}
+
+.public-back {
+  width: 1.4rem;
+  height: 1.4rem;
+}
+
+.public-back img {
+  width: 100%;
+  height: 100%;
+}
