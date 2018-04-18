@@ -72,8 +72,7 @@
         } else if (!this.password) {
           this.password_tips = '请输入密码'
         } else {
-          let _this = this
-          let md5Password = $.md5(_this.password)
+          this.getPost()
           // $.ajax({
           //   type: 'post',
           //   url: '/api/userManage_loginUser.do?method=loginRoleForMobelV3',
@@ -103,25 +102,28 @@
           //   }
           // })
         }
-      }
+      },
       getPost () {
+        let that = this
+        let password = $.md5(that.password)
         this.$http.post('/api/userManage_loginUser.do?method=loginRoleForMobelV3', {
-          username: _this.phone,
-          password: md5_password
-        }).then(response => {
+          username: that.phone,
+          password: password
+        }).then(res => {
           // get body data
-          let data = JSON.parse(data)
+           let data = res.body
+           this.data  = JSON.parse(data)
           console.log(data)
           if (data.error === '用户密码错误！') {
-            _this.password_tips = '密码错误!'
+            that.password_tips = '密码错误!'
           }
           if (data.error === '该帐号没有注册 ') {
-            _this.phone_tips = '该帐号没有注册'
+            that.phone_tips = '该帐号没有注册'
           }
           if (data.error === 'success') {
-            _this.btn_type = false
+            that.btn_type = false
             alert('登录成功')
-            _this.$router.push({ // 你需要接受路由的参数再跳转
+            that.$router.push({   // 你需要接受路由的参数再跳转
               path: '/forget'
             })
           }
