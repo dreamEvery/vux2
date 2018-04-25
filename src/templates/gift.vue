@@ -20,9 +20,9 @@
           <div class="give-bg-bottom">
           </div>
           <ul class="give-sel-list">
-            <li v-for="(item,index) in gift_selList" @click="gift_sel(item,index)">
+            <li v-for="(item,index) in message" @click="gift_sel(item,index)">
               <div>
-                <img :src="item.img"/>
+                <img :src="item.picsummary"/>
                 <span>{{item.num}}</span>
                 <p class="gift-type">
                   <img src="../assets/img/my_img_Send.png" alt=""/>
@@ -133,7 +133,7 @@
           }
         ],
         changeRed: 0,
-        message: {}
+        message: []
       }
     },
     mounted () {
@@ -154,18 +154,14 @@
       getData (index, url, type) {
         let that = this
         that.changeRed = index
+        let storageMessage = JSON.parse(sessionStorage.getItem('info'))
         this.$http.get(url, {
-          params: {
-            sid: 4,
-            userid: 533422211,
-            studentid: 222,
-            exchangerecordid: 26
-          }
+          params: storageMessage
         }).then(res => {
           // 成功的状态
-          let successCode = 0
+          let successCode = '0'
           // 失败的状态
-          let errorCode = 1
+          let errorCode = '1'
           console.log(res, '原始数据')
           let body = res.body
           console.log(body, '后台返回的数据')
@@ -175,9 +171,9 @@
           if (body.code === successCode) {
             // 处理数据
             this.message = body.data
-            // for (let i = 0; i < this.message.length; i++) {
-            //   if (type) type = this.message[i].status
-            // }
+            for (let i = 0; i < this.message.length; i++) {
+              if (type) type = this.message[i].status
+            }
           } else if (body.code === errorCode) {
             // 处理失败
             console.log('错误提示：' + body.msg)

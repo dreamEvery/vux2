@@ -45,6 +45,7 @@ input {
   /*清除移动端默认的表单样式*/
   -webkit-appearance: none;
 }
+input,button,select,textarea{outline:none;}
 
 /*common css*/
 .fl {
@@ -56,6 +57,9 @@ input {
 }
 
 /*公共样式*/
+::-webkit-scrollbar{
+  display:none;
+}
 .con {
   padding: 0 20px;
 }

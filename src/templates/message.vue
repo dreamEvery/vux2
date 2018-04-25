@@ -10,7 +10,7 @@
       <scroller :on-refresh="refresh" :on-infinite="infinite" class="scroller">
         <!-- content goes here -->
         <div class="my-scroll">
-          <div class="message-state" v-for="(item, index) in items">
+          <div class="message-state" v-for="(item, index) in items" v-if="index < 5">
             <div class="icon">
               <img src="../assets/img/map/my-news_icon_exchange.png" alt="">
               <!--<img src="" alt="" v-if="item.status==='1'">-->
@@ -113,15 +113,11 @@
         })
       },
       getData (succse) {
-        let that = this
+        let storageMessage = JSON.parse(sessionStorage.getItem('info'))
+        console.log(storageMessage, '34567')
         this.$http.get('/api/mallItemsManage_listMallItems.do?method=getMallMessage', {
           // 你想用
-          params: {
-            userid: 628830418,
-            studentid: 820,
-            sid: 4,
-            page: that.page
-          }
+          params: storageMessage
         }).then(res => {
           // 成功的状态
           let successCode = 0

@@ -25,85 +25,42 @@
       <input type="search" class="search" placeholder="搜索">
       <div class="tab">
         <ul>
-          <li v-for="(item,index) in tabs" :class="{ red:changeRed == index}" @click="change(index)">{{item.name}}</li>
+          <li :class="{active:tabsActive===index}" v-for="(item, index) in rawDataTabs" @click="switchTabs(index)">
+            {{item.name}}
+          </li>
         </ul>
       </div>
     </div>
     <div class="side-con">
       <div class="sidebar">
-        <div v-for="(item, index) in shelves">
+        <div v-for="(item, index) in rawData.data">
           <p class="shelves-name" @click="toggleBars(index, item)" :class="{active:index == nowIndex.index}">
-            {{item.name}}</p>
+            {{item.isleft===1?'左侧货架':'右侧货架'}}</p>
           <ul v-if="nowIndex.index === index">
-            <li class="children-text" v-for="(items, indexs) in item.children"
-                :class="{change:indexs == nowIndex.indexs}" @click="changelist(index, indexs)">{{items.text}}
+            <li class="children-text" v-for="(items, indexs) in item.sidedata"
+                :class="{change:indexs == nowIndex.indexs}" @click="changelist(index, indexs)">{{items.floor}}
             </li>
           </ul>
         </div>
-        <!--<ul v-for="( item, index ) in items" :class="{active:index == nowIndex}" @click="toggleBars(index)">-->
-        <!--<li>{{item.text}}</li>-->
-        <!--</ul>-->
-        <!--<div class="divTab" v-show="nowIndex===0">-->
-        <!--<ul>-->
-        <!--<li v-for="(list, index) in lists" :class="{ change:changeList == index}" @click="changelist(index)">-->
-        <!--{{list.text}}-->
-        <!--</li>-->
-        <!--</ul>-->
-        <!--</div>-->
-        <!--<div class="divTab" v-show="nowIndex===1">-->
-        <!--<ul>-->
-        <!--<li class="active">第一层</li>-->
-        <!--</ul>-->
-        <!--</div>-->
       </div>
       <div class="main-con">
         <!--<scroller lock-x height="200px" @on-scroll-bottom="onScrollBottom" ref="scrollerBottom"-->
         <!--:scroll-bottom-offst="200" class="main-scroller">-->
         <div class="box2">
           <flexbox>
-            <flexbox-item>
-              <div class="flex-demo" v-for="">
+            <flexbox-item :span="0.5" v-for="item in rawData.data[nowIndex.index].sidedata[nowIndex.indexs].malldata">
+              <div class="flex-demo">
                 <div class="img" @click="showAlert('id')">
                   <img src="../assets/img/map/exchange_icon_-Checkers.png" alt="">
                 </div>
-                <p>跳棋</p>
+                <p>{{item.mallitemsname}}</p>
                 <div class="gold-num">
                   <i class="gold">
                     <img src="../assets/img/map/exchange_icon_-Tiger.png" alt="">
                   </i>
-                  1200
+                  {{item.integral}}
                 </div>
               </div>
-            </flexbox-item>
-            <flexbox-item>
-              <div class="flex-demo">
-                <div class="img">
-                  <img src="../assets/img/map/exchange_icon_-Checkers.png" alt="">
-                </div>
-                <p>跳棋</p>
-                <div class="gold-num">
-                  <i class="gold">
-                    <img src="../assets/img/map/exchange_icon_-Tiger.png" alt="">
-                  </i>
-                  1200
-                </div>
-              </div>
-            </flexbox-item>
-          </flexbox>
-          <flexbox>
-            <flexbox-item>
-              <div class="flex-demo">1</div>
-            </flexbox-item>
-            <flexbox-item>
-              <div class="flex-demo">2</div>
-            </flexbox-item>
-          </flexbox>
-          <flexbox>
-            <flexbox-item>
-              <div class="flex-demo">1</div>
-            </flexbox-item>
-            <flexbox-item>
-              <div class="flex-demo">2</div>
             </flexbox-item>
           </flexbox>
         </div>
@@ -113,7 +70,7 @@
   </div>
 </template>
 <script>
-  // import { Base64 } from 'js-base64'
+  import { Base64 } from 'js-base64'
   import { Flexbox, FlexboxItem } from 'vux'
   import alertBox from '../components/alertBox'
   import publicTop from '../components/publicTop'
@@ -133,15 +90,10 @@
           text: 'adasdadasda',
           img: ''
         },
-        tabs: [
-          // {text: '兑换机'},
-          // {text: '礼品'},
-          // {text: '道具'},
-          // {text: '卡片'},
-          // {text: 'AR拍照'}
-        ],
-        changeRed: 0,
+        tabs: [],
+        tabsActive: 0,
         mrenxs: null,
+        sideData: [],
         shelves: [
           {
             name: '左侧货架',
@@ -166,70 +118,140 @@
           indexs: 0
         },
         changeList: 0,
-        data: [],
         dataArry: [],
+        dataMain: [],
         isAlertBox: false,
-        alert: true
+        alert: true,
+        rawDataTabs: [
+          {id: 1, name: '兑换机1'},
+          {id: 2, name: '兑换机2'},
+          {id: 3, name: '兑换机3'},
+          {id: 4, name: '兑换机4'},
+          {id: 5, name: '兑换机5'}
+        ],
+        rawData: {
+          'data': [{
+            'isleft': 1,
+            'sidedata': [
+              {
+                'floor': 1,
+                'malldata': [
+                  {
+                    'content': '6L+Z5piv5LiA5byg5Y2h54mH', // 礼品说明
+                    // 'col': 9, // 列数
+                    'mallitemsname': '第一层第一个', // 礼品名称
+                    // 'floor': 1, // 层数
+                    // 'isleft': '1', // 1：左边 0：右边
+                    'mallitemsid': 4, // 礼品id
+                    'picsummary': 'http://hyjy.oss-cn-shenzhen.aliyuncs.com/4/731353944/image/20180306/20180306161754727694.jpg', // 图片
+                    'integral': 3 // 所需积分
+                  }, {
+                    'content': '6L+Z5piv5LiA5byg5Y2h54mH', // 礼品说明
+                    // 'col': 9, // 列数
+                    'mallitemsname': '第一层第二个', // 礼品名称
+                    // 'floor': 1, // 层数
+                    // 'isleft': '1', // 1：左边 0：右边
+                    'mallitemsid': 4, // 礼品id
+                    'picsummary': 'http://hyjy.oss-cn-shenzhen.aliyuncs.com/4/731353944/image/20180306/20180306161754727694.jpg', // 图片
+                    'integral': 3 // 所需积分
+                  }, {
+                    'content': '6L+Z5piv5LiA5byg5Y2h54mH', // 礼品说明
+                    // 'col': 9, // 列数
+                    'mallitemsname': '第一层第三个', // 礼品名称
+                    // 'floor': 1, // 层数
+                    // 'isleft': '1', // 1：左边 0：右边
+                    'mallitemsid': 4, // 礼品id
+                    'picsummary': 'http://hyjy.oss-cn-shenzhen.aliyuncs.com/4/731353944/image/20180306/20180306161754727694.jpg', // 图片
+                    'integral': 3 // 所需积分
+                  }
+                ]
+              },
+              {
+                'floor': 2,
+                'malldata': [
+                  {
+                    'content': '6L+Z5piv5LiA5byg5Y2h54mH', // 礼品说明
+                    // 'col': 9, // 列数
+                    'mallitemsname': '第二层第一个', // 礼品名称
+                    // 'floor': 1, // 层数
+                    // 'isleft': '1', // 1：左边 0：右边
+                    'mallitemsid': 4, // 礼品id
+                    'picsummary': 'http://hyjy.oss-cn-shenzhen.aliyuncs.com/4/731353944/image/20180306/20180306161754727694.jpg', // 图片
+                    'integral': 3 // 所需积分
+                  }, {
+                    'content': '6L+Z5piv5LiA5byg5Y2h54mH', // 礼品说明
+                    // 'col': 9, // 列数
+                    'mallitemsname': '第二层第二个', // 礼品名称
+                    // 'floor': 1, // 层数
+                    // 'isleft': '1', // 1：左边 0：右边
+                    'mallitemsid': 4, // 礼品id
+                    'picsummary': 'http://hyjy.oss-cn-shenzhen.aliyuncs.com/4/731353944/image/20180306/20180306161754727694.jpg', // 图片
+                    'integral': 3 // 所需积分
+                  }, {
+                    'content': '6L+Z5piv5LiA5byg5Y2h54mH', // 礼品说明
+                    // 'col': 9, // 列数
+                    'mallitemsname': '第二层第三个', // 礼品名称
+                    // 'floor': 1, // 层数
+                    // 'isleft': '1', // 1：左边 0：右边
+                    'mallitemsid': 4, // 礼品id
+                    'picsummary': 'http://hyjy.oss-cn-shenzhen.aliyuncs.com/4/731353944/image/20180306/20180306161754727694.jpg', // 图片
+                    'integral': 3 // 所需积分
+                  }
+                ]
+              }
+            ]
+          }, {
+            'isleft': 0,
+            'sidedata': [{
+              'floor': 1,
+              'malldata': []
+            }]
+          }],
+          'code': '0',
+          'datatype': [{
+            'istakepictures': 2,
+            'typeid': 1,
+            'name': '5Yqo54mp'
+          }, {
+            'istakepictures': 1,
+            'typeid': 2,
+            'name': '6YGT5YW3'
+          }, {
+            'istakepictures': 1,
+            'typeid': 3,
+            'name': '5Y2h54mH'
+          }, {
+            'istakepictures': 1,
+            'typeid': 7,
+            'name': 'c2RmYXNk'
+          }],
+          'msg': ''
+        }
       }
     },
     methods: {
-      change (index) {
+      switchTabs (index) {
         let that = this
-        that.changeRed = index
+        that.tabsActive = index
+        this.getMallItemsList('传入id')
       },
       toggleBars: function (index) {
         let that = this
         that.nowIndex.index = index
       },
-      getData () {
-        this.$http.get('/api/vendingMachineInventoryManage_listVendingMachineInventory.do?method=getMallItemsList', {
-          params: {
-            userid: 628830418,
-            sid: 4,
-            vendingmachineid: this.ven
-          }
-        }).then(res => {
-          // 成功的状态
-          let successCode = '0'
-          //   // 失败的状态
-          let errorCode = '1'
-          console.log(res, '原始数据')
-          let body = res.body
-          console.log(body, '后台返回的数据')
-          // 先判断状态
-          // "code":返回状态码,"data":"应该业务数据","msg":"错误提示"
-          // 所以我优先判断 code
-          if (body.code === successCode) {
-            // 处理数据
-            this.dataArry = body.data
-            console.log(this.dataArry, '888')
-          } else if (body.code === errorCode) {
-            // 处理失败
-            console.log('错误提示：' + body.msg)
-          }
-        }, error => {
-          //   // error callback
-          console.log(error)
-        })
-      },
+      // 切换 货架层数
       changelist (index, indexs) {
         this.nowIndex.index = index
         this.nowIndex.indexs = indexs
-        this.getData()
-        // getData(this.shelves[index].id, this.shelves[index].children[indexs].id)
       },
-      // getData (indexId, indexsId) {
-      //   this.$http.get({
-      //     url: ''
-      //     data: {
-      //       indexId: indexId,
-      //       indexsId: indexsId
-      //     }
-      //     }
-      //   )
-      // },
-      handleSidebar (name) {
-        this.$router.push({path: '/' + name})
+      // 获取 tabs 数据
+      getTabs (id) {
+        // TODO: 在这里调用 api /api/vendingmachinemanage_listVendingMachine.do?method=getVendingMachineList
+        // this.rawDataTabs = 你接口获取
+        this.getMallItemsList('默认传入第一个id')
+      },
+      // 获取底部数据
+      getMallItemsList (id) {
       },
       onHide () {
         console.log('on hide')
@@ -239,50 +261,74 @@
       },
       showAlert (id) {
         this.isAlertBox = true
-        // 使用父组件来控制子组件的显示
-        // getGift () {
-        //   this.$http.get(url,function () {
-        //   })
-        // }
-        // this.giftDetail = this.data.
       }
     },
     created: function () {
-      this.$http.get('/api/vendingmachinemanage_listVendingMachine.do?method=getVendingMachineList', {
-        params: {
-          // sid: 4, userid: 533422211, studentid: 222, malltypeid: 573, vendingmachineid: 1
-          sid: 4
-        }
-      }).then(res => {
-        // 成功的状态
-        let successCode = 0
-        // 失败的状态
-        let errorCode = 1
-        console.log(res, '原始数据')
-        let body = res.body
-        console.log(body, '后台返回的数据')
-        // 先判断状态
-        // "code":返回状态码,"data":"应该业务数据","msg":"错误提示"
-        // 所以我优先判断 code
-        if (body.code === successCode) {
-          // 处理数据
-          this.tabs = body.data
-          for (let i = 0; i < this.tabs.length; i++) {
-            // this.tads[i].name = Base64.decode(this.tads[i].name)
-            // console.log(this.tabs[i].name, '22')
-          }
-          this.ven = this.tabs[0].vendingmachineid
-          // console.log(this.ven, '345')
-          // console.log(this.tabs, '1111')
-          this.getData()
-        } else if (body.code === errorCode) {
-          // 处理失败
-          console.log('错误提示：' + body.msg)
-        }
-      }, error => {
-        // error callback
-        console.log(error)
-      })
+      this.getTabs('获取到的id传进去')
+
+      // let storageMessage = JSON.parse(sessionStorage.getItem('info'))
+      // console.log(storageMessage, '34567')
+      // this.$http.get('/api/vendingmachinemanage_listVendingMachine.do?method=getVendingMachineList', {
+      //   params: storageMessage
+      // }).then(res => {
+      //   // 成功的状态
+      //   let successCode = 0
+      //   // 失败的状态
+      //   let errorCode = 1
+      //   console.log(res, '原始数据')
+      //   let body = res.body
+      //   console.log(body, '后台返回的数据')
+      //   // 先判断状态
+      //   if (body.code === successCode) {
+      //     // 处理数据
+      //     this.tabs = body.data
+      //     this.tabs.map((value) => {
+      //       value.name = Base64.decode(value.name)
+      //     })
+      //     this.ven = this.tabs[0].vendingmachineid
+      //     this.$http.get('/api/vendingMachineInventoryManage_listVendingMachineInventory.do?method=getMallItemsList', {
+      //       params: {
+      //         userid: 628830418,
+      //         sid: 4,
+      //         vendingmachineid: this.ven
+      //       }
+      //     }).then(res => {
+      //       // 成功的状态
+      //       let successCode = '0'
+      //       //   // 失败的状态
+      //       let errorCode = '1'
+      //       console.log(res, '原始数据')
+      //       let body = res.body
+      //       console.log(body, '后台返回的数据')
+      //       // 先判断状态
+      //       // "code":返回状态码,"data":"应该业务数据","msg":"错误提示"
+      //       // 所以我优先判断 code
+      //       if (body.code === successCode) {
+      //         // 处理数据
+      //         this.dataArry = body.data
+      //         console.log(this.dataArry, '888')
+      //         for (let i = 0; i < this.dataArry.length; i++) {
+      //           this.dataMain = this.dataArry[i].sidedata
+      //           for (let i = 0; i < this.dataMain.length; i++) {
+      //             // console.log(this.dataMain[i].malldata, '111')
+      //           }
+      //         }
+      //       } else if (body.code === errorCode) {
+      //         // 处理失败
+      //         console.log('错误提示：' + body.msg)
+      //       }
+      //     }, error => {
+      //       //   // error callback
+      //       console.log(error)
+      //     })
+      //   } else if (body.code === errorCode) {
+      //     // 处理失败
+      //     console.log('错误提示：' + body.msg)
+      //   }
+      // }, error => {
+      //   // error callback
+      //   console.log(error)
+      // })
     }
   }
 </script>
@@ -329,6 +375,8 @@
     width: 18%;
     overflow: hidden;
     padding-top: 0.2rem;
+    height: 84%;
+    overflow-y: scroll;
   }
 
   .side-con .sidebar .shelves-name {
@@ -396,7 +444,7 @@
     font-weight: bold;
   }
 
-  .tab .red {
+  .tab .active {
     background-image: url("../assets/img/map/a-market_button_pre.png");
     background-size: 100% 100%;
     background-repeat: no-repeat;

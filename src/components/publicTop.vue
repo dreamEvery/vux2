@@ -4,15 +4,15 @@
       <div class="head-pic">
       </div>
       <div class="introduce">
-        <p class="name">童小雪</p>
-        <p class="class"> 一年级二班</p>
+        <p class="name">{{data.stuname}}</p>
+        <p class="class"> {{data.classname}}</p>
       </div>
     </div>
     <div class="public-fr">
-      <div @click="handleSidebar('gift')" class="gift">58
+      <div @click="handleSidebar('gift')" class="gift">{{data.itemsnum}}
       </div>
       <div class="integral">
-        45667
+        {{data.totolintegral}}
       </div>
     </div>
   </div>
@@ -21,7 +21,14 @@
   export default {
     name: 'publicTop',
     data () {
-      return {}
+      return {
+        data: {}
+      }
+    },
+    created () {
+      let stutendMess = JSON.parse(sessionStorage.getItem('stuMessage'))
+      this.data = stutendMess
+      console.log(stutendMess, '2345')
     }
   }
 </script>

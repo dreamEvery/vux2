@@ -51,12 +51,12 @@
     </alert-box>
     <div class="top">
       <div class="back">
-        <router-link to="/standby">
+        <router-link to="/login">
           <img src="../assets/img/map/my_button_return.png" alt="">
         </router-link>
       </div>
       <div class="header-pic" @click="handleSidebar('head')">
-        <img :src="data.picsummary" alt="">
+        <img :src="data.picsummary" alt="" :onerror="imgError">
       </div>
       <div class="introduce">
         <p class="name">{{data.stuname}}</p>
@@ -73,7 +73,7 @@
             </router-link>
           </div>
           <div>
-            <router-link to='/among'>
+            <router-link :to="{path:'/among',query:{classId: this.data.classid, gradeId: this.data.gradeid, aaa: '123'}}">
               <img src="../assets/img/map/my_icon_ranking--list.png" alt="">
             </router-link>
           </div>
@@ -123,19 +123,19 @@
               <flexbox-item>
                 <div class="flex-demo">
                   <p class="num">{{data.classstandings}}</p>
-                  <p class="num-title">击败本班人数</p>
+                  <p class="num-title">击败本班</p>
                 </div>
               </flexbox-item>
               <flexbox-item>
                 <div class="flex-demo">
                   <p class="num">{{data.gradestandings}}</p>
-                  <p class="num-title">击败本年级人数</p>
+                  <p class="num-title">击败本年级</p>
                 </div>
               </flexbox-item>
               <flexbox-item>
                 <div class="flex-demo">
                   <p class="num">{{data.schoolstandings}}</p>
-                  <p class="num-title">击败全校人数</p>
+                  <p class="num-title">击败全校</p>
                 </div>
               </flexbox-item>
             </flexbox>
@@ -178,33 +178,44 @@
     },
     data () {
       return {
-        data: {picsummary: 'http://hyjy.oss-cn-shenzhen.aliyuncs.com/4/659053183/image/20171130/20171130151459610097.jpg'},
+        data: {},
         isAlertBox: false,
-        alertType: null // 我的积分 myIntegral 我的等级 myLv
+        alertType: null,  // 我的积分 myIntegral 我的等级 myLv
+        imgError: 'this.src="' + require('../assets/img/map/icon.png') + '"'
       }
     },
     created: function () {
+      let storageMessage = JSON.parse(sessionStorage.getItem('info'))
+      console.log(storageMessage, '34567')
       this.$http.get('/api/vendingMachineInventoryManage_listVendingMachineInventory.do?method=getUserInfoForMobilePhoneLogin', {
-        params: {
-          sid: 4, userid: 533422211, studentid: 222
-        }
+        params: storageMessage
+        // sid: 4, userid: 533422211, studentid: 222
       }).then(res => {
         // 成功的状态
         let successCode = '0'
         // 失败的状态
         let errorCode = '1'
-        console.log(res, '原始数据')
+        // console.log(res, '原始数据')
         let body = res.body
-        console.log(body, '后台返回的数据')
+        // console.log(body, '后台返回的数据')
         // 先判断状态
         // "code":返回状态码,"data":"应该业务数据","msg":"错误提示"
         // 所以我优先判断 code
         if (body.code === successCode) {
           // 处理数据
-          console.log(body.stuname, '222')
           body.stuname = Base64.decode(body.stuname)
           body.classname = Base64.decode(body.classname)
           this.data = body
+          let stutent = {
+            stuname: this.data.stuname,
+            classname: this.data.classname,
+            totolintegral: this.data.totolintegral,
+            itemsnum: this.data.itemsnum
+          }
+          let stuMessage = JSON.stringify(stutent)
+          sessionStorage.setItem('stuMessage', stuMessage)
+          console.log(this.totolintegral, '456')
+          console.log(stuMessage, '23456')
         } else if (body.code === errorCode) {
           // 处理失败
           console.log('错误提示：' + body.msg)
@@ -247,7 +258,6 @@
   .top {
     width: 100%;
     height: 165px;
-    overflow: hidden;
     position: relative;
     padding-right: 0.76rem;
     padding-left: 0.76rem;
@@ -280,11 +290,15 @@
     margin-top: 0.1rem;
   }
 
-  .introduce .name {
+  .introduce .name, .class {
     font-size: 0.36rem;
     font-weight: 600;
     color: #fff;
     text-shadow: 0 1px #9D4C4A, 1px 0 #9D4C4A, -1px 0 #9D4C4A, 0 -1px #9D4C4A;
+  }
+
+  .introduce .class {
+    font-size: 0.24rem;
   }
 
   .central-box {
@@ -296,7 +310,7 @@
   .central-main {
     background-color: #fffbe8;
     border-radius: 10px;
-    margin-top: 1rem;
+    margin-top: 1.4rem;
     padding: 0.4rem 0.15rem 0.1rem 0.15rem;
   }
 
@@ -315,12 +329,12 @@
   }
 
   .icon-give {
-    width: 1.28rem;
-    height: 0.7rem
+    width: 1.18rem;
+    height: 0.6rem
   }
 
   .my-title {
-    font-size: 0.37rem;
+    font-size: 0.26rem;
     color: #5f5145;
     padding-top: 0.12rem;
   }
@@ -336,9 +350,13 @@
   }
 
   .central-main .flex-demo .num {
-    font-size: 22px;
+    font-size: 0.4rem;
     font-weight: bold;
     padding: 2px 10px;
+  }
+
+  .central-main .flex-demo .num-title{
+    font-size: 0.22rem;
   }
 
   .list-icon {
@@ -363,6 +381,7 @@
     width: 100%;
     height: 100%;
   }
+
 
   .my-main {
     background-color: #f1e3bb;

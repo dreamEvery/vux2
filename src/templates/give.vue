@@ -126,7 +126,7 @@
         <div class="btn-ok" @click="show()">
           <img src="../assets/img/give-button.png" alt=""/>
         </div>
-        <div class="btn-no">
+        <div class="btn-no" @click="goIndex()">
           <img src="../assets/img/integral_icon_Think.png" alt=""/>
         </div>
       </div>
@@ -259,12 +259,10 @@
       if (this.swtich === true) {
         this.swtich = this.on
       }
+      let storageMessage = JSON.parse(sessionStorage.getItem('info'))
+      console.log(storageMessage, '34567')
       this.$http.get('/api/mallItemsManage_listMallItems.do?method=getMyMallItemsList', {
-        params: {
-          sid: 4,
-          userid: 533422211,
-          studentid: 222
-        }
+        params: storageMessage
       }).then(res => {
         // 成功的状态
         let successCode = 0

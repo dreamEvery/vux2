@@ -110,10 +110,10 @@
       }
     },
     created: function () {
+      let storageMessage = JSON.parse(sessionStorage.getItem('info'))
+      console.log(storageMessage, '34567')
       this.$http.get('/api/headPortraitManage_listHeadPortrait.do?method=getHeadPortraitList', {
-        params: {
-          sid: 4, userid: 533422211
-        }
+        params: storageMessage
       }).then(res => {
         // 成功的状态
         let successCode = '0'

@@ -67,12 +67,10 @@
       }
     },
     created: function () {
+      let storageMessage = JSON.parse(sessionStorage.getItem('info'))
+      console.log(storageMessage, '34567')
       this.$http.get('/api/winningRecordManage_listWinningRecord.do?method=getWinningRecordList', {
-        params: {
-          userid: 628830418,
-          studentid: 820,
-          sid: 4
-        }
+        params: storageMessage
       }).then(res => {
         // 成功的状态
         let successCode = 0

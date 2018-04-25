@@ -16,18 +16,9 @@
     <div class="tab-con">
       <div class="tab-main">
         <div class="tab-box">
-          <div class="ranking-list" v-if="dataArry[0]">
-            <div class="frist">
+          <div class="ranking-list">
+            <div class="frist" v-if="dataArry[1]">
               <div class="ranking-pic blue-bg">
-                <img src="" alt="">
-              </div>
-              <p>{{dataArry[0].studentname}}</p>
-              <p class="class">{{dataArry[0].classname}}</p>
-              <p class="now-integral">当前积分： {{dataArry[0].currentintegral}}</p>
-              <p class="all-integral">总积分： {{dataArry[0].totalintegral}}</p>
-            </div>
-            <div class="second">
-              <div class="ranking-pic yellow-bg">
                 <img src="" alt="">
               </div>
               <p>{{dataArry[1].studentname}}</p>
@@ -35,7 +26,16 @@
               <p class="now-integral">当前积分： {{dataArry[1].currentintegral}}</p>
               <p class="all-integral">总积分： {{dataArry[1].totalintegral}}</p>
             </div>
-            <div class="thrid">
+            <div class="second" v-if="dataArry[0]">
+              <div class="ranking-pic yellow-bg">
+                <img src="" alt="">
+              </div>
+              <p>{{dataArry[0].studentname}}</p>
+              <p class="class">{{dataArry[0].classname}}</p>
+              <p class="now-integral">当前积分： {{dataArry[0].currentintegral}}</p>
+              <p class="all-integral">总积分： {{dataArry[0].totalintegral}}</p>
+            </div>
+            <div class="thrid" v-if="dataArry[2]">
               <div class="ranking-pic brown-bg">
                 <img src="" alt="">
               </div>
@@ -45,24 +45,40 @@
               <p class="all-integral">总积分： {{dataArry[2].totalintegral}}</p>
             </div>
           </div>
-          <table>
-            <tr v-for="(student, index) in dataArry" v-if="index > 2">
-              <th>{{student.ranking}}</th>
-              <th>
-                <div class="ranking-small-pic">
-                  <img src="" alt="">
-                </div>
-                <p class="name">{{student.studentname}}</p>
-                <p>{{student.classname}}</p>
-              </th>
-              <th>
-                <span>当前积分:{{student.currentintegral}}</span>
-              </th>
-              <th>
-                <span>总积分：{{student.totalintegral}}</span>
-              </th>
-            </tr>
-          </table>
+          <div class="rank-stu">
+            <table>
+              <tr v-for="(student, index) in dataArry" v-if="index > 2 && index < 8">
+                <th>{{student.ranking}}</th>
+                <th>
+                  <div class="ranking-small-pic">
+                    <img src="" alt="">
+                  </div>
+                  <div>
+                    <p class="name">{{student.studentname}}</p>
+                    <p>{{student.classname}}</p>
+                  </div>
+                </th>
+                <th>
+                  <span>当前积分:{{student.currentintegral}}</span>
+                </th>
+                <th>
+                  <span>总积分：{{student.totalintegral}}</span>
+                </th>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div class="myself-box">
+            <p>{{myArry.ranking}}</p>
+            <div class="myself-pic">
+              <div>
+                <img src="" alt="">
+              </div>
+              <p>{{myArry.studentname}}</p>
+              <p class="class">{{myArry.classname}}</p>
+            </div>
+            <p class="now-integral">当前积分： {{myArry.currentintegral}}</p>
+            <p class="all-integral">总积分： {{myArry.totalintegral}}</p>
         </div>
       </div>
     </div>
@@ -77,9 +93,10 @@
     data () {
       return {
         dataArry: [],
+        myArry: {},
         tabs: [
-          {text: '班级', id: 12, type: 'class'},
-          {text: '年级', gradeId: 1, type: 'grade'},
+          {text: '班级', id: this.$route.query.classId, type: 'class'},
+          {text: '年级', id: this.$route.query.gradeId, type: 'grade'},
           {text: '学校'}
         ],
         changeRed: 0
@@ -92,53 +109,57 @@
       getData (index, id, type) {
         let that = this
         that.changeRed = index
-        let data = {
-          userid: 628830418,
-          sid: 4,
-          studentid: 222
-        }
-        if (type === 'class') data.class = id
-        if (type === 'grade') data.grade = id
-
+        let storageMessage = JSON.parse(sessionStorage.getItem('info'))
+        if (type === 'class') storageMessage.classid = id
+        if (type === 'grade') storageMessage.gradeid = id
         this.$http.get('/api/integralManagementOrder.do?method=getIntegralTeamOrderV31', {
-          params: data
+          params: storageMessage
         }).then(res => {
           // 成功的状态
           let successCode = 0
-          //   // 失败的状态
+          // 失败的状态
           let errorCode = 1
-          console.log(res, '原始数据')
           let body = res.body
-          console.log(body, '后台返回的数据')
           // 先判断状态
-          // "code":返回状态码,"data":"应该业务数据","msg":"错误提示"
-          // 所以我优先判断 code
           if (body.code === successCode) {
             // 处理数据
-            // body.data.classname = Base64.decode(body.data.classname)
             this.dataArry = body.data
-            for (let i = 0; i < this.dataArry.length; i++) {
-              console.log(this.dataArry[i].classname, '2345')
-              this.dataArry[i].classname = Base64.decode(this.dataArry[i].classname)
-              this.dataArry[i].studentname = Base64.decode(this.dataArry[i].studentname)
-            }
-            console.log(this.dataArry, '234')
+            this.dataArry.map((value) => {
+              value.classname = Base64.decode(value.classname)
+              value.studentname = Base64.decode(value.studentname)
+            })
           } else if (body.code === errorCode) {
             // 处理失败
-            console.log('错误提示：' + body.msg)
           }
         }, error => {
-          //   // error callback
+          // error callback
           console.log(error)
         })
+      },
+      mySelf () {
+        let storageMessage = JSON.parse(sessionStorage.getItem('info'))
+        // console.log(typeof (storageMessage.studentid), 'id')
+        // console.log(this.dataArry.length)
+        for (let i = 0; i < this.dataArry.length; i++) {
+          if (parseInt(storageMessage.studentid) === this.dataArry[i].studentid && parseInt(this.dataArry[i].ranking) > 3) {
+            this.myArry = this.dataArry[i]
+            console.log(this.myArry)
+          }
+        }
       }
     },
     components: {
       Base64,
       publicTop
     },
+    computed: {},
     created () {
-      this.getData(0)
+      this.getData(2)
+    },
+    watch: {
+      'dataArry' (value) {
+        this.mySelf()
+      }
     }
   }
 </script>
@@ -148,11 +169,13 @@
   .among {
     background-image: url("../assets/img/map/ranking lift_bg.jpg");
     background-repeat: no-repeat;
-    background-size: 100% 54%;
+    background-size: 100% 100%;
     position: absolute;
     left: 0;
     right: 0;
     top: 0;
+    bottom: 0;
+    height: 100%;
   }
 
   .integral {
@@ -216,14 +239,14 @@
   }
 
   .con {
-    margin-top: 2.89rem;
+    margin-top: 2.2rem;
     position: relative;
   }
 
   .con .back {
     position: absolute;
     left: 0.1rem;
-    top: -1.6rem;
+    top: -1.2rem;
     width: 1.2rem;
     height: 0.6rem;
     display: block;
@@ -238,17 +261,29 @@
     padding: 0 0.4rem 0 0.4rem;
     overflow: hidden;
     margin-top: -0.2rem;
+    height: 70%;
   }
 
   .tab-con .tab-main {
     background-color: #FEFBE9;
     border-radius: 0.2rem;
     padding-top: 0.2rem;
+    height: 100%;
+    overflow-y: scroll;
   }
 
   .tab-con .ranking-list {
     display: flex;
     flex-direction: row;
+  }
+
+  .tab-box {
+    height: 100%;
+    overflow-y: scroll;
+  }
+
+  .tab-box table {
+    overflow-y: scroll;
   }
 
   .ranking-list div {
@@ -296,7 +331,6 @@
   }
 
   .tab-con table tr {
-    height: 52px;
     background-image: url("../assets/img/map/exchange_imgn_weixuanzhong.png");
     background-size: 100% 100%;
     background-repeat: no-repeat;
@@ -334,6 +368,7 @@
 
   .tab-con table th:nth-child(2) p {
     text-align: left;
+    white-space:nowrap;
   }
 
   .tab-con table th:nth-child(2) p.name {
@@ -350,4 +385,16 @@
     font-size: 0.1rem;
     font-weight: normal;
   }
+
+  /*myself*/
+  .tab-con .myself-box {
+    background-image: url("../assets/img/map/Ranking-List_img_Selected.png");
+    background-size: 100% 100%;
+    width: 100%;
+  }
+  .myself-box p{line-height: 1rem;flex: 3;}
+  .myself-box p:nth-child(1){flex: 1}
+  .myself-box{display: flex;text-align: center;height: 1rem;line-height: 1rem;}
+  .myself-box .myself-pic div{width: 0.6rem;height: 0.6rem;background-color: #797979;border-radius: 50%;}
+
 </style>

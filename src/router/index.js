@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
 import Page from '@/components/page'
 import Head from '@/templates/head-pic'
+import Login from '@/templates/login'
 import Gift from '@/templates/gift'
 import Give from '@/templates/give'
 import giveSel from '@/templates/giveSel'
@@ -19,6 +20,7 @@ Vue.use(Router)
 // export 的意思是暴露出来东西
 export default new Router({
   routes: [
+    { path: '/', redirect: '/login' },
     {
       path: '/hhh',
       name: 'HelloWorld',
@@ -28,6 +30,11 @@ export default new Router({
       path: '/head',
       name: 'Head',
       component: Head
+    },
+    {
+      path: '/login',
+      name: 'Login',
+      component: Login
     },
     {
       path: '/page',
@@ -68,7 +75,6 @@ export default new Router({
       path: '/',
       name: 'Home',
       component: Home,
-      redirect: '/home/index',
       children: [
         {
           path: '/home/index',
