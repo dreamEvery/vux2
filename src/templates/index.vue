@@ -19,9 +19,9 @@
             </div>
             <div class="integral-num">
               <ul>
-                <li>233</li>
-                <li>233</li>
-                <li>345</li>
+                <li>{{data.currentintegral}}</li>
+                <li>{{data.totolintegral - data.currentintegral}}</li>
+                <li>{{data.totolintegral}}</li>
               </ul>
             </div>
           </div>
@@ -33,18 +33,19 @@
           <div class="alert-body">
             <div class="integral">
               <ul>
-                <li>等级1-20：</li>
-                <li>等级20-40：</li>
-                <li>等级1-20：</li>
+                <li v-for="item in gradeData">
+                    {{item.name}}：
+                    {{item.integral}}
+                </li>
               </ul>
             </div>
-            <div class="integral-num">
-              <ul>
-                <li>233</li>
-                <li>233</li>
-                <li>345</li>
-              </ul>
-            </div>
+            <!--<div class="integral-num" v-for="item in gradeData">-->
+              <!--<ul>-->
+                <!--<li>{{item.integral}}</li>-->
+                <!--<li>{{'data.currentintegral' - 'data.totolintegral'}}</li>-->
+                <!--<li>{{data.totolintegral}}</li>-->
+              <!--</ul>-->
+            <!--</div>-->
           </div>
         </div>
       </div>
@@ -179,6 +180,8 @@
     data () {
       return {
         data: {},
+        gradeData: {},
+        alertBox: {},
         isAlertBox: false,
         alertType: null,  // 我的积分 myIntegral 我的等级 myLv
         imgError: 'this.src="' + require('../assets/img/map/icon.png') + '"'
@@ -214,8 +217,6 @@
           }
           let stuMessage = JSON.stringify(stutent)
           sessionStorage.setItem('stuMessage', stuMessage)
-          console.log(this.totolintegral, '456')
-          console.log(stuMessage, '23456')
         } else if (body.code === errorCode) {
           // 处理失败
           console.log('错误提示：' + body.msg)
@@ -229,6 +230,9 @@
       showAlert (type) {
         this.isAlertBox = true
         this.alertType = type
+        if (type === 'myLv') {
+          this.getGrade()
+        }
       },
       handleSidebar (name) {
         this.$router.push({path: '/' + name})
@@ -238,6 +242,40 @@
       },
       onShow () {
         console.log('on show')
+      },
+      getGrade () {
+        let storageMessage = JSON.parse(sessionStorage.getItem('info'))
+        console.log(storageMessage, '34567')
+        this.$http.get('/api/medalManage_listMedal.do?method=getAllMedalList', {
+          params: storageMessage
+        }).then(res => {
+          // 成功的状态
+          let successCode = '0'
+          // 失败的状态
+          let errorCode = '1'
+          // console.log(res, '原始数据')
+          let body = res.body
+          // console.log(body, '后台返回的数据')
+          // 先判断状态
+          // "code":返回状态码,"data":"应该业务数据","msg":"错误提示"
+          // 所以我优先判断 code
+          if (body.code === successCode) {
+            // 处理数据
+            // body.stuname = Base64.decode(body.stuname)
+            // body.classname = Base64.decode(body.classname)
+            this.gradeData = body.data
+            for (let i = 0; i < this.gradeData.length; i++) {
+              this.gradeData[i].name = Base64.decode(this.gradeData[i].name)
+            }
+            console.log(this.gradeData, 'lv')
+          } else if (body.code === errorCode) {
+            // 处理失败
+            console.log('错误提示：' + body.msg)
+          }
+        }, error => {
+          // error callback
+          console.log(error)
+        })
       }
     }
   }
@@ -424,6 +462,6 @@
     font-size: 16px;
     font-weight: bold;
     line-height: 0.8rem;
-    text-align: right;
+    text-align: left;
   }
 </style>

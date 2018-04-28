@@ -1,21 +1,15 @@
 <template>
   <div class="market">
-    <alert-box v-if='isAlertBox' :showName="'isAlertBox'">
-      <div slot="content">
-        <div class="alert-top">{{giftDetail.name}}</div>
+    <alert-box v-if='isAlertBox' :showName="'isAlertBox'" :type="'market'" :transmission="giftDetail">
+      <div slot="market">
+        <div class="alert-top">{{giftDetail.mallitemsname}}</div>
         <div class="alert-gift">
           <div class="gift">
-            <img src="../assets/img/alert/魔方.png" alt="">
+            <img :src=giftDetail.picsummary  alt="">
           </div>
           <div class="gift-introduce">
-            <p>
-              {{giftDetail.text}}
-              使用后可以在一天时间内隐藏，老师和同学都不会发现你的存在。
-              这意味着你可以不用交作业了哦~~
-            </p>
-            <a>
-              我要打印
-            </a>
+              <p>{{giftDetail.content}}
+              </p>
           </div>
         </div>
       </div>
@@ -25,7 +19,8 @@
       <input type="search" class="search" placeholder="搜索">
       <div class="tab">
         <ul>
-          <li :class="{active:tabsActive===index}" v-for="(item, index) in rawDataTabs" @click="switchTabs(index)">
+          <li :class="{active:tabsActive===index}" v-for="(item, index) in rawDataTabs" :key="item.id"
+              @click="switchTabs(index, item.vendingmachineid)">
             {{item.name}}
           </li>
         </ul>
@@ -33,11 +28,11 @@
     </div>
     <div class="side-con">
       <div class="sidebar">
-        <div v-for="(item, index) in rawData.data">
+        <div v-for="(item, index) in rawData" :key="item.id">
           <p class="shelves-name" @click="toggleBars(index, item)" :class="{active:index == nowIndex.index}">
             {{item.isleft===1?'左侧货架':'右侧货架'}}</p>
           <ul v-if="nowIndex.index === index">
-            <li class="children-text" v-for="(items, indexs) in item.sidedata"
+            <li class="children-text" v-if="item" v-for="(items, indexs) in item.sidedata"
                 :class="{change:indexs == nowIndex.indexs}" @click="changelist(index, indexs)">{{items.floor}}
             </li>
           </ul>
@@ -46,12 +41,13 @@
       <div class="main-con">
         <!--<scroller lock-x height="200px" @on-scroll-bottom="onScrollBottom" ref="scrollerBottom"-->
         <!--:scroll-bottom-offst="200" class="main-scroller">-->
-        <div class="box2">
+        <div class="box2" v-if="rawData[nowIndex.index]">
           <flexbox>
-            <flexbox-item :span="0.5" v-for="item in rawData.data[nowIndex.index].sidedata[nowIndex.indexs].malldata">
+            <flexbox-item :span="1/2" v-if="rawData[nowIndex.index].sidedata[nowIndex.indexs]"
+                          v-for="item in rawData[nowIndex.index].sidedata[nowIndex.indexs].malldata" :key="item.id">
               <div class="flex-demo">
-                <div class="img" @click="showAlert('id')">
-                  <img src="../assets/img/map/exchange_icon_-Checkers.png" alt="">
+                <div class="img" @click="showAlert(item)">
+                  <img :src=item.picsummary  alt="">
                 </div>
                 <p>{{item.mallitemsname}}</p>
                 <div class="gold-num">
@@ -85,155 +81,31 @@
     },
     data () {
       return {
-        giftDetail: {
-          name: '隐身斗篷',
-          text: 'adasdadasda',
-          img: ''
-        },
+        giftDetail: {},
         tabs: [],
         tabsActive: 0,
         mrenxs: null,
         sideData: [],
-        shelves: [
-          {
-            name: '左侧货架',
-            id: 'left',
-            children: [
-              {text: '第一层', id: 'diyiceng', data: [{name: ''}]},
-              {text: '第二层'},
-              {text: '第三层'},
-              {text: '第四层'},
-              {text: '第五层'}
-            ]
-          },
-          {
-            name: '右侧货架',
-            children: [
-              {text: '第一层'}
-            ]
-          }
-        ],
         nowIndex: {
           index: 1,
           indexs: 0
         },
         changeList: 0,
-        dataArry: [],
-        dataMain: [],
         isAlertBox: false,
         alert: true,
-        rawDataTabs: [
-          {id: 1, name: '兑换机1'},
-          {id: 2, name: '兑换机2'},
-          {id: 3, name: '兑换机3'},
-          {id: 4, name: '兑换机4'},
-          {id: 5, name: '兑换机5'}
-        ],
-        rawData: {
-          'data': [{
-            'isleft': 1,
-            'sidedata': [
-              {
-                'floor': 1,
-                'malldata': [
-                  {
-                    'content': '6L+Z5piv5LiA5byg5Y2h54mH', // 礼品说明
-                    // 'col': 9, // 列数
-                    'mallitemsname': '第一层第一个', // 礼品名称
-                    // 'floor': 1, // 层数
-                    // 'isleft': '1', // 1：左边 0：右边
-                    'mallitemsid': 4, // 礼品id
-                    'picsummary': 'http://hyjy.oss-cn-shenzhen.aliyuncs.com/4/731353944/image/20180306/20180306161754727694.jpg', // 图片
-                    'integral': 3 // 所需积分
-                  }, {
-                    'content': '6L+Z5piv5LiA5byg5Y2h54mH', // 礼品说明
-                    // 'col': 9, // 列数
-                    'mallitemsname': '第一层第二个', // 礼品名称
-                    // 'floor': 1, // 层数
-                    // 'isleft': '1', // 1：左边 0：右边
-                    'mallitemsid': 4, // 礼品id
-                    'picsummary': 'http://hyjy.oss-cn-shenzhen.aliyuncs.com/4/731353944/image/20180306/20180306161754727694.jpg', // 图片
-                    'integral': 3 // 所需积分
-                  }, {
-                    'content': '6L+Z5piv5LiA5byg5Y2h54mH', // 礼品说明
-                    // 'col': 9, // 列数
-                    'mallitemsname': '第一层第三个', // 礼品名称
-                    // 'floor': 1, // 层数
-                    // 'isleft': '1', // 1：左边 0：右边
-                    'mallitemsid': 4, // 礼品id
-                    'picsummary': 'http://hyjy.oss-cn-shenzhen.aliyuncs.com/4/731353944/image/20180306/20180306161754727694.jpg', // 图片
-                    'integral': 3 // 所需积分
-                  }
-                ]
-              },
-              {
-                'floor': 2,
-                'malldata': [
-                  {
-                    'content': '6L+Z5piv5LiA5byg5Y2h54mH', // 礼品说明
-                    // 'col': 9, // 列数
-                    'mallitemsname': '第二层第一个', // 礼品名称
-                    // 'floor': 1, // 层数
-                    // 'isleft': '1', // 1：左边 0：右边
-                    'mallitemsid': 4, // 礼品id
-                    'picsummary': 'http://hyjy.oss-cn-shenzhen.aliyuncs.com/4/731353944/image/20180306/20180306161754727694.jpg', // 图片
-                    'integral': 3 // 所需积分
-                  }, {
-                    'content': '6L+Z5piv5LiA5byg5Y2h54mH', // 礼品说明
-                    // 'col': 9, // 列数
-                    'mallitemsname': '第二层第二个', // 礼品名称
-                    // 'floor': 1, // 层数
-                    // 'isleft': '1', // 1：左边 0：右边
-                    'mallitemsid': 4, // 礼品id
-                    'picsummary': 'http://hyjy.oss-cn-shenzhen.aliyuncs.com/4/731353944/image/20180306/20180306161754727694.jpg', // 图片
-                    'integral': 3 // 所需积分
-                  }, {
-                    'content': '6L+Z5piv5LiA5byg5Y2h54mH', // 礼品说明
-                    // 'col': 9, // 列数
-                    'mallitemsname': '第二层第三个', // 礼品名称
-                    // 'floor': 1, // 层数
-                    // 'isleft': '1', // 1：左边 0：右边
-                    'mallitemsid': 4, // 礼品id
-                    'picsummary': 'http://hyjy.oss-cn-shenzhen.aliyuncs.com/4/731353944/image/20180306/20180306161754727694.jpg', // 图片
-                    'integral': 3 // 所需积分
-                  }
-                ]
-              }
-            ]
-          }, {
-            'isleft': 0,
-            'sidedata': [{
-              'floor': 1,
-              'malldata': []
-            }]
-          }],
-          'code': '0',
-          'datatype': [{
-            'istakepictures': 2,
-            'typeid': 1,
-            'name': '5Yqo54mp'
-          }, {
-            'istakepictures': 1,
-            'typeid': 2,
-            'name': '6YGT5YW3'
-          }, {
-            'istakepictures': 1,
-            'typeid': 3,
-            'name': '5Y2h54mH'
-          }, {
-            'istakepictures': 1,
-            'typeid': 7,
-            'name': 'c2RmYXNk'
-          }],
-          'msg': ''
-        }
+        rawDataTabs: [],
+        rawData: {}
       }
     },
     methods: {
-      switchTabs (index) {
+      switchTabs (index, id) {
         let that = this
         that.tabsActive = index
-        this.getMallItemsList('传入id')
+        this.getMallItemsList(id)
+        this.nowIndex = {
+          index: 1,
+          indexs: 0
+        }
       },
       toggleBars: function (index) {
         let that = this
@@ -244,14 +116,84 @@
         this.nowIndex.index = index
         this.nowIndex.indexs = indexs
       },
+      // base64
+      transcoding () {
+        for (let i = 0; i < this.rawData.length; i++) {
+          for (let j = 0; j < this.rawData[i].sidedata.length; j++) {
+            if (this.rawData[i].sidedata[j].malldata.length) {
+              for (let k = 0; k < this.rawData[i].sidedata[j].malldata.length; k++) {
+                this.rawData[i].sidedata[j].malldata[k].mallitemsname = Base64.decode(this.rawData[i].sidedata[j].malldata[k].mallitemsname)
+                this.rawData[i].sidedata[j].malldata[k].content = Base64.decode(this.rawData[i].sidedata[j].malldata[k].content)
+              }
+            }
+          }
+        }
+      },
       // 获取 tabs 数据
-      getTabs (id) {
+      getTabs () {
         // TODO: 在这里调用 api /api/vendingmachinemanage_listVendingMachine.do?method=getVendingMachineList
-        // this.rawDataTabs = 你接口获取
-        this.getMallItemsList('默认传入第一个id')
+        let storageMessage = JSON.parse(sessionStorage.getItem('info'))
+        console.log(storageMessage, '34567')
+        this.$http.get('/api/vendingmachinemanage_listVendingMachine.do?method=getVendingMachineList', {
+          params: storageMessage
+        }).then(res => {
+          // 成功的状态
+          let successCode = 0
+          // 失败的状态
+          let errorCode = 1
+          let body = res.body
+          // console.log(body, '后台返回的tab数据')
+          // 先判断状态
+          if (body.code === successCode) {
+            // 处理数据
+            this.rawDataTabs = body.data
+            this.rawDataTabs.map((value) => {
+              value.name = Base64.decode(value.name)
+            })
+            this.getMallItemsList(this.rawDataTabs[0].vendingmachineid)
+          } else if (body.code === errorCode) {
+            // 处理失败
+            console.log('错误提示：' + body.msg)
+          }
+        }, error => {
+          // error callback
+          console.log(error)
+        })
       },
       // 获取底部数据
       getMallItemsList (id) {
+        let storageMessage = JSON.parse(sessionStorage.getItem('info'))
+        let userid = storageMessage.userid
+        let sid = storageMessage.sid
+        this.$http.get('/api/vendingMachineInventoryManage_listVendingMachineInventory.do?method=getMallItemsList', {
+          params: {
+            userid: userid,
+            sid: sid,
+            vendingmachineid: id
+          }
+        }).then(res => {
+          // 成功的状态
+          let successCode = '0'
+          // 失败的状态
+          let errorCode = '1'
+          let body = res.body
+          // 先判断状态
+          // "code":返回状态码,"data":"应该业务数据","msg":"错误提示"
+          // 所以我优先判断 code
+          if (body.code === successCode) {
+            // 处理数据
+            this.rawData = body.data
+            console.log(this.rawData)
+            // base64
+            this.transcoding()
+          } else if (body.code === errorCode) {
+            // 处理失败
+            console.log('错误提示：' + body.msg)
+          }
+        }, error => {
+          //   // error callback
+          console.log(error)
+        })
       },
       onHide () {
         console.log('on hide')
@@ -259,76 +201,13 @@
       onShow () {
         console.log('on show')
       },
-      showAlert (id) {
+      showAlert (item) {
+        this.giftDetail = item
         this.isAlertBox = true
       }
     },
     created: function () {
-      this.getTabs('获取到的id传进去')
-
-      // let storageMessage = JSON.parse(sessionStorage.getItem('info'))
-      // console.log(storageMessage, '34567')
-      // this.$http.get('/api/vendingmachinemanage_listVendingMachine.do?method=getVendingMachineList', {
-      //   params: storageMessage
-      // }).then(res => {
-      //   // 成功的状态
-      //   let successCode = 0
-      //   // 失败的状态
-      //   let errorCode = 1
-      //   console.log(res, '原始数据')
-      //   let body = res.body
-      //   console.log(body, '后台返回的数据')
-      //   // 先判断状态
-      //   if (body.code === successCode) {
-      //     // 处理数据
-      //     this.tabs = body.data
-      //     this.tabs.map((value) => {
-      //       value.name = Base64.decode(value.name)
-      //     })
-      //     this.ven = this.tabs[0].vendingmachineid
-      //     this.$http.get('/api/vendingMachineInventoryManage_listVendingMachineInventory.do?method=getMallItemsList', {
-      //       params: {
-      //         userid: 628830418,
-      //         sid: 4,
-      //         vendingmachineid: this.ven
-      //       }
-      //     }).then(res => {
-      //       // 成功的状态
-      //       let successCode = '0'
-      //       //   // 失败的状态
-      //       let errorCode = '1'
-      //       console.log(res, '原始数据')
-      //       let body = res.body
-      //       console.log(body, '后台返回的数据')
-      //       // 先判断状态
-      //       // "code":返回状态码,"data":"应该业务数据","msg":"错误提示"
-      //       // 所以我优先判断 code
-      //       if (body.code === successCode) {
-      //         // 处理数据
-      //         this.dataArry = body.data
-      //         console.log(this.dataArry, '888')
-      //         for (let i = 0; i < this.dataArry.length; i++) {
-      //           this.dataMain = this.dataArry[i].sidedata
-      //           for (let i = 0; i < this.dataMain.length; i++) {
-      //             // console.log(this.dataMain[i].malldata, '111')
-      //           }
-      //         }
-      //       } else if (body.code === errorCode) {
-      //         // 处理失败
-      //         console.log('错误提示：' + body.msg)
-      //       }
-      //     }, error => {
-      //       //   // error callback
-      //       console.log(error)
-      //     })
-      //   } else if (body.code === errorCode) {
-      //     // 处理失败
-      //     console.log('错误提示：' + body.msg)
-      //   }
-      // }, error => {
-      //   // error callback
-      //   console.log(error)
-      // })
+      this.getTabs()
     }
   }
 </script>

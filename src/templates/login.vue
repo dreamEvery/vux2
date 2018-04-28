@@ -129,7 +129,7 @@
                   }
                   let objInfo = JSON.stringify(userInfo)
                   sessionStorage.setItem('info', objInfo)
-                  console.log(userInfo, '233')
+                  console.log(objInfo, '233')
                 }, response => {
                   // error callback
                   alert('密码错误')

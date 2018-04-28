@@ -12,9 +12,6 @@
         <div class="give-con">
           <div class="give-list">
             <div class="give-gift">
-              <!--<span class="give-gift">{{item.text}}</span>
-              <span class="choose-gift">{{item.choose}}</span>
-              <i> > </i>-->
               <span>赠送礼品</span>
               <router-link to='/give/giveSel'>
                 <input type="text" readonly placeholder='请选择礼品' v-model="gift_selOn"/>
@@ -35,8 +32,28 @@
             </div>
           </div>
         </div>
+        <div class="rout-con" v-if="false">
+          <div class="routGive">
+            <div class="routGivepic">
+              <img :src=routerParams.picsummary alt="">
+            </div>
+            <div class="routGivename">
+              <p class="giftName">{{routerParams.mallitemsname}}</p>
+              <div class="goldCoin">
+                <p class="iconCoin">
+                  <img src="../assets/img/map/exchange_icon_-Tiger.png" alt="">
+                </p>
+                <p class="coinNum">{{routerParams.integral}}</p>
+              </div>
+            </div>
+            <div class="rout-integral">
+              <span class="nowIntegral">我拥有的积分：{{this.nowNum}}</span>
+              <span class="Deduct">扣除积分：{{routerParams.integral}}</span>
+            </div>
+          </div>
+        </div>
         <div class="give-toBox">
-          <span>赠送给：</span>
+          <span>赠送给:</span>
           <div>
             <ul class="toBox-list">
               <li v-for="(zengsongList,index) in zengsongList" :key="zengsongList.id">
@@ -106,13 +123,6 @@
               <img src="../assets/img/vux_logo.png"/>
             </li>
           </ul>
-          <!--<scroller lock-y :scrollbar-x=false>
-                 <div class="box1">
-                   <div class="box1-item" v-for="i in 7">
-                       <img src="../assets/img/vux_logo.png" />
-                   </div>
-                 </div>
-               </scroller>-->
         </div>
         <div class="niming-box">
           <span>匿名模式：</span>
@@ -136,6 +146,7 @@
 </template>
 <script>
   import Alert from '../components/alertSuccess'
+
   export default {
     name: 'give',
     components: {
@@ -145,16 +156,18 @@
       return {
         jifen_type: false,
         jifen_inp: ' ',
+        nowNum: {},
         isSuccess: false,
+        routerParams: {},
         items: [{
           text: '赠送礼品',
           choose: '选择礼品'
         },
-          // 失败的状态
         {
           text: '赠送积分',
           choose: ' 输入积分'
         }
+          // 失败的状态
         ],
         /* 选择礼品 */
         gift_selOn: ' ',
@@ -260,19 +273,15 @@
         this.swtich = this.on
       }
       let storageMessage = JSON.parse(sessionStorage.getItem('info'))
-      console.log(storageMessage, '34567')
+      console.log(storageMessage)
       this.$http.get('/api/mallItemsManage_listMallItems.do?method=getMyMallItemsList', {
         params: storageMessage
       }).then(res => {
         // 成功的状态
         let successCode = 0
         let errorCode = 1
-        console.log(res, '原始数据')
         let body = res.body
-        console.log(body, '后台返回的数据')
         // 先判断状态
-        // "code":返回状态码,"data":"应该业务数据","msg":"错误提示"
-        // 所以我优先判断 code
         if (body.code === successCode) {
           // 处理数据
           this.message = body
@@ -293,6 +302,13 @@
           position: 'bottom'
         })
       })
+      // // 路由传递的参数
+      // this.routerParams = this.$route.query.transmission
+      // console.log(this.routerParams, '4567890')
+      // // 存储总积分
+      // let stutendMess = JSON.parse(sessionStorage.getItem('stuMessage'))
+      // this.nowNum = stutendMess.totolintegral
+      // console.log(this.nowNum, 'pppp')
     },
     methods: {
       goIndex: function () {
@@ -385,13 +401,13 @@
   }
 
   .public-top {
-    padding: 0;
+    padding: 0.2rem 0 0 0;
     background: #FFFBE8;
   }
 
   .public-top .public-back {
-    width: 1.2rem;
-    /*height: 36px;*/
+    width: 1.64rem;
+    height: 0.84rem;
     border-radius: initial;
     border: none;
   }
@@ -704,5 +720,61 @@
       width: 72%;
     }
   }
+
+  .rout-con {
+    padding: 0.2rem;
+  }
+
+  .rout-con .routGive .routGivepic {
+    width: 1.4rem;
+    height: 1.4rem;
+    display: inline-block;
+  }
+
+  .rout-con .routGive .routGivename {
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 0.2rem;
+    margin-top: 0.1rem;
+  }
+
+  .routGivename .giftName {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .routGivename .goldCoin {
+    font-size: 0.3rem;
+    font-weight: 400;
+    position: relative;
+    padding: 0.2rem 0.62rem;
+  }
+
+  .routGivename .goldCoin .iconCoin {
+    width: 0.5rem;
+    height: 0.5rem;
+    display: inline-block;
+    position: absolute;
+    left: 0.02rem;
+  }
+
+  .routGivename .goldCoin .coinNum {
+    font-weight: bold;
+    font-size: 0.32rem;
+  }
+
+  .rout-integral {
+    margin-top: 0.2rem;
+    font-size: 0.24rem;
+    color: #fff;
+    text-shadow: 0 1px red, 1px 0 red, -1px 0 red, 0 -1px red;
+    border-bottom: 1px dashed #958475;
+    padding-bottom: 0.1rem;
+  }
+
+  .rout-integral span:nth-child(2) {
+    float: right;
+  }
+
 
 </style>

@@ -7,78 +7,58 @@
       </div>
       <div class="alert-main">
         <slot name="content"></slot>
-        <!--<slot name="A">-->
-          <!--<div class="alert1">-->
-            <!--<div class="alert-top">我的积分</div>-->
-            <!--<ul>-->
-              <!--<li>-->
-                <!--当前积分： 254-->
-              <!--</li>-->
-              <!--<li>-->
-                <!--消费积分：241-->
-              <!--</li>-->
-              <!--<li>-->
-                <!--总积分： 377-->
-              <!--</li>-->
-            <!--</ul>-->
-          <!--</div>-->
-        <!--</slot>-->
-        <!--<slot name="B">-->
-          <!--<div class="alert2">-->
-            <!--<div class="alert-top">我的等级</div>-->
-            <!--<ul>-->
-              <!--<li>-->
-                <!--等级1：总积分 1-10-->
-              <!--</li>-->
-              <!--<li>-->
-                <!--等级1：总积分 20-40-->
-              <!--</li>-->
-              <!--<li>-->
-                <!--等级1：总积分 1-20-->
-              <!--</li>-->
-            <!--</ul>-->
-          <!--</div>-->
-        <!--</slot>-->
-        <!--<slot name="c">-->
-          <!--<div class="alert3">-->
-            <!--<div class="alert-top">隐身斗篷</div>-->
-            <!--<div class="alert-gift">-->
-              <!--<div class="gift">-->
-                <!--<img src="../assets/img/alert/魔方.png" alt="">-->
-              <!--</div>-->
-              <!--<div class="gift-introduce">-->
-                <!--<p>-->
-                  <!--使用后可以在一天时间内隐藏，老师和同学都不会发现你的存在。-->
-                  <!--这意味着你可以不用交作业了哦~~-->
-                <!--</p>-->
-                <!--<a>-->
-                  <!--我要打印-->
-                <!--</a>-->
-              <!--</div>-->
-            <!--</div>-->
-          <!--</div>-->
-        <!--</slot>-->
+        <slot name="market"></slot>
+      </div>
+      <div class="alertBtn" v-if="type">
+        <router-link class="giveBtn" :to="{path: '/give', query:{transmission: transmission}}">
+          <img src="../assets/img/give-button.png" alt="">
+        </router-link>
+        <p class="exchangeBtn" @click="exchange">
+          <span class="coinNum">
+            {{transmission.integral}}
+          </span>
+        </p>
       </div>
       <span class="close-btn" @click="close">
         <img src="../assets/img/alert/close.png" alt="">
       </span>
-
     </div>
+    <Sussce v-if="alertSussce"></Sussce>
+    <router-view></router-view>
   </div>
 </template>
 <script>
+  import Sussce from '../components/alertSuccess'
   export default {
     name: 'alertbox',
-    props: ['showName'],
+    props: ['showName', 'type', 'transmission'],
     // 子组件接收到父组件传过来的 showName
     data () {
-      return {}
+      return {
+        alertSussce: false
+      }
+    },
+    components: {
+      Sussce
     },
     methods: {
       close () {
         // 点击关闭按钮 this.$parent 获取到父组件
         // this.$parent[this.showName] 获取父组件中的 isAlertBox
         this.$parent[this.showName] = false
+      },
+      exchange () {
+        this.$parent[this.showName] = false
+        this.alertSussce = true
+        let storageMessage = JSON.parse(sessionStorage.getItem('info'))
+        console.log(storageMessage, 'vv')
+        this.$http.post('/api/mallItemsManage_updateMallItems.do?method=addExchangeRecord',
+          storageMessage
+        ).then(response => {
+          // get body data
+        }, response => {
+          // error callback
+        })
       }
     },
     watch: {}
@@ -109,7 +89,7 @@
     left: 50%;
     transform: translateX(-50%) translateY(-50%);
     z-index: 999;
-    padding: 1.4rem 0.65rem 0.8rem 0.8rem;
+    padding: 1.4rem 0.65rem 0.4rem 0.8rem;
   }
 
   .alert .alert-main {
@@ -168,7 +148,6 @@
   .alert-gift {
     display: inline-block;
     overflow: hidden;
-    padding: 0.4rem 0.2rem;
   }
 
   .alert-gift .gift {
@@ -187,6 +166,7 @@
     color: #6b3a0f;
     font-weight: bold;
     text-align: justify;
+    display: inline-block;
 
   }
 
@@ -196,5 +176,30 @@
     margin-top: 0.4rem;
     display: block;
     float: right;
+  }
+
+  .alertBtn .giveBtn {
+    width: 1.6rem;
+    height: 0.8rem;
+    margin-top: 0.3rem;
+    display: block;
+    float: right;
+  }
+
+  .alertBtn .exchangeBtn {
+    width: 3.2rem;
+    height: 0.8rem;
+    margin-top: 0.3rem;
+    float: left;
+    position: relative;
+    background-image: url("../assets/img/alert/exchange-button.png");
+    background-size: 100% 100%;
+  }
+
+  .alertBtn .exchangeBtn .coinNum {
+    font-size: 0.4rem;
+    line-height: 0.7rem;
+    color: #fff;
+    font-weight: bold;
   }
 </style>

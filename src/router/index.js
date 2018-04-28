@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
+import alertSuccess from '@/components/alertSuccess'
 import Page from '@/components/page'
 import Head from '@/templates/head-pic'
 import Login from '@/templates/login'
@@ -25,6 +26,11 @@ export default new Router({
       path: '/hhh',
       name: 'HelloWorld',
       component: HelloWorld
+    },
+    {
+      path: '/alertSuccess',
+      name: 'alertSuccess',
+      component: alertSuccess
     },
     {
       path: '/head',

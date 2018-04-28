@@ -10,7 +10,7 @@
         <p class="cube">
           <img src="../assets/img/alert/魔方.png" alt="">
         </p>
-        <router-link class="ok" @click="okBtn()" to="/gift">
+        <router-link class="ok" @click="okBtn()" to="/home/index">
           <img src="../assets/img/alert/well_button_n.png" alt="" v-if="ok">
           <img src="../assets/img/alert/well_button_pre.png" alt=""  v-if="!ok">
         </router-link>

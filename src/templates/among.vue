@@ -68,18 +68,22 @@
             </table>
           </div>
         </div>
-        <div class="myself-box">
-            <p>{{myArry.ranking}}</p>
-            <div class="myself-pic">
-              <div>
+        <table class="myself-box">
+          <tr>
+            <th>
+              <p>{{myArry.ranking}}</p>
+            </th>
+            <th>
+              <div class="myself-pic">
                 <img src="" alt="">
               </div>
               <p>{{myArry.studentname}}</p>
               <p class="class">{{myArry.classname}}</p>
-            </div>
-            <p class="now-integral">当前积分： {{myArry.currentintegral}}</p>
-            <p class="all-integral">总积分： {{myArry.totalintegral}}</p>
-        </div>
+            </th>
+            <th><p class="now-integral">当前积分： {{myArry.currentintegral}}</p></th>
+            <th><p class="all-integral">总积分： {{myArry.totalintegral}}</p></th>
+          </tr>
+        </table>
       </div>
     </div>
   </div>
@@ -138,12 +142,12 @@
       },
       mySelf () {
         let storageMessage = JSON.parse(sessionStorage.getItem('info'))
-        // console.log(typeof (storageMessage.studentid), 'id')
-        // console.log(this.dataArry.length)
+        console.log(storageMessage.studentid, 'id')
+        console.log(this.dataArry.length)
         for (let i = 0; i < this.dataArry.length; i++) {
-          if (parseInt(storageMessage.studentid) === this.dataArry[i].studentid && parseInt(this.dataArry[i].ranking) > 3) {
+          if (parseInt(storageMessage.studentid) === this.dataArry[i].studentid) {
             this.myArry = this.dataArry[i]
-            console.log(this.myArry)
+            console.log(this.myArry, '12345')
           }
         }
       }
@@ -268,7 +272,7 @@
     background-color: #FEFBE9;
     border-radius: 0.2rem;
     padding-top: 0.2rem;
-    height: 100%;
+    height: 90%;
     overflow-y: scroll;
   }
 
@@ -368,12 +372,12 @@
 
   .tab-con table th:nth-child(2) p {
     text-align: left;
-    white-space:nowrap;
+    white-space: nowrap;
   }
 
-  .tab-con table th:nth-child(2) p.name {
+  .tab-con table th:nth-child(2) p {
     font-size: 10px;
-    padding-top: 0.12rem;
+    margin-top: 0.06rem;
   }
 
   .tab-con table th:nth-child(2) p {
@@ -387,14 +391,37 @@
   }
 
   /*myself*/
-  .tab-con .myself-box {
+  .tab-con .myself-box tr {
     background-image: url("../assets/img/map/Ranking-List_img_Selected.png");
     background-size: 100% 100%;
     width: 100%;
+    margin-bottom: 0;
+    margin-top: 0;
   }
-  .myself-box p{line-height: 1rem;flex: 3;}
-  .myself-box p:nth-child(1){flex: 1}
-  .myself-box{display: flex;text-align: center;height: 1rem;line-height: 1rem;}
-  .myself-box .myself-pic div{width: 0.6rem;height: 0.6rem;background-color: #797979;border-radius: 50%;}
+
+  .myself-box {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+
+  .myself-box p:nth-child(1) {
+    flex: 1
+  }
+
+  .myself-box {
+    display: flex;
+    text-align: center;
+  }
+
+  .myself-box .myself-pic {
+    float: left;
+    width: 0.6rem;
+    height: 0.6rem;
+    background-color: #797979;
+    border-radius: 50%;
+  }
+  .myself-box p{margin-top: 0.1rem;}
 
 </style>
