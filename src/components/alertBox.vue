@@ -8,6 +8,7 @@
       <div class="alert-main">
         <slot name="content"></slot>
         <slot name="market"></slot>
+        <slot name="gift"></slot>
       </div>
       <div class="alertBtn" v-if="type">
         <router-link class="giveBtn" :to="{path: '/give', query:{transmission: transmission}}">
@@ -51,7 +52,8 @@
         this.$parent[this.showName] = false
         this.alertSussce = true
         let storageMessage = JSON.parse(sessionStorage.getItem('info'))
-        console.log(storageMessage, 'vv')
+        storageMessage.mallitemsid = this.transmission.mallitemsid
+        console.log(storageMessage, 'nn')
         this.$http.post('/api/mallItemsManage_updateMallItems.do?method=addExchangeRecord',
           storageMessage
         ).then(response => {
@@ -187,7 +189,7 @@
   }
 
   .alertBtn .exchangeBtn {
-    width: 3.2rem;
+    width: 2.2rem;
     height: 0.8rem;
     margin-top: 0.3rem;
     float: left;

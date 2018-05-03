@@ -189,10 +189,9 @@
     },
     created: function () {
       let storageMessage = JSON.parse(sessionStorage.getItem('info'))
-      console.log(storageMessage, '34567')
+      console.log(storageMessage, '学生')
       this.$http.get('/api/vendingMachineInventoryManage_listVendingMachineInventory.do?method=getUserInfoForMobilePhoneLogin', {
         params: storageMessage
-        // sid: 4, userid: 533422211, studentid: 222
       }).then(res => {
         // 成功的状态
         let successCode = '0'

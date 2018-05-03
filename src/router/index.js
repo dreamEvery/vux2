@@ -16,6 +16,8 @@ import Index from '@/templates/index'
 import Interaction from '@/templates/interaction'
 import Market from '@/templates/market'
 import Among from '@/templates/among'
+import forgetPassword from '@/templates/forgetPassword'
+import Newpassword from '@/templates/password'
 Vue.use(Router)
 
 // export 的意思是暴露出来东西
@@ -31,6 +33,16 @@ export default new Router({
       path: '/alertSuccess',
       name: 'alertSuccess',
       component: alertSuccess
+    },
+    {
+      path: '/forgetPassword',
+      name: 'forgetPassword',
+      component: forgetPassword
+    },
+    {
+      path: '/newpassword',
+      name: 'Newpassword',
+      component: Newpassword
     },
     {
       path: '/head',

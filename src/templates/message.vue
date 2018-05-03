@@ -13,28 +13,20 @@
           <div class="message-state" v-for="(item, index) in items" v-if="index < 5">
             <div class="icon">
               <img src="../assets/img/map/my-news_icon_exchange.png" alt="">
-              <!--<img src="" alt="" v-if="item.status==='1'">-->
-              <!--<img src="" alt="" v-if="item.status==='2'">-->
-              <!--<img src="" alt="" v-if="item.status==='3'||item.status==='4'">-->
             </div>
             <div class="mess-list">
               <p class="mess-list-title">{{item.message}}</p>
               <span class="timer">{{item.exchangetime}}</span>
             </div>
-            <div class="delect" @click="deleteMsg('index')">
+            <div class="delect" @click="singleDelete('index')">
               <img src="../assets/img/map/my-news_button_Delete_n.png" alt="">
-              <img src="../assets/img/map/my_icon_lingqu.png" alt="" v-if="item.status === '0'">
             </div>
-            <!--<span class="text">已领取</span>-->
-            <!--<span class="text" v-if="true">{{true?'已领取':'未领取'}}</span>-->
-            <!--<span class="text">对方未领取</span>-->
-            <!--<span class="toReceive" @click="handleSidebar('Gift')">领取</span>-->
           </div>
         </div>
       </scroller>
     </div>
     <div class="footer">
-      <div class="all" @click="delectBtn">
+      <div class="all" @click="delectAll">
         <img src="../assets/img/map/my-news_button_Delete-all_n.png" alt="" v-if="isShow">
         <img src="../assets/img/map/my-news_button_Delete-all_pre.png" alt="" v-else="!isShow">
       </div>
@@ -50,45 +42,6 @@
       return {
         isShow: true,
         items: [],
-        obj: {
-          data: [
-            {
-              message: '成功兑换了 隐形的斗篷1',
-              status: '1',
-              exchangetime: '2018-03-06 13:47:33',
-              studentname: '童雪',
-              studentid: 12,
-              id: 1
-            },
-            {
-              message: '充值',
-              status: 'chongzhi',
-              exchangetime: '2018-03-06 13:47:33',
-              studentname: '童雪',
-              studentid: 12,
-              id: 2
-            },
-            {
-              message: '礼物',
-              status: 'liwu',
-              isSend: false,
-              islingqu: false,
-              exchangetime: '2018-03-06 13:47:33',
-              studentname: '童雪',
-              studentid: 12,
-              id: 3
-            },
-            {
-              message: '成功兑换了 隐形的斗篷4',
-              status: '4',
-              exchangetime: '2018-03-06 13:47:33',
-              studentname: '童雪',
-              studentid: 12,
-              id: 4
-            }],
-          code: 0,
-          msg: ''
-        },
         num: 10,
         page: 1
       }
@@ -116,7 +69,6 @@
         let storageMessage = JSON.parse(sessionStorage.getItem('info'))
         console.log(storageMessage, '34567')
         this.$http.get('/api/mallItemsManage_listMallItems.do?method=getMallMessage', {
-          // 你想用
           params: storageMessage
         }).then(res => {
           // 成功的状态
@@ -127,11 +79,8 @@
           let body = res.body
           console.log(body, '后台返回的数据')
           // 先判断状态
-          // "code":返回状态码,"data":"应该业务数据","msg":"错误提示"
-          // 所以我优先判断 code
           if (body.code === successCode) {
             // 处理数据
-            // if (succse) succse(body.data)
             this.items = body.data
             for (let i = 0; i < this.items.length; i++) {
               console.log(this.items[i].status, '1223')
@@ -145,21 +94,30 @@
           console.log(error)
         })
       },
-      delectBtn () {
+      // 全部删除
+      delectAll () {
         this.isShow = false
-        this.$http.post('/api/mallItemsManage_listMallItems.do?method=deleteAllMallMessage', {
-          userid: 628830418,
-          studentid: 820,
-          sid: 4
-        }).then(response => {
+        let storageMessage = JSON.parse(sessionStorage.getItem('info'))
+        this.$http.post('/api/mallItemsManage_listMallItems.do?method=deleteAllMallMessage',
+          storageMessage
+        ).then(response => {
           // get body data
           this.items = []
         }, response => {
           // error callback
         })
       },
-      deleteMsg: function (index) {
-        this.items.splice(index, 1)
+      // 单个删除
+      singleDelete: function (index) {
+        let storageMessage = JSON.parse(sessionStorage.getItem('info'))
+        this.$http.post('/api/mallItemsManage_listMallItems.do?method=deleteMallMessage',
+          storageMessage
+        ).then(response => {
+          // get body data
+          this.items.splice(index, 1)
+        }, response => {
+          // error callback
+        })
       }
     },
     components: {

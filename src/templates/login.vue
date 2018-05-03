@@ -8,7 +8,6 @@
         <div>
           <img src="../assets/img/map/icon_phone.png"/>
           <input type="text" v-model="phone" placeholder="账号" maxlength="11"/>
-          <!--v-on:input="YZphone(phone)"-->
         </div>
         <p class="form-errTips" v-if="show"><span>
           <i>
@@ -121,12 +120,13 @@
                   let body = res.body
                   that.data = body
                   let userInfo = {
-                    sid: that.data.sid,
+                    sid: that.data.students[i].sid,
                     userid: that.data.userid,
-                    studentid: that.data.stuid,
-                    name: that.data.name,
-                    classname: that.data.classname
+                    studentid: that.data.students[i].id,
+                    name: that.data.students[i].name,
+                    classname: that.data.students[i].classname
                   }
+                  console.log(userInfo, '333')
                   let objInfo = JSON.stringify(userInfo)
                   sessionStorage.setItem('info', objInfo)
                   console.log(objInfo, '233')
@@ -150,7 +150,7 @@
   })
 </script>
 
-<style>
+<style scoped>
   body {
     background: #f2f2f2;
   }
@@ -256,90 +256,4 @@
   .foot-firm h3 {
     font-size: 0.24rem;
   }
-
-  /*!*忘记密码*!*/
-
-  /*.yz-tips {*/
-  /*color: #f00;*/
-  /*height: 0.48rem;*/
-  /*line-height: 0.48rem;*/
-  /*font-size: 0.24rem;*/
-  /*text-align: left;*/
-  /*padding-left: 1.48rem;*/
-  /*}*/
-
-  /*.btn-next,.btn-tijiao{*/
-  /*width: 80%;*/
-  /*height: 0.72rem;*/
-  /*border: 1px solid #7F7F7F;*/
-  /*border-radius: 0.12rem;*/
-  /*text-align: center;*/
-  /*background: #fff;*/
-  /*margin: 0 auto;*/
-  /*margin-top: 0.4rem;*/
-  /*display: block;*/
-  /*}*/
-
-  /*.nav-step {*/
-  /*height: 1rem;*/
-  /*line-height: 1rem;*/
-  /*border-bottom: 1px solid #ccc;*/
-  /*padding: 0 0.6rem;*/
-
-  /*.nav-step1 {*/
-  /*text-align: left;*/
-  /*}*/
-  /*.nav-step2 {*/
-  /*text-align: center;*/
-  /*}*/
-  /*.nav-step3 {*/
-  /*text-align: right;*/
-  /*}*/
-  /*.nav-step-active {*/
-  /*color: #3333CC;*/
-  /*}*/
-  /*}*/
-
-  /*.form-yz {*/
-  /*background: #fff;*/
-  /*padding: 0 0.4rem;*/
-  /*height: 1.08rem;*/
-  /*.form-yz-div {*/
-  /*border-bottom: 1px solid #ccc;*/
-  /*overflow: hidden;*/
-  /*height: 0.6rem;*/
-  /*line-height: 0.6rem;*/
-  /*}*/
-  /*span {*/
-  /*float: left;*/
-  /*width: 1.28rem;*/
-  /*font-weight: 600;*/
-  /*color: #333;*/
-  /*}*/
-  /*input {*/
-  /*width: 75%;*/
-  /*height: 0.6rem;*/
-  /*line-height: 0.6rem;*/
-  /*border: none;*/
-  /*}*/
-  /*}*/
-  /*.form-yz:first-child{*/
-  /*padding-top: 0.2rem;*/
-  /*}*/
-  /*.form-yz:last-child{*/
-  /*padding-bottom: 0.2rem;*/
-  /*}*/
-  /*.yzm-div {*/
-  /*position: relative;*/
-  /*.yzm-btn {*/
-  /*position: absolute;*/
-  /*right: 0;*/
-  /*top: 0.1rem;*/
-  /*height: 0.4rem;*/
-  /*font-size: 0.24rem;*/
-  /*background: none;*/
-  /*}*/
-  /*}*/
-
-
 </style>

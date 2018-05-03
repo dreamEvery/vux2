@@ -114,6 +114,7 @@
         let that = this
         that.changeRed = index
         let storageMessage = JSON.parse(sessionStorage.getItem('info'))
+        console.log(storageMessage, '000')
         if (type === 'class') storageMessage.classid = id
         if (type === 'grade') storageMessage.gradeid = id
         this.$http.get('/api/integralManagementOrder.do?method=getIntegralTeamOrderV31', {
@@ -142,12 +143,9 @@
       },
       mySelf () {
         let storageMessage = JSON.parse(sessionStorage.getItem('info'))
-        console.log(storageMessage.studentid, 'id')
-        console.log(this.dataArry.length)
         for (let i = 0; i < this.dataArry.length; i++) {
           if (parseInt(storageMessage.studentid) === this.dataArry[i].studentid) {
             this.myArry = this.dataArry[i]
-            console.log(this.myArry, '12345')
           }
         }
       }

@@ -28,7 +28,6 @@
     created () {
       let stutendMess = JSON.parse(sessionStorage.getItem('stuMessage'))
       this.data = stutendMess
-      console.log(stutendMess, '2345')
     }
   }
 </script>

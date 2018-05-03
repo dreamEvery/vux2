@@ -1,5 +1,19 @@
 <template>
   <div class="gift-bg">
+    <alert-box v-if='isAlertBox' :showName="'isAlertBox'" :transmission="giftInfo" :type="'gift'">
+      <div slot="gift">
+        <div class="alert-top">{{giftInfo.mallitemsname}}</div>
+        <div class="alert-gift">
+          <div class="gift">
+            <img :src=giftInfo.picsummary  alt="">
+          </div>
+          <div class="gift-introduce">
+            <p>{{giftInfo.content}}
+            </p>
+          </div>
+        </div>
+      </div>
+    </alert-box>
     <public-top></public-top>
     <div class="gift-con">
       <router-link to="/home/index">
@@ -21,7 +35,7 @@
           </div>
           <ul class="give-sel-list">
             <li v-for="(item,index) in message">
-              <div>
+              <div @click="showAlert(item)">
                 <img :src="item.picsummary"/>
                 <span>{{item.count}}</span>
                 <p class="gift-type">
@@ -38,14 +52,17 @@
   </div>
 </template>
 <script>
+  import { Base64 } from 'js-base64'
   import { Grid, GridItem, GroupTitle } from 'vux'
   import publicTop from '../components/publicTop'
+  import alertBox from '../components/alertBox'
 
   export default {
     components: {
       Grid,
       GridItem,
       GroupTitle,
+      alertBox,
       publicTop
     },
     name: 'gift',
@@ -69,7 +86,9 @@
         }
         ],
         changeRed: 0,
-        message: []
+        isAlertBox: false,
+        message: [],
+        giftInfo: {}
       }
     },
     mounted () {
@@ -110,6 +129,10 @@
           if (body.code === successCode) {
             // 处理数据
             this.message = body.data
+            for (let i = 0; i < this.message.length; i++) {
+              this.message[i].content = Base64.decode(this.message[i].content)
+              this.message[i].mallitemsname = Base64.decode(this.message[i].mallitemsname)
+            }
           } else if (body.code === errorCode) {
             // 处理失败
             console.log('错误提示：' + body.msg)
@@ -118,6 +141,10 @@
           // error callback
           console.log(error)
         })
+      },
+      showAlert (item) {
+        this.giftInfo = item
+        this.isAlertBox = true
       }
     },
     created () {

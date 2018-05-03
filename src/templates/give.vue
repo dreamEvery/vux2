@@ -9,7 +9,7 @@
         </div>
       </div>
       <div class="public-bg">
-        <div class="give-con">
+        <div class="give-con" v-if="this.routerParams === null">
           <div class="give-list">
             <div class="give-gift">
               <span>赠送礼品</span>
@@ -32,7 +32,7 @@
             </div>
           </div>
         </div>
-        <div class="rout-con" v-if="false">
+        <div class="rout-con" v-if="this.routerParams !== null">
           <div class="routGive">
             <div class="routGivepic">
               <img :src=routerParams.picsummary alt="">
@@ -158,7 +158,7 @@
         jifen_inp: ' ',
         nowNum: {},
         isSuccess: false,
-        routerParams: {},
+        routerParams: null,
         items: [{
           text: '赠送礼品',
           choose: '选择礼品'
@@ -302,13 +302,15 @@
           position: 'bottom'
         })
       })
-      // // 路由传递的参数
-      // this.routerParams = this.$route.query.transmission
-      // console.log(this.routerParams, '4567890')
-      // // 存储总积分
-      // let stutendMess = JSON.parse(sessionStorage.getItem('stuMessage'))
-      // this.nowNum = stutendMess.totolintegral
-      // console.log(this.nowNum, 'pppp')
+      if (this.$route.query.transmission) {
+        // 路由传递的参数
+        this.routerParams = this.$route.query.transmission
+        console.log(this.routerParams, '4567890')
+        // 存储总积分
+        let stutendMess = JSON.parse(sessionStorage.getItem('stuMessage'))
+        this.nowNum = stutendMess.totolintegral
+        console.log(this.nowNum, 'pppp')
+      }
     },
     methods: {
       goIndex: function () {
@@ -379,6 +381,29 @@
           this.niming_text = '开启'
           this.swtich = this.on
         }
+      },
+      give () {
+        this.$http.post('/api/exchangeRecordManage_addExchangeRecord.do?method=giveGift',
+          {num: this.phoneNum}
+        ).then(res => {
+          // get body data
+          this.disabled = true
+          let time = 30
+          let timer = setInterval(() => {
+            if (time <= 0) {
+              this.disabled = false
+              this.btnText = '重新获取验证码'
+              clearInterval(timer)
+            } else {
+              this.btnText = time + 's'
+              time--
+            }
+          }, 1000)
+        }, res => {
+          // error callback
+          console.log('error.message')
+          this.disabled = false
+        })
       }
     },
     beforeDestroy () {
