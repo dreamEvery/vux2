@@ -117,7 +117,7 @@
         console.log(storageMessage, '000')
         if (type === 'class') storageMessage.classid = id
         if (type === 'grade') storageMessage.gradeid = id
-        this.$http.get('/api/integralManagementOrder.do?method=getIntegralTeamOrderV31', {
+        this.$http.get(this.HOST + '/integralManagementOrder.do?method=getIntegralTeamOrderV31', {
           params: storageMessage
         }).then(res => {
           // 成功的状态

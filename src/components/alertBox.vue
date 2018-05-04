@@ -148,8 +148,8 @@
   }
 
   .alert-gift {
-    display: inline-block;
     overflow: hidden;
+    padding: 0.3rem 0.2rem;
   }
 
   .alert-gift .gift {
@@ -168,7 +168,7 @@
     color: #6b3a0f;
     font-weight: bold;
     text-align: justify;
-    display: inline-block;
+    float: right;
 
   }
 

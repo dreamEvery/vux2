@@ -34,17 +34,17 @@
             <div class="integral">
               <ul>
                 <li v-for="item in gradeData">
-                    {{item.name}}：
-                    {{item.integral}}
+                  {{item.name}}：
+                  {{item.integral}}
                 </li>
               </ul>
             </div>
             <!--<div class="integral-num" v-for="item in gradeData">-->
-              <!--<ul>-->
-                <!--<li>{{item.integral}}</li>-->
-                <!--<li>{{'data.currentintegral' - 'data.totolintegral'}}</li>-->
-                <!--<li>{{data.totolintegral}}</li>-->
-              <!--</ul>-->
+            <!--<ul>-->
+            <!--<li>{{item.integral}}</li>-->
+            <!--<li>{{'data.currentintegral' - 'data.totolintegral'}}</li>-->
+            <!--<li>{{data.totolintegral}}</li>-->
+            <!--</ul>-->
             <!--</div>-->
           </div>
         </div>
@@ -74,7 +74,8 @@
             </router-link>
           </div>
           <div>
-            <router-link :to="{path:'/among',query:{classId: this.data.classid, gradeId: this.data.gradeid, aaa: '123'}}">
+            <router-link
+              :to="{path:'/among',query:{classId: this.data.classid, gradeId: this.data.gradeid, aaa: '123'}}">
               <img src="../assets/img/map/my_icon_ranking--list.png" alt="">
             </router-link>
           </div>
@@ -184,14 +185,18 @@
         alertBox: {},
         isAlertBox: false,
         alertType: null,  // 我的积分 myIntegral 我的等级 myLv
-        imgError: 'this.src="' + require('../assets/img/map/icon.png') + '"'
+        imgError: 'this.src="' + require('../assets/img/map/icon.png') + '"',
+        storageMessage: null
       }
     },
     created: function () {
-      let storageMessage = JSON.parse(sessionStorage.getItem('info'))
-      console.log(storageMessage, '学生')
-      this.$http.get('/api/vendingMachineInventoryManage_listVendingMachineInventory.do?method=getUserInfoForMobilePhoneLogin', {
-        params: storageMessage
+      this.storageMessage = JSON.parse(sessionStorage.getItem('info'))
+      this.$http.get(this.HOST + '/vendingMachineInventoryManage_listVendingMachineInventory.do?method=getUserInfoForMobilePhoneLogin', {
+        params: {
+          sid: this.storageMessage.sid,
+          userid: this.storageMessage.userid,
+          studentid: this.storageMessage.studentid
+        }
       }).then(res => {
         // 成功的状态
         let successCode = '0'
@@ -208,14 +213,17 @@
           body.stuname = Base64.decode(body.stuname)
           body.classname = Base64.decode(body.classname)
           this.data = body
+          console.log(this.data)
           let stutent = {
             stuname: this.data.stuname,
             classname: this.data.classname,
-            totolintegral: this.data.totolintegral,
-            itemsnum: this.data.itemsnum
+            currentintegral: this.data.currentintegral,
+            itemsnum: this.data.itemsnum,
+            picsummary: this.data.picsummary
           }
           let stuMessage = JSON.stringify(stutent)
           sessionStorage.setItem('stuMessage', stuMessage)
+          console.log(stuMessage, '00')
         } else if (body.code === errorCode) {
           // 处理失败
           console.log('错误提示：' + body.msg)
@@ -243,10 +251,11 @@
         console.log('on show')
       },
       getGrade () {
-        let storageMessage = JSON.parse(sessionStorage.getItem('info'))
-        console.log(storageMessage, '34567')
         this.$http.get('/api/medalManage_listMedal.do?method=getAllMedalList', {
-          params: storageMessage
+          params: {
+            sid: this.storageMessage.sid,
+            userid: this.storageMessage.userid
+          }
         }).then(res => {
           // 成功的状态
           let successCode = '0'
@@ -392,7 +401,7 @@
     padding: 2px 10px;
   }
 
-  .central-main .flex-demo .num-title{
+  .central-main .flex-demo .num-title {
     font-size: 0.22rem;
   }
 
@@ -418,7 +427,6 @@
     width: 100%;
     height: 100%;
   }
-
 
   .my-main {
     background-color: #f1e3bb;

@@ -16,7 +16,6 @@
     </alert-box>
     <public-top></public-top>
     <div class="con">
-      <input type="search" class="search" placeholder="搜索">
       <div class="tab">
         <ul>
           <li :class="{active:tabsActive===index}" v-for="(item, index) in rawDataTabs" :key="item.id"
@@ -33,7 +32,7 @@
             {{item.isleft===1?'左侧货架':'右侧货架'}}</p>
           <ul v-if="nowIndex.index === index">
             <li class="children-text" v-if="item" v-for="(items, indexs) in item.sidedata"
-                :class="{change:indexs == nowIndex.indexs}" @click="changelist(index, indexs)">{{items.floor}}
+                :class="{change:indexs == nowIndex.indexs}" @click="changelist(index, indexs)">{{items.floor | capitalize}}
             </li>
           </ul>
         </div>
@@ -42,8 +41,7 @@
         <!--<scroller lock-x height="200px" @on-scroll-bottom="onScrollBottom" ref="scrollerBottom"-->
         <!--:scroll-bottom-offst="200" class="main-scroller">-->
         <div class="box2" v-if="rawData[nowIndex.index]">
-          <flexbox>
-            <flexbox-item :span="1/2" v-if="rawData[nowIndex.index].sidedata[nowIndex.indexs]"
+            <div class="flexbox" v-if="rawData[nowIndex.index].sidedata[nowIndex.indexs]"
                           v-for="item in rawData[nowIndex.index].sidedata[nowIndex.indexs].malldata" :key="item.id">
               <div class="flex-demo">
                 <div class="img" @click="showAlert(item)">
@@ -57,8 +55,7 @@
                   {{item.integral}}
                 </div>
               </div>
-            </flexbox-item>
-          </flexbox>
+            </div>
         </div>
         <!--</scroller>-->
       </div>
@@ -95,6 +92,10 @@
         alert: true,
         rawDataTabs: [],
         rawData: {}
+      }
+    },
+    filters: {
+      capitalize: function (value) {
       }
     },
     methods: {
@@ -134,7 +135,7 @@
         // TODO: 在这里调用 api /api/vendingmachinemanage_listVendingMachine.do?method=getVendingMachineList
         let storageMessage = JSON.parse(sessionStorage.getItem('info'))
         console.log(storageMessage, '34567')
-        this.$http.get('/api/vendingmachinemanage_listVendingMachine.do?method=getVendingMachineList', {
+        this.$http.get(this.HOST + '/vendingmachinemanage_listVendingMachine.do?method=getVendingMachineList', {
           params: storageMessage
         }).then(res => {
           // 成功的状态
@@ -165,7 +166,7 @@
         let storageMessage = JSON.parse(sessionStorage.getItem('info'))
         let userid = storageMessage.userid
         let sid = storageMessage.sid
-        this.$http.get('/api/vendingMachineInventoryManage_listVendingMachineInventory.do?method=getMallItemsList', {
+        this.$http.get(this.HOST + '/vendingMachineInventoryManage_listVendingMachineInventory.do?method=getMallItemsList', {
           params: {
             userid: userid,
             sid: sid,
@@ -183,7 +184,6 @@
           if (body.code === successCode) {
             // 处理数据
             this.rawData = body.data
-            console.log(this.rawData)
             // base64
             this.transcoding()
           } else if (body.code === errorCode) {
@@ -227,18 +227,18 @@
     margin-top: 1.8rem;
   }
 
-  .search {
-    border-radius: 5px;
-    width: 90%;
-    height: 20px;
-    line-height: 20px;
-    text-align: center;
-    background-color: #fff;
-    margin: 0 auto;
-    margin-top: 10px;
-    display: block;
-    font-size: 12px;
-  }
+  /*.search {*/
+    /*border-radius: 5px;*/
+    /*width: 90%;*/
+    /*height: 20px;*/
+    /*line-height: 20px;*/
+    /*text-align: center;*/
+    /*background-color: #fff;*/
+    /*margin: 0 auto;*/
+    /*margin-top: 10px;*/
+    /*display: block;*/
+    /*font-size: 12px;*/
+  /*}*/
 
   .side-con {
     width: 100%;
@@ -309,7 +309,7 @@
     display: none;
   }
 
-  .vux-flexbox-item {
+  .flexbox {
     height: 3.3rem;
     background-color: #E0CC95;
     border-radius: 0.16rem;
@@ -321,6 +321,7 @@
     background-repeat: no-repeat;
     margin-bottom: 0.2rem;
     font-weight: bold;
+    padding: 0 0.07rem;
   }
 
   .tab .active {

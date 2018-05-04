@@ -1,16 +1,17 @@
 <template>
   <div class="recharge">
-    <div class="re-top">
-      <div class="re-pic">
-        <img src="" alt="">
-      </div>
-      <div class="re-now">
-        154
-      </div>
-    </div>
+    <publicTop></publicTop>
+    <!--<div class="re-top">-->
+      <!--<div class="re-pic">-->
+        <!--<img src="" alt="">-->
+      <!--</div>-->
+      <!--<div class="re-now">-->
+        <!--154-->
+      <!--</div>-->
+    <!--</div>-->
     <div class="re-con">
-      <p>扫描二维码进行扫描</p>
-      <div class="code">二维码</div>
+      <p>扫描二维码进行充值</p>
+      <div class="code">积分卡示意图</div>
       <div class="button" @click=" arrowChange ">
         <img src="../assets/img/map/recharge_button_start_scanning_n.png" alt="" v-if="isup">
         <img src="../assets/img/map/recharge_button_start-scanning_pre.png" alt="" v-else="!isup">
@@ -19,6 +20,7 @@
   </div>
 </template>
 <script>
+  import publicTop from '../components/publicTop'
   export default {
     name: 'recharge',
     data () {
@@ -30,6 +32,9 @@
       arrowChange: function () {
         this.isup = false
       }
+    },
+    components: {
+      publicTop
     }
   }
 </script>
@@ -84,6 +89,7 @@
   }
 
   .re-con {
+    margin-top: 1rem;
     text-align: center;
     height: auto;
     flex: 1;
@@ -92,8 +98,10 @@
 
   .re-con p {
     font-weight: bold;
-    font-size: 16px;
+    font-size: 0.42rem;
     margin-bottom: 30px;
+    color: #FFF;
+    text-shadow: 0 1px #6f3736, 1px 0 #6f3736, -1px 0 #6f3736, 0 -1px #6f3736;
   }
 
   .re-con .code {

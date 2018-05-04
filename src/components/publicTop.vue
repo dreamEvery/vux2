@@ -11,10 +11,13 @@
     <div class="public-fr">
       <div @click="handleSidebar('gift')" class="gift">{{data.itemsnum}}
       </div>
-      <div class="integral">
-        {{data.totolintegral}}
-      </div>
+      <router-link to="/home/recharge">
+        <div class="integral">
+          {{data.totolintegral}}
+        </div>
+      </router-link>
     </div>
+    <router-view></router-view>
   </div>
 </template>
 <script>
@@ -26,8 +29,10 @@
       }
     },
     created () {
-      let stutendMess = JSON.parse(sessionStorage.getItem('stuMessage'))
-      this.data = stutendMess
+      let stuMessage = JSON.parse(sessionStorage.getItem('stuMessage'))
+      console.log(stuMessage)
+      this.data = stuMessage
+      console.log(this.data, '本地')
     }
   }
 </script>

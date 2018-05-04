@@ -3,8 +3,12 @@
     <div class="head-top">
       <div class="go-back" @click="handleSidebar('home/index')">
       </div>
-      <div class="head-portrait"></div>
-      <p>当前头像</p>
+      <div class="nowPic">
+        <div class="head-portrait">
+          <img alt="">
+        </div>
+        <p>当前头像</p>
+      </div>
     </div>
     <div class="head-content">
       <div class="head-box">
@@ -12,81 +16,54 @@
           <div class="box-title">
             默认头像
           </div>
-          <flexbox>
-            <flexbox-item>
-              <div class="flex-demo"></div>
-            </flexbox-item>
-            <flexbox-item>
-              <div class="flex-demo"></div>
-            </flexbox-item>
-            <flexbox-item>
-              <div class="flex-demo"></div>
-            </flexbox-item>
-            <flexbox-item>
-              <div class="flex-demo"></div>
-            </flexbox-item>
-            <flexbox-item>
-              <div class="flex-demo"></div>
-            </flexbox-item>
-          </flexbox>
-          <flexbox>
-            <flexbox-item>
-              <div class="flex-demo"></div>
-            </flexbox-item>
-            <flexbox-item>
-              <div class="flex-demo"></div>
-            </flexbox-item>
-            <flexbox-item>
-              <div class="flex-demo"></div>
-            </flexbox-item>
-            <flexbox-item>
-              <div class="flex-demo"></div>
-            </flexbox-item>
-            <flexbox-item>
-              <div class="flex-demo"></div>
-            </flexbox-item>
-          </flexbox>
+          <ul class="defultPic">
+            <li v-for="item in info">
+              <div class="picBox">
+                <img :src="item.picsummary" alt="">
+              </div>
+            </li>
+          </ul>
         </div>
-        <div class="box second-box">
-          <div class="box-title">
-            AR拍照（7）
-            <span>去拍照</span>
-          </div>
-          <flexbox>
-            <flexbox-item>
-              <div class="flex-demo">头像</div>
-            </flexbox-item>
-            <flexbox-item>
-              <div class="flex-demo">头像</div>
-            </flexbox-item>
-            <flexbox-item>
-              <div class="flex-demo">头像</div>
-            </flexbox-item>
-            <flexbox-item>
-              <div class="flex-demo">头像</div>
-            </flexbox-item>
-            <flexbox-item>
-              <div class="flex-demo">头像</div>
-            </flexbox-item>
-          </flexbox>
-          <flexbox>
-            <flexbox-item>
-              <div class="flex-demo">头像</div>
-            </flexbox-item>
-            <flexbox-item>
-              <div class="flex-demo">头像</div>
-            </flexbox-item>
-            <flexbox-item>
-              <div class="flex-demo">头像</div>
-            </flexbox-item>
-            <flexbox-item>
-              <div class="flex-demo">头像</div>
-            </flexbox-item>
-            <flexbox-item>
-              <div class="flex-demo">头像</div>
-            </flexbox-item>
-          </flexbox>
-        </div>
+        <!--<div class="box second-box">-->
+          <!--<div class="box-title">-->
+            <!--AR拍照（7）-->
+            <!--<span>去拍照</span>-->
+          <!--</div>-->
+          <!--<flexbox>-->
+            <!--<flexbox-item>-->
+              <!--<div class="flex-demo">头像</div>-->
+            <!--</flexbox-item>-->
+            <!--<flexbox-item>-->
+              <!--<div class="flex-demo">头像</div>-->
+            <!--</flexbox-item>-->
+            <!--<flexbox-item>-->
+              <!--<div class="flex-demo">头像</div>-->
+            <!--</flexbox-item>-->
+            <!--<flexbox-item>-->
+              <!--<div class="flex-demo">头像</div>-->
+            <!--</flexbox-item>-->
+            <!--<flexbox-item>-->
+              <!--<div class="flex-demo">头像</div>-->
+            <!--</flexbox-item>-->
+          <!--</flexbox>-->
+          <!--<flexbox>-->
+            <!--<flexbox-item>-->
+              <!--<div class="flex-demo">头像</div>-->
+            <!--</flexbox-item>-->
+            <!--<flexbox-item>-->
+              <!--<div class="flex-demo">头像</div>-->
+            <!--</flexbox-item>-->
+            <!--<flexbox-item>-->
+              <!--<div class="flex-demo">头像</div>-->
+            <!--</flexbox-item>-->
+            <!--<flexbox-item>-->
+              <!--<div class="flex-demo">头像</div>-->
+            <!--</flexbox-item>-->
+            <!--<flexbox-item>-->
+              <!--<div class="flex-demo">头像</div>-->
+            <!--</flexbox-item>-->
+          <!--</flexbox>-->
+        <!--</div>-->
       </div>
     </div>
   </div>
@@ -106,28 +83,25 @@
     name: 'head-pic',
     data () {
       return {
-        info: {}
+        info: {},
+        pic: ' ',
+        mine: null
       }
     },
     created: function () {
       let storageMessage = JSON.parse(sessionStorage.getItem('info'))
-      console.log(storageMessage, '34567')
-      this.$http.get('/api/headPortraitManage_listHeadPortrait.do?method=getHeadPortraitList', {
+      this.mine = JSON.parse(sessionStorage.getItem('stuMessage'))
+      this.$http.get(this.HOST + '/headPortraitManage_listHeadPortrait.do?method=getHeadPortraitList', {
         params: storageMessage
       }).then(res => {
         // 成功的状态
-        let successCode = '0'
+        let successCode = 0
         // 失败的状态
-        let errorCode = '1'
-        console.log(res, '原始数据')
+        let errorCode = 1
         let body = res.body
-        console.log(body, '后台返回的数据')
-        // 先判断状态
-        // "code":返回状态码,"data":"应该业务数据","msg":"错误提示"
-        // 所以我优先判断 code
         if (body.code === successCode) {
           // 处理数据
-          this.info = body
+          this.info = body.data
         } else if (body.code === errorCode) {
           // 处理失败
           console.log('错误提示：' + body.msg)
@@ -146,6 +120,10 @@
 </script>
 
 <style scoped>
+  .head-top .nowPic {
+    margin-top: 1.6rem
+  }
+
   .head-content {
     padding: 10px 25px;
   }
@@ -199,7 +177,6 @@
   .head-top p {
     font-size: 10px;
     color: #999;
-    margin-top: 2.4rem;
   }
 
   .box {
@@ -219,6 +196,28 @@
     padding: 0 20px;
     font-size: 14px;
     color: #75695B;
+  }
+
+  .defultPic {
+    /*display: flex;*/
+    /*flex-direction: row;*/
+    /*flex-wrap: wrap;*/
+    /*justify-content: space-between;*/
+    /*align-content: center;*/
+    margin-top: 0.2rem;
+    overflow: hidden;
+  }
+
+  .defultPic li {
+    width: 1.2rem;
+    height: 1.2rem;
+    border-radius: 50%;
+    float: left;
+  }
+  .defultPic li .picBox{width: 1rem;height: 1rem;margin: 0 auto;}
+
+  .defultPic li img {
+    border-radius: 50%;
   }
 
   .box .vux-flexbox {

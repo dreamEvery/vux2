@@ -32,7 +32,7 @@
       </div>
       <div class="forget-div">
         <!--<router-link to='/register' class="register-a">去注册</router-link>-->
-        <router-link to='/forget' class="forget-a">忘记密码?</router-link>
+        <router-link to='/forgetPassword' class="forget-a">忘记密码?</router-link>
       </div>
       <button class="btn-login" type="button" @click="btn_type && login()">登录</button>
     </div>
@@ -89,7 +89,7 @@
       getPost () {
         let that = this
         let md5Password = this.$md5(that.password).toString()
-        this.$http.post('/api/userManage_loginUser.do?method=loginRoleForMobelV3', {
+        this.$http.post(this.HOST + '/userManage_loginUser.do?method=loginRoleForMobelV3', {
           username: that.phone,
           password: md5Password
         }).then(res => {
@@ -111,7 +111,7 @@
               }
               if (that.data.userRoles[i].roleFlag === 'P' && that.data.userRoles[i].status === '1') {
                 that.roleid = that.data.userRoles[i].roleid
-                this.$http.post('/api/userManage_loginUser.do?method=userLoginForMobel', {
+                this.$http.post(this.HOST + '/userManage_loginUser.do?method=userLoginForMobel', {
                   username: that.phone,
                   password: md5Password,
                   roleid: that.roleid
@@ -124,7 +124,9 @@
                     userid: that.data.userid,
                     studentid: that.data.students[i].id,
                     name: that.data.students[i].name,
-                    classname: that.data.students[i].classname
+                    classname: that.data.students[i].classname,
+                    school: that.data.students[i].school,
+                    gradeId: that.data.students[i].gid
                   }
                   console.log(userInfo, '333')
                   let objInfo = JSON.stringify(userInfo)
@@ -137,7 +139,6 @@
               }
             }
             that.btn_type = false
-            alert('登录成功')
             that.$router.push({   // 你需要接受路由的参数再跳转
               path: '/home/index'
             })
@@ -212,7 +213,6 @@
   }
 
   .form-div div {
-    border: 1px solid #ccc;
     padding: 0.16rem;
     margin-bottom: 0.2rem;
     overflow: hidden;
@@ -247,7 +247,7 @@
   }
 
   .foot-firm {
-    position: fixed;
+    position: absolute;
     bottom: 0.2rem;
     width: 100%;
     text-align: center;

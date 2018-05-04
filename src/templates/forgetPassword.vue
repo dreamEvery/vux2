@@ -1,36 +1,41 @@
 <template>
   <div class="password">
-    <div class="phoneNum">
-      <input type="text" placeholder="请输入手机号码" v-model="phoneNum">
-      <p class="falseHints" v-if="show"><span>
+    <heared></heared>
+    <div class="password-con">
+      <div class="phoneNum">
+        <input type="text" placeholder="请输入手机号码" v-model="phoneNum">
+        <p class="falseHints" v-if="show"><span>
           <i>
             <img src="../assets/img/notice.png" alt="">
           </i>
            请输入正确的手机号码
         </span>
-      </p>
-    </div>
-    <div class="verificationCode">
-      <input type="text" placeholder="请输入验证码" v-model="verificationNum">
-      <button class="codeBtn" @click="getVerifyCode" :disabled="disabled">{{btnText}}</button>
-      <p class="falseHints" v-if="num"><span>
+        </p>
+      </div>
+      <div class="verificationCode">
+        <input type="text" placeholder="请输入验证码" v-model="verificationNum">
+        <button class="codeBtn" :disabled="disabled" @click="getVerifyCode">{{btnText}}</button>
+        <p class="falseHints" v-if="num"><span>
           <i>
             <img src="../assets/img/notice.png" alt="">
           </i>
            验证码不正确
         </span>
-      </p>
-    </div>
-    <div class="next">
-      <rout-link class="nextBtn" :to="{path:'/Numpassword',params:{phone: phoneNum}}">
-        <button @click="next">下一步</button>
-      </rout-link>
+        </p>
+      </div>
+      <div class="next">
+        <rout-link class="nextBtn" :to="{path:'/newpassword',params:{phone: phoneNum}}">
+          <button @click="next">下一步</button>
+        </rout-link>
+      </div>
     </div>
     <router-view></router-view>
   </div>
 </template>
 
 <script>
+  import heared from '../components/heared'
+
   export default ({
     name: 'password',
     data () {
@@ -40,8 +45,12 @@
         show: false,
         num: false,
         disabled: false,
-        btnText: '获取验证码'
+        btnText: '获取验证码',
+        timer: ''
       }
+    },
+    components: {
+      heared
     },
     created () {
     },
@@ -53,21 +62,21 @@
         } else if (this.verificationNum === '' || this.verificationNum === true) {
           this.num = true
         } else {
-          this.getVerifyCode()
+          // this.getVerifyCode()
         }
       },
       getVerifyCode () {
-        this.$http.post('/api/userManage_loginUser.do?method=retPassWord',
+        this.$http.post(this.HOST + '/userManage_loginUser.do?method=validMessage',
           {num: this.phoneNum}
         ).then(res => {
           // get body data
           this.disabled = true
-          let time = 30
-          let timer = setInterval(() => {
+          let time = 60
+          this.timer = setInterval(() => {
             if (time <= 0) {
               this.disabled = false
               this.btnText = '重新获取验证码'
-              clearInterval(timer)
+              clearInterval(this.timer)
             } else {
               this.btnText = time + 's'
               time--
@@ -75,7 +84,6 @@
           }, 1000)
         }, res => {
           // error callback
-          console.log('error.message')
           this.disabled = false
         })
       }
@@ -89,13 +97,16 @@
   }
 
   .password {
-    padding-top: 0.8rem;
-    padding-left: 0.4rem;
-    padding-right: 0.4rem;
+    background-color: #efeff3;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
   }
 
   /*.password div {*/
-    /*text-align: center;*/
+  /*text-align: center;*/
   /*}*/
 
   .password input {
@@ -108,11 +119,16 @@
     border-radius: 0.6rem;
     background-color: #fff;
   }
+  .password-con{padding: 1rem 0.4rem}
 
   input {
     padding-left: 14px;
   }
-  .next .nextBtn{display: block;}
+
+  .next .nextBtn {
+    display: block;
+  }
+
   .next button {
     margin-top: 1.2rem;
     background-color: #FD8A32;
@@ -129,7 +145,8 @@
     width: 64%;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
-    float: left;display: block;
+    float: left;
+    display: block;
   }
 
   .verificationCode .codeBtn {

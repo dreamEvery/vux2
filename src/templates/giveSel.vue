@@ -2,7 +2,7 @@
   <div class="give-box">
     <div class="public-top">
       <div class="public-back" @click="back()">
-        <img src="../assets/img/return.png"/>
+        <img src="../assets/img/map/return(2).png"/>
       </div>
     </div>
     <div class='give-bg'>
@@ -68,7 +68,7 @@
       },
       getGive () {
         let storageMessage = JSON.parse(sessionStorage.getItem('info'))
-        this.$http.get('/api/mallItemsManage_listMallItems.do?method=getMyMallItemsList', {
+        this.$http.get(this.HOST + '/mallItemsManage_listMallItems.do?method=getMyMallItemsList', {
           params: storageMessage
         }).then(res => {
           // 成功的状态

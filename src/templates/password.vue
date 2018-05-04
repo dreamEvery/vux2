@@ -1,25 +1,28 @@
 <template>
   <div class="newPassword">
-    <div class="newNum">
-      <input type="password" v-model="newNum" placeholder="新的密码">
-    </div>
-    <div class="againNum">
-      <input type="password" v-model="confirm" placeholder=" 确认密码">
-      <p class="falseHints" v-if="num"><span>
+    <heared></heared>
+    <div class="newPassword-con">
+      <div class="newNum">
+        <input type="password" v-model="newNum" placeholder="新的密码">
+      </div>
+      <div class="againNum">
+        <input type="password" v-model="confirm" placeholder=" 确认密码">
+        <p class="falseHints" v-if="num"><span>
           <i>
             <img src="../assets/img/notice.png" alt="">
           </i>
            两次密码不一样
         </span>
-      </p>
-    </div>
-    <div class="submission">
-      <button @click="submission">提交</button>
+        </p>
+      </div>
+      <div class="submission">
+        <button @click="submission">提交</button>
+      </div>
     </div>
   </div>
 </template>
-
 <script>
+  import heared from '../components/heared'
   export default ({
     name: 'newPassword',
     data () {
@@ -28,6 +31,9 @@
         confirm: '',
         num: false
       }
+    },
+    components: {
+      heared
     },
     created () {
     },
@@ -44,7 +50,7 @@
       getVerifyCode () {
         let num = this.$route.params.phone
         console.log(num)
-        this.$http.post('/api/userManage_loginUser.do?method=validMessage',
+        this.$http.post(this.HOST + '/userManage_loginUser.do?method=validMessage',
           {num: num, newPassword: this.newNum}
         ).then(res => {
           // get body data
@@ -64,17 +70,12 @@
   body {
     background-color: #EAEAEA;
   }
-
-  .newPassword {
-    padding-top: 0.8rem;
-    padding-left: 0.4rem;
-    padding-right: 0.4rem;
-  }
-
   /*.password div {*/
   /*text-align: center;*/
   /*}*/
-
+  .newPassword-con{
+    padding: 1rem 0.4rem
+  }
   .newNum input {
     margin-bottom: 0.3rem
   }

@@ -5,7 +5,7 @@
     <div class="give-parent">
       <div class="public-top">
         <div class="public-back" @click="goIndex">
-          <img src="../assets/img/map/return(2).png"/>
+          <img src="../assets/img/return.png"/>
         </div>
       </div>
       <div class="public-bg">
@@ -14,7 +14,7 @@
             <div class="give-gift">
               <span>赠送礼品</span>
               <router-link to='/give/giveSel'>
-                <input type="text" readonly placeholder='请选择礼品'/>
+                <input type="text" readonly placeholder='请选择礼品' v-model="gift_selOn"/>
                 <i class="i1">
                   <img src="../assets/img/gift_icon_right.png"/>
                 </i>
@@ -24,7 +24,7 @@
           <div class="give-list">
             <div class="give-gift">
               <span>赠送积分</span>
-              <input class="jifen-inp" type="text" placeholder="请输入积分"/>
+              <input class="jifen-inp" type="text" placeholder="请输入积分" v-model="jifen_inp"/>
               <!--<em class="jifen-em" v-show="jifen_type">积分</em>-->
               <i class="i1">
                 <img src="../assets/img/gift_icon_right.png"/>
@@ -56,9 +56,9 @@
           <span>赠送给:</span>
           <div>
             <ul class="toBox-list">
-              <li v-for="(item,index) in zengsongList" :key="item.id">
-                <img :src="item.picsummary"/>
-                <p class="close-img" @click="closes(item,index)">
+              <li v-for="(zengsongList,index) in zengsongList" :key="zengsongList.id">
+                <img :src="zengsongList.img"/>
+                <p class="close-img" @click="closes(zengsongList,index)">
                   <img src="../assets/img/close.png"/>
                 </p>
               </li>
@@ -69,46 +69,45 @@
       <div class="public-bg">
         <ul class="select-box">
           <li>
-            <span>{{school_on.name}}</span>
+            <span>{{school_on}}</span>
             <p @click="select(1)"><img src="../assets/img/gift_icon_lower.png"/></p>
             <ul :class="{'dropdown-list_active':activeType==1}" class="dropdown-list">
-              <li @click="schoolOn(item)" v-for="item in schoolList">
-                {{item.name}}
+              <li @click="schoolOn(school,index)" v-for="(school,index) in schoolList" :key="school.id">
+                {{school.name}}
               </li>
             </ul>
           </li>
           <li>
-            <span>{{grade_on.name}}</span>
+            <span>{{grade_on}}</span>
             <p @click="select(2)"><img src="../assets/img/gift_icon_lower.png"/></p>
             <ul :class="{'dropdown-list_active':activeType==2}" class="dropdown-list">
-              <li @click="gradeOn(item)" v-for="item in gradeList">
-                {{item.name}}
+              <li @click="gradeOn(grade, grade.id)" v-for="(grade,index) in gradeList" :key="grade.id">
+                {{grade.name}}
               </li>
             </ul>
           </li>
           <li>
-            <span>{{class_on.name}}</span>
+            <span>{{class_on}}</span>
             <p @click="select(3)"><img src="../assets/img/gift_icon_lower.png"/></p>
             <ul :class="{'dropdown-list_active':activeType==3}" class="dropdown-list">
-              <li @click="classOn(item)" v-for="item in classList">
-                {{item.name}}
+              <li @click="classOn(classList)" v-for="(classList,index) in classList" :key="classList.id">
+                {{classList.name}}
               </li>
             </ul>
           </li>
         </ul>
         <ul class="img-list">
           <li v-for="(i,index) in classmateList">
-            <img :src=i.picsummary @click='zengsong(i,index)'/>
+            <img :src=i.picsummary  @click='zengsong(i,index)' :key="i.id"/>
             <p>{{i.studentname}}</p>
           </li>
         </ul>
       </div>
       <div class="public-bg">
-        <div class="lately-box" v-if="this.giftPeople !== null">
+        <div class="lately-box">
           <h3>最近赠送人：</h3>
           <ul class="lately-list">
             <li v-for="peopleList in giftPeople">
-              <img :src=peopleList.picsummary alt="" @click='zengsong(i,index)'>
             </li>
           </ul>
         </div>
@@ -144,7 +143,7 @@
     data () {
       return {
         jifen_type: false,
-        giftPeople: null,
+        giftPeople: [],
         jifen_inp: ' ',
         nowNum: {},
         isSuccess: false,
@@ -153,10 +152,10 @@
           text: '赠送礼品',
           choose: '选择礼品'
         },
-        {
-          text: '赠送积分',
-          choose: ' 输入积分'
-        }
+          {
+            text: '赠送积分',
+            choose: ' 输入积分'
+          }
           // 失败的状态
         ],
         /* 选择礼品 */
@@ -175,8 +174,8 @@
         niming_text: '开启',
         swtich: true,
         on: '/src/assets/img/integral_icon_Selected.png',
-        off: '/src/assets/img/integral_icon_open.png',
-        storageMessage: null
+        off: '/src/assets/img/integral_icon_open.png'
+
       }
     },
     mounted () {
@@ -198,143 +197,61 @@
       if (this.$route.query.transmission) {
         // 路由传递的参数
         this.routerParams = this.$route.query.transmission
-        console.log(this.routerParams.mallitemsid, '4567890')
+        console.log(this.routerParams, '4567890')
         // 存储总积分
         let stutendMess = JSON.parse(sessionStorage.getItem('stuMessage'))
         this.nowNum = stutendMess.totolintegral
         console.log(this.nowNum, 'pppp')
       }
-      this.storageMessage = JSON.parse(sessionStorage.getItem('info'))
       this.school()
-      this.getGradeList()
-      this.getGiftPeople()
+      let storageMessage = JSON.parse(sessionStorage.getItem('info'))
+      this.$http.get(this.HOST + '/vendingMachineInventoryManage_listVendingMachineInventory.do?method=getStudentList', {
+        params: storageMessage
+      }).then(res => {
+        // 成功的状态
+        let successCode = 0
+        let errorCode = 1
+        let body = res.body
+        // 先判断状态
+        if (body.code === successCode) {
+          // 处理数据
+          this.classmateList = body.data
+        } else if (body.code === errorCode) {
+          // 处理失败
+          console.log('错误提示：' + body.msg)
+        }
+      }, error => {
+        // error callback
+        console.log(error)
+      })
+      // 最新赠送人
+      this.$http.get(this.HOST + '/exchangeRecordManage_listExchangeRecord.do?method=getGiveStudentList', {
+        params: storageMessage
+      }).then(res => {
+        // 成功的状态
+        let successCode = '0'
+        let errorCode = '1'
+        let body = res.body
+        // 先判断状态
+        if (body.code === successCode) {
+          // 处理数据
+          this.giftPeople = body.data
+        } else if (body.code === errorCode) {
+          // 处理失败
+          console.log('错误提示：' + body.msg)
+        }
+      }, error => {
+        // error callback
+        console.log(error)
+      })
     },
     methods: {
-      // 获取最新赠送人
-      getGiftPeople () {
-        this.$http.get(this.HOST + '/exchangeRecordManage_listExchangeRecord.do?method=getGiveStudentList', {
-          params: {
-            userid: this.storageMessage.userid,
-            sid: this.storageMessage.sid,
-            studentid: this.storageMessage.studentid
-          }
-        }).then(res => {
-          // 成功的状态
-          let successCode = '0'
-          let errorCode = '1'
-          let body = res.body
-          // 先判断状态
-          if (body.code === successCode) {
-            // 处理数据
-            if (body.data.length) {
-              this.giftPeople = body.data
-            } else {
-              this.giftPeople = null
-            }
-            console.log(this.giftPeople, 'this.giftPeople')
-          } else if (body.code === errorCode) {
-            // 处理失败
-            console.log('错误提示：' + body.msg)
-          }
-        }, error => {
-          // error callback
-          console.log(error)
-        })
-      },
-      // 获取学生列表
-      getClassmateList () {
-        this.$http.get(this.HOST + '/vendingMachineInventoryManage_listVendingMachineInventory.do?method=getStudentList', {
-          params: {
-            sid: this.school_on.sid,
-            userid: this.storageMessage.userid,
-            gradeId: this.grade_on.id,
-            classid: this.class_on.id
-          }
-        }).then(res => {
-          // 成功的状态
-          let successCode = 0
-          let errorCode = 1
-          let body = res.body
-          // 先判断状态
-          if (body.code === successCode) {
-            // 处理数据
-            this.classmateList = body.data
-          } else if (body.code === errorCode) {
-            // 处理失败
-            console.log('错误提示：' + body.msg)
-          }
-        }, error => {
-          // error callback
-          console.log(error)
-        })
-      },
-      // 获取年级
-      getGradeList (id) {
-        this.$http.get(this.HOST + '/mallItemsManage_listMallItemsInfo.do?method=getAllGrade', {
-          params: {
-            userid: this.storageMessage.userid,
-            sid: id || this.storageMessage.sid
-          }
-        }).then(res => {
-          // 成功的状态
-          let successCode = '0'
-          let errorCode = '1'
-          let body = res.body
-          // 先判断状态
-          if (body.code === successCode) {
-            // 处理数据
-            this.gradeList = body.data
-            for (let i = 0; i < this.gradeList.length; i++) {
-              this.gradeList[i].name = Base64.decode(this.gradeList[i].name)
-              this.grade_on = this.gradeList[0]
-            }
-            this.getClassList()
-          } else if (body.code === errorCode) {
-            // 处理失败
-            console.log('错误提示：' + body.msg)
-          }
-        }, error => {
-          // error callback
-          console.log(error)
-        })
-      },
-      // 获取班级
-      getClassList (id) {
-        this.$http.get(this.HOST + '/exchangeRecordManage_listExchangeRecord.do?method=getAllClassTableList', {
-          params: {
-            userid: this.storageMessage.userid,
-            sid: this.storageMessage.sid,
-            gradeId: id || this.grade_on.id
-          }
-        }).then(res => {
-          // 成功的状态
-          let successCode = '0'
-          let errorCode = '1'
-          let body = res.body
-          // 先判断状态
-          if (body.code === successCode) {
-            // 处理数据
-            this.classList = body.data
-            for (let i = 0; i < this.classList.length; i++) {
-              this.classList[i].name = Base64.decode(this.classList[i].name)
-              this.class_on = this.classList[0]
-            }
-            this.getClassmateList()
-          } else if (body.code === errorCode) {
-            // 处理失败
-            console.log('错误提示：' + body.msg)
-          }
-        }, error => {
-          // error callback
-          console.log(error)
-        })
-      },
       // 学校接口
       school () {
+        console.log('获取学校')
+        let storageMessage = JSON.parse(sessionStorage.getItem('info'))
         this.$http.get(this.HOST + '/exchangeRecordManage_listExchangeRecord.do?method=getAllSchoolList', {
-          params: {
-            userid: this.storageMessage.userid
-          }
+          params: storageMessage
         }).then(res => {
           // 成功的状态
           let successCode = '0'
@@ -346,8 +263,10 @@
             this.schoolList = body.data
             for (let i = 0; i < this.schoolList.length; i++) {
               this.schoolList[i].name = Base64.decode(this.schoolList[i].name)
-              this.school_on = this.schoolList[0]
+              this.school_on = this.schoolList[0].name
             }
+            this.schoolOn({name: '华衣教育测试', id: 1}, 1)
+            this.activeType = !this.activeType
           } else if (body.code === errorCode) {
             // 处理失败
             console.log('错误提示：' + body.msg)
@@ -379,27 +298,102 @@
       },
       select (i) {
         this.activeType = i
+        console.log(this.activeType)
       },
       /* 选择学校 */
-      schoolOn (item) {
-        this.school_on = item
+      schoolOn (school, index) {
+        console.log(school, index)
+        this.school_on = school.name
         this.activeType = !this.activeType
-        this.getGradeList(item.id)
+        let storageMessage = JSON.parse(sessionStorage.getItem('info'))
+        storageMessage.sid = index
+        this.$http.get(this.HOST + '/mallItemsManage_listMallItemsInfo.do?method=getAllGrade', {
+          params: storageMessage
+        }).then(res => {
+          // 成功的状态
+          let successCode = '0'
+          let errorCode = '1'
+          let body = res.body
+          // 先判断状态
+          if (body.code === successCode) {
+            // 处理数据
+            this.gradeList = body.data
+            for (let i = 0; i < this.gradeList.length; i++) {
+              this.gradeList[i].name = Base64.decode(this.gradeList[i].name)
+              this.grade_on = this.gradeList[0].name
+            }
+            let storageMessage = JSON.parse(sessionStorage.getItem('info'))
+            storageMessage.gradeId = this.gradeList[0].id
+            this.$http.get(this.HOST + '/exchangeRecordManage_listExchangeRecord.do?method=getAllClassTableList', {
+              params: storageMessage
+            }).then(res => {
+              // 成功的状态
+              let successCode = '0'
+              let errorCode = '1'
+              let body = res.body
+              // 先判断状态
+              if (body.code === successCode) {
+                // 处理数据
+                this.classList = body.data
+                for (let i = 0; i < this.classList.length; i++) {
+                  this.classList[i].name = Base64.decode(this.classList[i].name)
+                  this.class_on = this.classList[0].name
+                }
+              } else if (body.code === errorCode) {
+                // 处理失败
+                console.log('错误提示：' + body.msg)
+              }
+            }, error => {
+              // error callback
+              console.log(error)
+            })
+          } else if (body.code === errorCode) {
+            // 处理失败
+            console.log('错误提示：' + body.msg)
+          }
+        }, error => {
+          // error callback
+          console.log(error)
+        })
       },
       /* 选择年级 */
-      gradeOn (item) {
-        this.grade_on = item
+      gradeOn (grade, id) {
+        this.grade_on = grade.name
         this.activeType = !this.activeType
-        this.getClassList(item.id)
+        let storageMessage = JSON.parse(sessionStorage.getItem('info'))
+        storageMessage.gradeId = id
+        this.$http.get(this.HOST + '/exchangeRecordManage_listExchangeRecord.do?method=getAllClassTableList', {
+          params: storageMessage
+        }).then(res => {
+          // 成功的状态
+          let successCode = '0'
+          let errorCode = '1'
+          let body = res.body
+          // 先判断状态
+          if (body.code === successCode) {
+            // 处理数据
+            this.classList = body.data
+            for (let i = 0; i < this.classList.length; i++) {
+              this.classList[i].name = Base64.decode(this.classList[i].name)
+              this.class_on = this.classList[0].name
+            }
+          } else if (body.code === errorCode) {
+            // 处理失败
+            console.log('错误提示：' + body.msg)
+          }
+        }, error => {
+          // error callback
+          console.log(error)
+        })
       },
       /* 选择班级 */
-      classOn (item) {
-        this.class_on = item
+      classOn (classList) {
+        this.class_on = classList.name
         this.activeType = !this.activeType
       },
       /* 赠送 */
       zengsong (i, index) {
-        // console.log(i, index)
+        // this.classmateList.splice(index, 1);
         if (this.zengsongList.length < 3) {
           if (this.zengsongList.indexOf(i) === -1) {
             this.zengsongList.push(i)
@@ -427,30 +421,13 @@
           this.swtich = this.on
         }
       },
-      // 存储赠送人id
-      newList () {
-        let studentid = []
-        if (this.zengsongList) {
-          for (let i = 0; i < this.zengsongList.length; i++) {
-            studentid.push(this.zengsongList[i].studentid)
-          }
-          return studentid.join(',')
-        }
-      },
       // 调用赠送接口
       give () {
-        let id = this.newList()
         this.$http.post('/api/exchangeRecordManage_addExchangeRecord.do?method=giveGift',
-          {
-            sid: this.storageMessage.sid,
-            userid: this.storageMessage.userid,
-            fromstudentid: this.storageMessage.studentid,
-            tostudentids: id,
-            mallitemid: this.mallitemid
-          }
+          {num: this.phoneNum}
         ).then(res => {
           // get body data
-          //  this.isSuccess = true
+          // this.isSuccess = true
         }, res => {
           // error callback
         })
@@ -463,15 +440,9 @@
 </script>
 
 <style scoped>
-  .give {
+  .give{
     background: #FFFBE8;
-    bottom: 0;
-    left: 0;
-    position: absolute;
-    top: 0;
-    right: 0;
   }
-
   .public-bg {
     background: #F1E3BB;
     width: 92%;
@@ -665,12 +636,12 @@
 
   .lately-list {
     padding: 0;
-    border-top: 1px solid #CCB185;
   }
 
   .niming-box {
     overflow: hidden;
     padding: 0.2rem 0.4rem;
+    border-top: 1px solid #CCB185;
   }
 
   .niming-box span {

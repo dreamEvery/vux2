@@ -5,7 +5,7 @@
       <img src="../assets/img/map/Game_icon_fanhui.png"/>
     </router-link>
     <div class="in-con">
-      <h3 class="ranking">已经击败90%小伙伴 </h3>
+      <h3 class="ranking"></h3>
       <div class="game-box">
         <a class="game-1" href="javascript:;">
           <img src="../assets/img/Game_img_Luck-draw.png"/>
@@ -41,19 +41,7 @@
     name: 'interaction',
     data () {
       return {
-        lists: [{
-          text: '小幸运! 幸运大抽奖游戏获得10积分!',
-          time: '12：05'
-        },
-        {
-          text: '小幸运! 幸运大抽奖游戏获得30积分!',
-          time: '11：05'
-        },
-        {
-          text: '小幸运! 幸运大抽奖游戏获得20积分!',
-          time: '10：05'
-        }
-        ]
+        lists: []
       }
     },
     components: {
@@ -69,7 +57,7 @@
     created: function () {
       let storageMessage = JSON.parse(sessionStorage.getItem('info'))
       console.log(storageMessage, '34567')
-      this.$http.get('/api/winningRecordManage_listWinningRecord.do?method=getWinningRecordList', {
+      this.$http.get(this.HOST + '/winningRecordManage_listWinningRecord.do?method=getWinningRecordList', {
         params: storageMessage
       }).then(res => {
         // 成功的状态

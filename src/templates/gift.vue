@@ -113,7 +113,7 @@
         if (type === 'Unreceived') storageMessage.status = 1
         if (type === 'Received') storageMessage.status = 2
         if (type === 'Send') storageMessage.status = 3
-        this.$http.get('/api/mallItemsManage_listMallItems.do?method=getMyMallItemsList', {
+        this.$http.get(this.HOST + '/mallItemsManage_listMallItems.do?method=getMyMallItemsList', {
           params: storageMessage
         }).then(res => {
           // 成功的状态

@@ -10,7 +10,7 @@
       <scroller :on-refresh="refresh" :on-infinite="infinite" class="scroller">
         <!-- content goes here -->
         <div class="my-scroll">
-          <div class="message-state" v-for="(item, index) in items" v-if="index < 5">
+          <div class="message-state" v-for="(item, index) in items">
             <div class="icon">
               <img src="../assets/img/map/my-news_icon_exchange.png" alt="">
             </div>
@@ -18,7 +18,7 @@
               <p class="mess-list-title">{{item.message}}</p>
               <span class="timer">{{item.exchangetime}}</span>
             </div>
-            <div class="delect" @click="singleDelete('index')">
+            <div class="delect" @click="singleDelete(item.id, index)">
               <img src="../assets/img/map/my-news_button_Delete_n.png" alt="">
             </div>
           </div>
@@ -43,7 +43,8 @@
         isShow: true,
         items: [],
         num: 10,
-        page: 1
+        page: 1,
+        storageMessage: null
       }
     },
     methods: {
@@ -57,7 +58,7 @@
       infinite (done) {
         console.log('infinite')
         this.page++
-         // let that = this
+        // let that = this
         done(true)
         this.getData(function (data) {
           for (let i = 0; i < data.length; i++) {
@@ -68,12 +69,12 @@
       getData (succse) {
         let storageMessage = JSON.parse(sessionStorage.getItem('info'))
         console.log(storageMessage, '34567')
-        this.$http.get('/api/mallItemsManage_listMallItems.do?method=getMallMessage', {
+        this.$http.get(this.HOST + '/mallItemsManage_listMallItems.do?method=getMallMessage', {
           params: storageMessage
         }).then(res => {
           // 成功的状态
           let successCode = 0
-          //   // 失败的状态
+          // 失败的状态
           let errorCode = 1
           console.log(res, '原始数据')
           let body = res.body
@@ -97,9 +98,8 @@
       // 全部删除
       delectAll () {
         this.isShow = false
-        let storageMessage = JSON.parse(sessionStorage.getItem('info'))
-        this.$http.post('/api/mallItemsManage_listMallItems.do?method=deleteAllMallMessage',
-          storageMessage
+        this.$http.post(this.HOST + '/mallItemsManage_listMallItems.do?method=deleteAllMallMessage',
+          {sid: this.storageMessage.sid, userid: this.storageMessage.userid, studentid: this.storageMessage.studentid}
         ).then(response => {
           // get body data
           this.items = []
@@ -108,10 +108,9 @@
         })
       },
       // 单个删除
-      singleDelete: function (index) {
-        let storageMessage = JSON.parse(sessionStorage.getItem('info'))
-        this.$http.post('/api/mallItemsManage_listMallItems.do?method=deleteMallMessage',
-          storageMessage
+      singleDelete (id, index) {
+        this.$http.post(this.HOST + '/mallItemsManage_listMallItems.do?method=deleteMallMessage',
+          {userid: this.storageMessage.userid, sid: this.storageMessage.sid, id: id}
         ).then(response => {
           // get body data
           this.items.splice(index, 1)
@@ -125,6 +124,7 @@
     },
     created () {
       // this.getData()
+      this.storageMessage = JSON.parse(sessionStorage.getItem('info'))
     }
   }
 </script>
