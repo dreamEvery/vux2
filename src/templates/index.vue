@@ -50,14 +50,17 @@
         </div>
       </div>
     </alert-box>
+    <alert-quit v-if="isAlertQuit" :name="isAlertQuit"></alert-quit>
     <div class="top">
       <div class="back">
-        <router-link to="/login">
+        <span @click="back()">
           <img src="../assets/img/map/my_button_return.png" alt="">
-        </router-link>
+        </span>
       </div>
       <div class="header-pic" @click="handleSidebar('head')">
-        <img :src="data.picsummary" alt="" :onerror="imgError">
+        <div class="head-main">
+          <img :src="data.picsummary || 'static/img/headPic.png'" alt="" :onerror="imgError">
+        </div>
       </div>
       <div class="introduce">
         <p class="name">{{data.stuname}}</p>
@@ -80,7 +83,7 @@
             </router-link>
           </div>
           <div>
-            <router-link to='/message'>
+            <router-link to='/message' class="message">
               <img src="../assets/img/map/my_icon_information.png" alt="">
             </router-link>
           </div>
@@ -105,7 +108,7 @@
               </flexbox-item>
               <flexbox-item>
                 <div class="flex-demo" @click="showAlert('myLv')">
-                  <p class="num">{{data.level}}</p>
+                  <p class="num">{{data.level || 0}}</p>
                   <p class="num-title">等级</p>
                 </div>
               </flexbox-item>
@@ -151,6 +154,7 @@
 <script>
   import { Base64 } from 'js-base64'
   import alertBox from '../components/alertBox'
+  import alertQuit from '../components/alertQuit'
   import {
     Grid,
     GridItem,
@@ -170,7 +174,8 @@
       FlexboxItem,
       Divider,
       Badge,
-      alertBox
+      alertBox,
+      alertQuit
     },
     name: 'index',
     watch: {
@@ -182,56 +187,13 @@
       return {
         data: {},
         gradeData: {},
+        isAlertQuit: false,
         alertBox: {},
         isAlertBox: false,
         alertType: null,  // 我的积分 myIntegral 我的等级 myLv
         imgError: 'this.src="' + require('../assets/img/map/icon.png') + '"',
         storageMessage: null
       }
-    },
-    created: function () {
-      this.storageMessage = JSON.parse(sessionStorage.getItem('info'))
-      this.$http.get(this.HOST + '/vendingMachineInventoryManage_listVendingMachineInventory.do?method=getUserInfoForMobilePhoneLogin', {
-        params: {
-          sid: this.storageMessage.sid,
-          userid: this.storageMessage.userid,
-          studentid: this.storageMessage.studentid
-        }
-      }).then(res => {
-        // 成功的状态
-        let successCode = '0'
-        // 失败的状态
-        let errorCode = '1'
-        // console.log(res, '原始数据')
-        let body = res.body
-        // console.log(body, '后台返回的数据')
-        // 先判断状态
-        // "code":返回状态码,"data":"应该业务数据","msg":"错误提示"
-        // 所以我优先判断 code
-        if (body.code === successCode) {
-          // 处理数据
-          body.stuname = Base64.decode(body.stuname)
-          body.classname = Base64.decode(body.classname)
-          this.data = body
-          console.log(this.data)
-          let stutent = {
-            stuname: this.data.stuname,
-            classname: this.data.classname,
-            currentintegral: this.data.currentintegral,
-            itemsnum: this.data.itemsnum,
-            picsummary: this.data.picsummary
-          }
-          let stuMessage = JSON.stringify(stutent)
-          sessionStorage.setItem('stuMessage', stuMessage)
-          console.log(stuMessage, '00')
-        } else if (body.code === errorCode) {
-          // 处理失败
-          console.log('错误提示：' + body.msg)
-        }
-      }, error => {
-        // error callback
-        console.log(error)
-      })
     },
     methods: {
       showAlert (type) {
@@ -251,7 +213,7 @@
         console.log('on show')
       },
       getGrade () {
-        this.$http.get('/api/medalManage_listMedal.do?method=getAllMedalList', {
+        this.$http.get(this.HOST + '/medalManage_listMedal.do?method=getAllMedalList', {
           params: {
             sid: this.storageMessage.sid,
             userid: this.storageMessage.userid
@@ -284,7 +246,54 @@
           // error callback
           console.log(error)
         })
+      },
+      back () {
+        this.isAlertQuit = true
       }
+    },
+    created: function () {
+      this.storageMessage = JSON.parse(sessionStorage.getItem('info'))
+      console.log(this.storageMessage, '99')
+      this.$http.get(this.HOST + '/vendingMachineInventoryManage_listVendingMachineInventory.do?method=getUserInfoForMobilePhoneLogin', {
+        params: {
+          sid: this.storageMessage.sid,
+          userid: this.storageMessage.userid,
+          studentid: this.storageMessage.studentid
+        }
+      }).then(res => {
+        // 成功的状态
+        let successCode = '0'
+        // 失败的状态
+        let errorCode = '1'
+        // console.log(res, '原始数据')
+        let body = res.body
+        // console.log(body, '后台返回的数据')
+        // 先判断状态
+        // "code":返回状态码,"data":"应该业务数据","msg":"错误提示"
+        // 所以我优先判断 code
+        if (body.code === successCode) {
+          // 处理数据
+          body.stuname = Base64.decode(body.stuname)
+          body.classname = Base64.decode(body.classname)
+          this.data = body
+          console.log(this.data)
+          let stutent = {
+            stuname: this.data.stuname,
+            classname: this.data.classname,
+            currentintegral: this.data.currentintegral,
+            itemsnum: this.data.itemsnum,
+            picsummary: this.data.picsummary
+          }
+          let stuMessage = JSON.stringify(stutent)
+          sessionStorage.setItem('stuMessage', stuMessage)
+        } else if (body.code === errorCode) {
+          // 处理失败
+          console.log('错误提示：' + body.msg)
+        }
+      }, error => {
+        // error callback
+        console.log(error)
+      })
     }
   }
 </script>
@@ -303,7 +312,6 @@
 
   .top {
     width: 100%;
-    height: 165px;
     position: relative;
     padding-right: 0.76rem;
     padding-left: 0.76rem;
@@ -313,8 +321,8 @@
 
   .back {
     position: absolute;
-    width: 0.6rem;
-    right: 0.8rem;
+    width: 0.7rem;
+    right: 0.7rem;
     top: 1.2rem;
   }
 
@@ -324,12 +332,17 @@
   }
 
   .header-pic {
-    width: 1.36rem;
-    height: 1.36rem;
+    padding: 0.054rem 0.04rem;
+    width: 1.4rem;
+    height: 1.4rem;
     margin: 0 auto;
     border-radius: 50%;
     overflow: hidden;
+    background-image: url("../assets/img/map/exchange_head.png");
+    background-size: 100% 100%;
   }
+  .header-pic .head-main{width: 1.26rem;height: 1.26rem;margin: 0 auto;}
+  .header-pic .head-main img{border-radius: 50%;}
 
   .introduce {
     text-align: center;
@@ -337,27 +350,27 @@
   }
 
   .introduce .name, .class {
-    font-size: 0.36rem;
+    font-size: 0.32rem;
     font-weight: 600;
     color: #fff;
     text-shadow: 0 1px #9D4C4A, 1px 0 #9D4C4A, -1px 0 #9D4C4A, 0 -1px #9D4C4A;
   }
 
   .introduce .class {
-    font-size: 0.24rem;
+    font-size: 0.21rem;
+    margin-top: 0.1rem;
   }
 
   .central-box {
     padding-left: 0.5rem;
     padding-right: 0.5rem;
-    margin-top: 0.35rem;
+    margin-top: 0.66rem;
   }
 
   .central-main {
     background-color: #fffbe8;
     border-radius: 10px;
-    margin-top: 1.4rem;
-    padding: 0.4rem 0.15rem 0.1rem 0.15rem;
+    padding: 0.4rem 0.15rem 0.3rem 0.15rem;
   }
 
   .central-main .cen-title {
@@ -376,13 +389,14 @@
 
   .icon-give {
     width: 1.18rem;
-    height: 0.6rem
+    height: 0.52rem
   }
 
   .my-title {
-    font-size: 0.26rem;
+    font-size: 0.24rem;
     color: #5f5145;
     padding-top: 0.12rem;
+    font-weight: bold;
   }
 
   .icon-give img {
@@ -396,13 +410,14 @@
   }
 
   .central-main .flex-demo .num {
-    font-size: 0.4rem;
+    font-size: 0.42rem;
     font-weight: bold;
     padding: 2px 10px;
   }
 
   .central-main .flex-demo .num-title {
-    font-size: 0.22rem;
+    font-size: 0.23rem;
+    margin-top: 0.06rem;
   }
 
   .list-icon {
@@ -418,9 +433,13 @@
 
   .list-icon a {
     display: block;
-    width: 1.2rem;
-    height: 1.2rem;
+    width: 1.28rem;
+    height: 1.46rem;
     margin: 0 auto;
+  }
+  .list-icon .message{
+    width: 1.4rem;
+    height: 1.4rem;
   }
 
   .list-icon a img {
@@ -471,4 +490,5 @@
     line-height: 0.8rem;
     text-align: left;
   }
+  .title{overflow: hidden;margin-bottom: 0.3rem;}
 </style>

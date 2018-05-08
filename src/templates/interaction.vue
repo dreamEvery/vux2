@@ -5,7 +5,7 @@
       <img src="../assets/img/map/Game_icon_fanhui.png"/>
     </router-link>
     <div class="in-con">
-      <h3 class="ranking"></h3>
+      <h3 class="ranking">已经击败80%的小伙伴</h3>
       <div class="game-box">
         <a class="game-1" href="javascript:;">
           <img src="../assets/img/Game_img_Luck-draw.png"/>
@@ -94,7 +94,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: url(../assets/img/game-interaction_bg.jpg) no-repeat;
+    background: url(../assets/img/map/game_bg.png) no-repeat;
     background-size: 100% 100%;
   }
 
@@ -110,10 +110,10 @@
 
   .go-back {
     position: fixed;
-    top: 10%;
+    top: 12%;
     left: 0.3rem;
-    width: 1.4rem;
-    height: 0.8rem;
+    width: 1.28rem;
+    height: 0.64rem;
   }
 
   .go-back img {
@@ -123,7 +123,7 @@
 
   .in-con {
     padding: 0 0.4rem;
-    margin-top: 34%;
+    margin-top: 33%;
   }
 
   .in-con .ranking {
@@ -131,11 +131,11 @@
     background: #F5F5E3;
     border-radius: 0.2rem;
     margin: 0 auto;
-    height: 0.4rem;
+    height: 0.36rem;
     text-align: center;
-    line-height: 0.4rem;
-    font-size: 0.28rem;
-    color: #2B2626;
+    line-height: 0.36rem;
+    font-size: 0.16rem;
+    color: #333;
   }
 
   .game-box {

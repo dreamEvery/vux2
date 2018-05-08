@@ -109,7 +109,7 @@
     height: 250px;
     border: 2px dashed skyblue;
     margin: 0 auto;
-    margin-bottom: 20px;
+    margin-bottom: 40px;
   }
 
   .re-con .button {
@@ -123,4 +123,5 @@
     width: 100%;
     height: 100%;
   }
+  .code{color: #fff;text-align: center;line-height: 250px;font-size: 0.38rem}
 </style>

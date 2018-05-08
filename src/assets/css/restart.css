@@ -12,10 +12,17 @@
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
 }
+@font-face {
+  font-family: 'hanyizhong';
+  src: url("../font/汉仪中圆简.ttf");
+}
+
+* {
+  font-family: 'hanyizhong'!important;
+}
 
 body {
   font-size: 14px;
-  font-family: "Microsoft YaHei", sans-serif; /*设备默认字体*/
   color: #333;
   margin: 0;
   background-color: #f8f8f8;
@@ -72,7 +79,7 @@ input,button,select,textarea{outline:none;}
 }
 
 .tab ul {
-  margin-top: 20px;
+  margin-top: 16px;
   display: flex;
   overflow-x: scroll;
   /* 内容会被裁剪，会以滚动条显示 */
@@ -90,7 +97,7 @@ input,button,select,textarea{outline:none;}
   margin-right: 0.1rem;
   border-radius: 0.2rem 0.2rem 0 0;
   color: #6b3a0f;
-  font-size: 12px;
+  font-size: 0.23rem;
 }
 
 .tab .red {
@@ -117,7 +124,7 @@ input,button,select,textarea{outline:none;}
 
 .public-back {
   width: 1.4rem;
-  height: 1.4rem;
+  height: 1.15rem;
 }
 
 .public-back img {

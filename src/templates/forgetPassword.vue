@@ -3,7 +3,7 @@
     <heared></heared>
     <div class="password-con">
       <div class="phoneNum">
-        <input type="text" placeholder="请输入手机号码" v-model="phoneNum">
+        <input type="text" placeholder="请输入手机号码" v-model="phoneNum" maxlength="11">
         <p class="falseHints" v-if="show"><span>
           <i>
             <img src="../assets/img/notice.png" alt="">
@@ -24,9 +24,7 @@
         </p>
       </div>
       <div class="next">
-        <rout-link class="nextBtn" :to="{path:'/newpassword',params:{phone: phoneNum}}">
           <button @click="next">下一步</button>
-        </rout-link>
       </div>
     </div>
     <router-view></router-view>
@@ -55,33 +53,37 @@
     created () {
     },
     methods: {
-      next () {
+      next: function () {
         let myReg = /^[1][3,4,5,7,8][0-9]{9}$/
         if (this.phoneNum === '' || !myReg.test(this.phoneNum)) {
           this.show = true
         } else if (this.verificationNum === '' || this.verificationNum === true) {
           this.num = true
         } else {
-          // this.getVerifyCode()
+          this.$router.push({path: '/newpassword', params: {phoneNum: this.phoneNum}})
         }
       },
       getVerifyCode () {
         this.$http.post(this.HOST + '/userManage_loginUser.do?method=validMessage',
-          {num: this.phoneNum}
+          {phone: this.phoneNum}
         ).then(res => {
           // get body data
-          this.disabled = true
-          let time = 60
-          this.timer = setInterval(() => {
-            if (time <= 0) {
-              this.disabled = false
-              this.btnText = '重新获取验证码'
-              clearInterval(this.timer)
-            } else {
-              this.btnText = time + 's'
-              time--
-            }
-          }, 1000)
+          if (this.num === null) {
+            this.disabled = true
+          } else {
+            this.disabled = true
+            let time = 60
+            this.timer = setInterval(() => {
+              if (time <= 0) {
+                this.disabled = false
+                this.btnText = '重新获取验证码'
+                clearInterval(this.timer)
+              } else {
+                this.btnText = time + 's'
+                time--
+              }
+            }, 1000)
+          }
         }, res => {
           // error callback
           this.disabled = false

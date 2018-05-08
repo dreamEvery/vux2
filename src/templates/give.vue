@@ -14,7 +14,7 @@
             <div class="give-gift">
               <span>赠送礼品</span>
               <router-link to='/give/giveSel'>
-                <input type="text" readonly placeholder='请选择礼品'/>
+                <input type="text" readonly :placeholder="$route.query.content||'请选择商品'"/>
                 <i class="i1">
                   <img src="../assets/img/gift_icon_right.png"/>
                 </i>
@@ -24,7 +24,7 @@
           <div class="give-list">
             <div class="give-gift">
               <span>赠送积分</span>
-              <input class="jifen-inp" type="text" placeholder="请输入积分"/>
+              <input class="jifen-inp" type="text" placeholder="请输入积分" v-model="jifen_inp"/>
               <!--<em class="jifen-em" v-show="jifen_type">积分</em>-->
               <i class="i1">
                 <img src="../assets/img/gift_icon_right.png"/>
@@ -35,7 +35,7 @@
         <div class="rout-con" v-if="this.routerParams !== null">
           <div class="routGive">
             <div class="routGivepic">
-              <img :src=routerParams.picsummary alt="">
+              <img :src="routerParams.picsummary" alt="">
             </div>
             <div class="routGivename">
               <p class="giftName">{{routerParams.mallitemsname}}</p>
@@ -48,7 +48,7 @@
             </div>
             <div class="rout-integral">
               <span class="nowIntegral">我拥有的积分：{{this.nowNum}}</span>
-              <span class="Deduct">扣除积分：{{routerParams.integral}}</span>
+              <span class="Deduct">扣除积分：{{this.deduction}}</span>
             </div>
           </div>
         </div>
@@ -57,7 +57,8 @@
           <div>
             <ul class="toBox-list">
               <li v-for="(item,index) in zengsongList" :key="item.id">
-                <img :src="item.picsummary"/>
+                <!--<img :src="data.picsummary"/>-->
+                <img src="../assets/img/map/headPic.png" alt=""/>
                 <p class="close-img" @click="closes(item,index)">
                   <img src="../assets/img/close.png"/>
                 </p>
@@ -77,7 +78,7 @@
               </li>
             </ul>
           </li>
-          <li>
+          <li class="grade">
             <span>{{grade_on.name}}</span>
             <p @click="select(2)"><img src="../assets/img/gift_icon_lower.png"/></p>
             <ul :class="{'dropdown-list_active':activeType==2}" class="dropdown-list">
@@ -98,13 +99,13 @@
         </ul>
         <ul class="img-list">
           <li v-for="(i,index) in classmateList">
-            <img :src=i.picsummary @click='zengsong(i,index)'/>
+            <img src="../assets/img/map/headPic.png" @click='zengsong(i,index)'/>
             <p>{{i.studentname}}</p>
           </li>
         </ul>
       </div>
       <div class="public-bg">
-        <div class="lately-box" v-if="this.giftPeople !== null">
+        <div class="lately-box">
           <h3>最近赠送人：</h3>
           <ul class="lately-list">
             <li v-for="peopleList in giftPeople">
@@ -143,7 +144,9 @@
     },
     data () {
       return {
+        tostudentids: null,
         jifen_type: false,
+        giftList: null,
         giftPeople: null,
         jifen_inp: ' ',
         nowNum: {},
@@ -161,6 +164,7 @@
         ],
         /* 选择礼品 */
         gift_selOn: ' ',
+        deductionCode: '',
         /* "赠送给"数组 */
         zengsongList: [],
         schoolList: [],
@@ -181,11 +185,20 @@
     },
     mounted () {
     },
+    computed: {
+      // 计算属性的 getter
+      deduction: function () {
+        // `this` 指向 vm 实例
+        return (this.deductionCode = this.routerParams.integral * this.zengsongList.length)
+      }
+    },
     created: function () {
       let _this = this
       if (this.swtich === true) {
         this.swtich = this.on
       }
+      this.giftList = this.$route.query.giftSelList
+      console.log(this.giftList, 'uuu')
       /* 选择赠送 */
       this.$root.eventHub.$on('zidingyi', function (d) {
         _this.gift_selOn = d
@@ -199,9 +212,10 @@
         // 路由传递的参数
         this.routerParams = this.$route.query.transmission
         console.log(this.routerParams.mallitemsid, '4567890')
+        console.log(this.routerParams.status, '0000000')
         // 存储总积分
         let stutendMess = JSON.parse(sessionStorage.getItem('stuMessage'))
-        this.nowNum = stutendMess.totolintegral
+        this.nowNum = stutendMess.currentintegral
         console.log(this.nowNum, 'pppp')
       }
       this.storageMessage = JSON.parse(sessionStorage.getItem('info'))
@@ -241,7 +255,7 @@
           console.log(error)
         })
       },
-      // 获取学生列表
+      // 获取全部学生列表
       getClassmateList () {
         this.$http.get(this.HOST + '/vendingMachineInventoryManage_listVendingMachineInventory.do?method=getStudentList', {
           params: {
@@ -427,7 +441,7 @@
           this.swtich = this.on
         }
       },
-      // 存储赠送人id
+      // 存储接受人id
       newList () {
         let studentid = []
         if (this.zengsongList) {
@@ -440,17 +454,32 @@
       // 调用赠送接口
       give () {
         let id = this.newList()
-        this.$http.post('/api/exchangeRecordManage_addExchangeRecord.do?method=giveGift',
-          {
-            sid: this.storageMessage.sid,
-            userid: this.storageMessage.userid,
-            fromstudentid: this.storageMessage.studentid,
-            tostudentids: id,
-            mallitemid: this.mallitemid
-          }
+        console.log(this.routerParams, '8888888')
+        let obj = {
+          sid: this.storageMessage.sid,
+          userid: this.storageMessage.userid,
+          fromstudentid: this.storageMessage.studentid,
+          tostudentids: id
+        }
+        if (this.routerParams) {
+          obj.status = this.routerParams.status
+        }
+        if (this.routerParams) {
+          obj.mallitemsid = this.routerParams.mallitemsid
+        }
+        if (this.$route.query.mallitemsid) {
+          obj.mallitemsid = this.$route.query.mallitemsid
+        }
+        this.$http.post(this.HOST + '/exchangeRecordManage_addExchangeRecord.do?method=giveGift',
+          obj
         ).then(res => {
           // get body data
-          //  this.isSuccess = true
+          if (this.obj !== '') {
+            this.isSuccess = false
+            alert('赠送错误')
+          } else {
+            this.isSuccess = true
+          }
         }, res => {
           // error callback
         })
@@ -485,10 +514,11 @@
   }
 
   .public-top .public-back {
-    width: 1.64rem;
-    height: 0.84rem;
+    width: 1.4rem;
+    height: 0.8rem;
     border-radius: initial;
     border: none;
+    margin-bottom: -0.1rem;
   }
 
   .public-top .public-back > img {
@@ -599,7 +629,6 @@
     width: 1rem;
     height: 1rem;
     border-radius: 50%;
-    border: 1px solid red;
     vertical-align: middle;
   }
 
@@ -609,10 +638,21 @@
     height: 0.36rem;
     border-radius: 50%;
     line-height: 0.36rem;
-    top: 32%;
+    top: 25%;
     transform: translateY(-50%);
-    right: 0;
+    right: -0.02rem;
     /*z-index: 20;*/
+  }
+
+  .select-box .grade p {
+    position: absolute;
+    width: 0.36rem;
+    height: 0.36rem;
+    border-radius: 50%;
+    line-height: 0.36rem;
+    top: 52%;
+    transform: translateY(-50%);
+    right: 0.3rem;
   }
 
   .toBox-list li > p img {
@@ -645,7 +685,6 @@
     width: 1rem;
     height: 1rem;
     border-radius: 50%;
-    border: 1px solid red;
   }
 
   .img-list li p {
@@ -655,22 +694,25 @@
   }
 
   .lately-box {
-    padding: 0.2rem 0.4rem;
+    padding: 0.3rem 0.2rem;
   }
 
   .lately-box h3 {
     font-size: 0.28rem;
-    margin-bottom: 0.2rem;
+    color: #5F5145;
+    margin-bottom: 0.4rem;
   }
 
   .lately-list {
     padding: 0;
-    border-top: 1px solid #CCB185;
+    border-top: 1px dashed #CCB185;
   }
 
   .niming-box {
     overflow: hidden;
-    padding: 0.2rem 0.4rem;
+    padding-left: 0.2rem;
+    padding-top: 0.2rem;
+    padding-bottom: 0.3rem;
   }
 
   .niming-box span {
@@ -683,6 +725,7 @@
   .niming-box > div, .niming-box > div img {
     float: left;
     margin-left: 0.1rem;
+    margin-top: -0.03rem;
   }
 
   .niming-box > div img {
@@ -702,9 +745,9 @@
   }
 
   .btn-box div {
-    width: 2rem;
-    height: 0.8rem;
-    margin: 0 0 0.4rem;
+    width: 1.95rem;
+    height: 0.76rem;
+    margin: 0 0 0.33rem;
   }
 
   .btn-box div img {
@@ -736,6 +779,7 @@
 
   .select-box li {
     position: relative;
+    padding-right: 0.4rem;
   }
 
   .select-box li > span {
@@ -749,7 +793,7 @@
   .select-box li > p {
     position: absolute;
     top: 0;
-    right: 0;
+    right: -0.08rem;
     width: 0.4rem;
     height: 100%;
     line-height: 0.7rem;
@@ -818,23 +862,25 @@
   }
 
   .routGivename .giftName {
-    font-size: 18px;
+    font-size: 0.3rem;
     font-weight: bold;
+    color: #5f5145;
   }
 
   .routGivename .goldCoin {
     font-size: 0.3rem;
     font-weight: 400;
     position: relative;
-    padding: 0.2rem 0.62rem;
+    padding: 0.48rem 0.62rem;
   }
 
   .routGivename .goldCoin .iconCoin {
-    width: 0.5rem;
-    height: 0.5rem;
+    width: 0.47rem;
+    height: 0.47rem;
     display: inline-block;
     position: absolute;
     left: 0.02rem;
+    top: 0.4rem;
   }
 
   .routGivename .goldCoin .coinNum {
@@ -843,12 +889,11 @@
   }
 
   .rout-integral {
-    margin-top: 0.2rem;
     font-size: 0.24rem;
     color: #fff;
-    text-shadow: 0 1px red, 1px 0 red, -1px 0 red, 0 -1px red;
-    border-bottom: 1px dashed #958475;
-    padding-bottom: 0.1rem;
+    text-shadow: 0 1px #c34d16, 1px 0 #c34d16, -1px 0 #c34d16, 0 -1px #c34d16;
+    border-bottom: 1px dashed #CCB185;
+    padding-bottom: 0.25rem;
   }
 
   .rout-integral span:nth-child(2) {

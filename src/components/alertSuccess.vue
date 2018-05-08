@@ -71,8 +71,8 @@
   }
 
   .cube {
-    width: 4rem;
-    height: 4rem;
+    width: 2.93rem;
+    height: 2.82rem;
     margin: 0 auto;
   }
 
@@ -89,6 +89,6 @@
     -o-transform: rotate(360deg);
     -ms-transform: rotate(360deg);
   }
-  .alert-con .ok{width: 3rem;height: 1.2rem;margin: 0 auto;display: block;}
+  .alert-con .ok{width: 3.18rem;height: 1.32rem;margin: 0 auto;display: block;}
 
 </style>

@@ -1,21 +1,21 @@
 <template>
   <div class="home">
     <tabbar>
-      <tabbar-item link="/home/recharge" >
-          <img slot="icon" src="../assets/img/map/tab_recharge_n.png" class="tab-icon">
-          <img slot="icon-active" src="../assets/img/map/tab_recharge_pre.png" class="tab-active"alt="充值">
+      <tabbar-item link="/home/recharge">
+        <img slot="icon" src="../assets/img/tabBar/recharge_n.png" class="tab-icon">
+        <img slot="icon-active" src="../assets/img/tabBar/recharge_s.png" class="tab-active" alt="充值">
       </tabbar-item>
       <tabbar-item link="/home/market">
-        <img slot="icon" src="../assets/img/map/tab_a-market_n.png">
-        <img slot="icon-active" src="../assets/img/map/tab_a-market_pre.png" class="tab-active" alt="市集">
+        <img slot="icon" src="../assets/img/tabBar/a-market_n.png">
+        <img slot="icon-active" src="../assets/img/tabBar/a-market_s.png" class="tab-active" alt="市集">
       </tabbar-item>
       <tabbar-item link="/home/interaction">
-        <img slot="icon" src="../assets/img/map/tab_game-interaction_n.png">
-        <img slot="icon-active" src="../assets/img/map/tab_game-interaction_pre.png" alt="游戏互动" class="tab-active">
+        <img slot="icon" src="../assets/img/tabBar/game-interaction_n.png">
+        <img slot="icon-active" src="../assets/img/tabBar/game-interaction_s.png" alt="游戏互动" class="tab-active">
       </tabbar-item>
       <tabbar-item selected link="/home/index">
-        <img slot="icon" src="../assets/img/map/tab_my_n.png">
-        <img slot="icon-active" src="../assets/img/map/tab_my_pre.png" alt="我的" class="tab-active">
+        <img slot="icon" src="../assets/img/tabBar/my_n.png">
+        <img slot="icon-active" src="../assets/img/tabBar/my_s.png" alt="我的" class="tab-active">
       </tabbar-item>
     </tabbar>
     <router-view></router-view>
@@ -35,13 +35,21 @@
       TabbarItem,
       Group,
       Cell
-    },
-    name: 'home'
+    }
   }
 </script>
 <style>
+  .home .weui-tabbar{background-color: transparent;height: 15%;}
   .weui-tabbar .weui-tabbar__icon {
-    width: 1.4rem;
-    height: 1.4rem;
+    width: 0.8rem;
+    height: 1rem;
+  }
+  .weui-tabbar .weui-tabbar__item{padding: 26px 0 0!important;}
+  .weui-tabbar .weui-tabbar__item .weui-tabbar__icon{margin-top: 0.3rem}
+
+  .weui-tabbar .weui-bar__item_on .weui-tabbar__icon {
+    width: 1.8rem;
+    height: 1.5rem;
+    margin-top: 0;
   }
 </style>

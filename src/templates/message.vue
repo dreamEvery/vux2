@@ -6,11 +6,10 @@
         <img src="../assets/img/map/my_icon_Return.png" alt="">
       </div>
     </router-link>
-    <div class="scroller-box" style="position: relative;height: 80%">
+    <div class="scroller-box" style="position: relative;height: 76%">
       <scroller :on-refresh="refresh" :on-infinite="infinite" class="scroller">
-        <!-- content goes here -->
         <div class="my-scroll">
-          <div class="message-state" v-for="(item, index) in items">
+          <div class="message-state" v-for="(item, index) in items" v-if="index < 4">
             <div class="icon">
               <img src="../assets/img/map/my-news_icon_exchange.png" alt="">
             </div>
@@ -125,6 +124,7 @@
     created () {
       // this.getData()
       this.storageMessage = JSON.parse(sessionStorage.getItem('info'))
+      console.log(this.storageMessage.studentid, 'student')
     }
   }
 </script>
@@ -154,9 +154,8 @@
     background-repeat: no-repeat;
     background-size: 100% 100%;
   }
-
   .scroller {
-    padding: 0.2rem 0.4rem
+    padding: 0.2rem 0.4rem;
   }
 
   .scroller-box {
@@ -167,12 +166,12 @@
     background-color: #f1e3bb;
     padding: 0.2rem 0.1rem 0.05rem;
     border-radius: 10px;
-    margin-top: .4rem;
+    margin-top: .7rem;
   }
 
   .icon {
-    width: 1rem;
-    height: 1rem;
+    width: 0.84rem;
+    height: 0.84rem;
     display: inline-block;
     margin-top: 0.2rem;
     margin-right: 0.1rem;
@@ -185,17 +184,19 @@
   }
 
   .mess-list-title {
-    font-size: 0.30rem;
+    font-size: 0.28rem;
     color: #6b3a0f;
     font-weight: bold;
+    margin-bottom: 0.16rem;
   }
 
   .message-state {
     overflow: hidden;
     padding: 0 10px;
     background-color: #fffbe8;
-    border-radius: 20px;
-    margin-bottom: 0.2rem;
+    border-radius: 15px;
+    margin-bottom: 0.08rem;
+    border: 1px solid #FD8A32;
   }
 
   .timer {
@@ -210,9 +211,9 @@
 
   .message-state .delect {
     float: right;
-    width: 1.4rem;
-    height: 0.6rem;
-    margin-top: 0.75rem;
+    width: 1.25rem;
+    height: 0.5rem;
+    margin-top: 0.6rem;
   }
 
   .message-state .delect img {
@@ -240,6 +241,8 @@
   .footer .all {
     width: 2rem;
     float: right;
+    padding-right: 0.5rem;
+    margin-bottom: 0.1rem;
   }
 
   .all img {

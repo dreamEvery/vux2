@@ -20,8 +20,7 @@
       <div class="form-div">
         <div>
           <img src="../assets/img/map/icon_password.png"/>
-          <input type="password" v-model="password" placeholder="密码"/>
-          <!--v-on:input="YZpassword(password)-->
+          <input type="password" v-model="password"  placeholder="密码" />
         </div>
         <p class="form-errTips" v-if="forget"><span>
            <i>
@@ -36,15 +35,18 @@
       </div>
       <button class="btn-login" type="button" @click="btn_type && login()">登录</button>
     </div>
-
     <div class="foot-firm">
       <h3>2015华亿教育(深圳)科技有限公司</h3>
       <h3>客服电话：4006-810-820</h3>
+    </div>
+    <div>
+      <cell @click.native="showModuleAuto" is-link></cell>
     </div>
   </div>
 </template>
 
 <script>
+  import { AlertModule, Cell } from 'vux'
   export default ({
     name: 'login',
     data () {
@@ -59,23 +61,19 @@
         forget: false
       }
     },
+    components: {
+      AlertModule,
+      Cell
+    },
     created () {
       // console.log(this.$md5('Message').toString(), '加密例子')
     },
     methods: {
-      YZphone (phone) {
-        if (!phone) {
-          this.phone_tips = '(../assets/img/notice.png)请输入账号'
-        } else {
-          this.phone_tips = ''
-        }
-      },
-      YZpassword (password) {
-        if (!password) {
-          this.password_tips = '请输入密码'
-        } else {
-          this.password_tips = ''
-        }
+      showModuleAuto () {
+        this.showModule()
+        setTimeout(() => {
+          AlertModule.hide()
+        }, 3000)
       },
       login () {
         if (this.phone === '') {
@@ -96,12 +94,16 @@
           // get body data
           let body = res.body
           that.data = body
-          // console.log(that.data)
-          if (body.error === '用户密码错误！') {
-            that.password_tips = '密码错误!'
-          }
-          if (body.error === '该帐号没有注册 ') {
-            that.phone_tips = '该帐号没有注册'
+          if (body.error !== 'success') {
+            this.$vux.alert.show({
+              content: body.error,
+              onShow () {
+                console.log('Plugin: I\'m showing')
+              },
+              onHide () {
+                console.log('Plugin: I\'m hiding')
+              }
+            })
           }
           if (body.error === 'success') {
             that.btn_type = false
@@ -128,13 +130,11 @@
                     school: that.data.students[i].school,
                     gradeId: that.data.students[i].gid
                   }
-                  console.log(userInfo, '333')
                   let objInfo = JSON.stringify(userInfo)
                   sessionStorage.setItem('info', objInfo)
-                  console.log(objInfo, '233')
                 }, response => {
                   // error callback
-                  alert('密码错误')
+                  alert(this.body.error)
                 })
               }
             }
@@ -144,7 +144,7 @@
             })
           }
         }, response => {
-          alert('密码错误')
+          alert(this.body.error)
         })
       }
     }
@@ -183,6 +183,9 @@
   .btn-login {
     background-color: #FD8A32;
     color: #ffffff;
+    font-size: 0.28rem;
+    font-weight: normal;
+    letter-spacing: 0.05rem;
   }
 
   .btn-login,
@@ -192,7 +195,7 @@
     text-align: center;
     display: block;
     margin: 0 auto;
-    margin-top: 0.6rem;
+    margin-top: 1.4rem;
   }
 
   .form-errTips span {
@@ -216,7 +219,8 @@
     padding: 0.16rem;
     margin-bottom: 0.2rem;
     overflow: hidden;
-    background: #EBEBEB;
+    border-bottom: 1px solid #d2d2d2;
+    padding-left: 0;
   }
 
   .form-div div img {
@@ -230,7 +234,7 @@
     float: left;
     height: 0.4rem;
     margin-left: 0.2rem;
-    background: #EBEBEB;
+    background: none;
     border: none;
     width: 80%;
   }
@@ -251,9 +255,24 @@
     bottom: 0.2rem;
     width: 100%;
     text-align: center;
+    color: #666666;
   }
 
   .foot-firm h3 {
     font-size: 0.24rem;
+    font-weight: normal;
+    margin-bottom: 0.14rem;
+  }
+  ::-webkit-input-placeholder { /* WebKit browsers */
+    color: #c3c2c9;
+  }
+  :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    color: #c3c2c9;
+  }
+  ::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color: #c3c2c9;
+  }
+  :-ms-input-placeholder { /* Internet Explorer 10+ */
+    color: #c3c2c9;
   }
 </style>

@@ -5,16 +5,17 @@
         <div class="alert-top">{{giftDetail.mallitemsname}}</div>
         <div class="alert-gift">
           <div class="gift">
-            <img :src=giftDetail.picsummary  alt="">
+            <img :src=giftDetail.picsummary alt="">
           </div>
           <div class="gift-introduce">
-              <p>{{giftDetail.content}}
-              </p>
+            <p>{{giftDetail.content}}
+            </p>
           </div>
         </div>
       </div>
     </alert-box>
     <public-top></public-top>
+    <fail v-if="fail" :showName="'fail'"></fail>
     <div class="con">
       <div class="tab">
         <ul>
@@ -32,7 +33,8 @@
             {{item.isleft===1?'左侧货架':'右侧货架'}}</p>
           <ul v-if="nowIndex.index === index">
             <li class="children-text" v-if="item" v-for="(items, indexs) in item.sidedata"
-                :class="{change:indexs == nowIndex.indexs}" @click="changelist(index, indexs)">{{items.floor | capitalize}}
+                :class="{change:indexs == nowIndex.indexs}" @click="changelist(index, indexs)">
+              第{{numberToUT[items.floor]}}层
             </li>
           </ul>
         </div>
@@ -41,11 +43,13 @@
         <!--<scroller lock-x height="200px" @on-scroll-bottom="onScrollBottom" ref="scrollerBottom"-->
         <!--:scroll-bottom-offst="200" class="main-scroller">-->
         <div class="box2" v-if="rawData[nowIndex.index]">
-            <div class="flexbox" v-if="rawData[nowIndex.index].sidedata[nowIndex.indexs]"
+          <flexbox wrap="wrap" :gutter='12' style="width: 100%;">
+            <flexbox-item style="margin-left: 0;margin-bottom: 10px;min-width: 48%;max-width: 48%;margin-right: 2%;"
+                          v-if="rawData[nowIndex.index].sidedata[nowIndex.indexs]"
                           v-for="item in rawData[nowIndex.index].sidedata[nowIndex.indexs].malldata" :key="item.id">
               <div class="flex-demo">
                 <div class="img" @click="showAlert(item)">
-                  <img :src=item.picsummary  alt="">
+                  <img :src=item.picsummary alt="">
                 </div>
                 <p>{{item.mallitemsname}}</p>
                 <div class="gold-num">
@@ -55,7 +59,8 @@
                   {{item.integral}}
                 </div>
               </div>
-            </div>
+            </flexbox-item>
+          </flexbox>
         </div>
         <!--</scroller>-->
       </div>
@@ -67,17 +72,30 @@
   import { Flexbox, FlexboxItem } from 'vux'
   import alertBox from '../components/alertBox'
   import publicTop from '../components/publicTop'
-
+  import Fail from '../components/fail'
   export default {
     name: 'market',
     components: {
       Flexbox,
       FlexboxItem,
       alertBox,
-      publicTop
+      publicTop,
+      Fail
     },
     data () {
       return {
+        fail: false,
+        numberToUT: {
+          1: '一',
+          2: '二',
+          3: '三',
+          4: '四',
+          5: '五',
+          6: '六',
+          7: '七',
+          8: '八',
+          9: '九'
+        },
         giftDetail: {},
         tabs: [],
         tabsActive: 0,
@@ -227,62 +245,63 @@
     margin-top: 1.8rem;
   }
 
-  /*.search {*/
-    /*border-radius: 5px;*/
-    /*width: 90%;*/
-    /*height: 20px;*/
-    /*line-height: 20px;*/
-    /*text-align: center;*/
-    /*background-color: #fff;*/
-    /*margin: 0 auto;*/
-    /*margin-top: 10px;*/
-    /*display: block;*/
-    /*font-size: 12px;*/
-  /*}*/
-
   .side-con {
     width: 100%;
     height: auto;
     display: flex;
     flex-direction: row;
     flex: 1;
-    padding: 0 0.4rem;
+    padding: 0 0.4rem 0 0.35rem;
 
   }
 
   .side-con .sidebar {
     width: 18%;
-    overflow: hidden;
     padding-top: 0.2rem;
-    height: 84%;
-    overflow-y: scroll;
+    height: 82%;
   }
 
   .side-con .sidebar .shelves-name {
     text-align: center;
-    line-height: 45px;
+    height: 0.8rem;
+    line-height: 0.8rem;
     width: 100%;
     background-image: url("../assets/img/map/exchange_icon_you.png");
     background-size: 118% 100%;
     background-repeat: no-repeat;
+    color: #fff;
+  }
+  .side-con .sidebar .shelves-name:nth-child(2) {
+    margin-top: 0.6rem;
   }
 
   .side-con .sidebar .active {
     color: #fff;
-    background-image: url("../assets/img/map/exchange_icon_zuo2.png");
-    background-size: 118% 100%;
+    background-image: url("../assets/img/map/矩形-7-拷贝.png");
+    background-size: 100% 100%;
     background-repeat: no-repeat;
-    z-index: 999;
     text-shadow: 0 1px #9D4C4A, 1px 0 #9D4C4A, -1px 0 #9D4C4A, 0 -1px #9D4C4A;
+    position: relative;
+  }
+  .side-con .sidebar .active:after{
+    content: '';
+    background-image: url("../assets/img/map/形状-1.png");
+    background-size: 100% 100%;
+    position: absolute;
+    width: 0.28rem;
+    height: 0.8rem;
+    right: -0.28rem;
+    top: 0;
   }
 
   .side-con .children-text {
     text-align: center;
-    line-height: 45px;
+    line-height: 0.8rem;
     width: 100%;
     background-image: url("../assets/img/map/exchange_icon_zuo1.png");
     background-size: 118% 100%;
-    color: #652411;
+    color: #961c00;
+    margin-top: 0.1rem;
   }
 
   .side-con .change {
@@ -290,7 +309,19 @@
     background-image: url("../assets/img/map/exchange_icon_Selected.png");
     background-size: 118% 100%;
     background-repeat: no-repeat;
-    text-shadow: 0 1px #9D4C4A, 1px 0 #9D4C4A, -1px 0 #9D4C4A, 0 -1px #9D4C4A;
+    text-shadow: 0 1px #961c00, 1px 0 #961c00, -1px 0 #961c00, 0 -1px #961c00;
+    position: relative;
+  }
+
+  .side-con .change:after {
+    content: '';
+    background-image: url("../assets/img/map/exchange_icon_Arrow.png");
+    width: 0.12rem;
+    height: 0.23rem;
+    position: absolute;
+    background-size: 100% 100%;
+    top: 0.29rem;
+    right: -0.01rem;
   }
 
   .main-con {
@@ -299,8 +330,8 @@
     border-radius: 0.2rem;
     padding-top: 0.2rem;
     height: 84%;
-    padding-left: 0.4rem;
-    padding-right: 0.4rem;
+    padding-left: 0.3rem;
+    padding-right: 0.16rem;
     overflow-x: hidden;
     overflow-y: scroll;
   }
@@ -309,7 +340,7 @@
     display: none;
   }
 
-  .flexbox {
+  .vux-flexbox-item {
     height: 3.3rem;
     background-color: #E0CC95;
     border-radius: 0.16rem;
@@ -321,13 +352,17 @@
     background-repeat: no-repeat;
     margin-bottom: 0.2rem;
     font-weight: bold;
-    padding: 0 0.07rem;
+    padding: 0 0.2rem;
+    line-height: 0.53rem;
+    height: 0.56rem;
   }
 
   .tab .active {
     background-image: url("../assets/img/map/a-market_button_pre.png");
     background-size: 100% 100%;
     background-repeat: no-repeat;
+    color: #fff;
+    text-shadow: 0 1px #bc4132, 1px 0 #bc4132, -1px 0 #bc4132, 0 -1px #bc4132;
   }
 
   .vux-flexbox {
@@ -338,6 +373,10 @@
     width: 1.65rem;
     height: 1.65rem;
     margin: 0.2rem auto 0;
+    padding: .2rem;
+    background-color: #fff;
+    border-radius: .2rem;
+    box-shadow: .03rem .03rem rgba(0, 0, 0, .2);
   }
 
   .flex-demo .img img {
@@ -347,9 +386,9 @@
 
   .flex-demo p {
     text-align: center;
-    font-size: 0.28rem;
+    font-size: 0.26rem;
     margin-top: 0.25rem;
-    color: #6b3a0f;
+    color: #502c0f;
     font-weight: bold;
   }
 
@@ -363,11 +402,12 @@
     font-weight: bold;
     color: #fff;
     text-align: center;
-    text-shadow: red;
-    font-size: 0.32rem;
+    font-size: 0.4rem;
     margin-top: 0.1rem;
     position: relative;
     padding-left: 0.2rem;
+    text-shadow: 0 1px #961c00, 1px 0 #961c00, -1px 0 #961c00, 0 -1px #961c00;
+
   }
 
   .gold-num .gold {

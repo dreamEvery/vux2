@@ -19,43 +19,44 @@
           <div class="ranking-list">
             <div class="frist" v-if="dataArry[1]">
               <div class="ranking-pic blue-bg">
-                <img src="" alt="">
+                <img src="../assets/img/map/headPic.png" alt="">
               </div>
-              <p>{{dataArry[1].studentname}}</p>
-              <p class="class">{{dataArry[1].classname}}</p>
-              <p class="now-integral">当前积分： {{dataArry[1].currentintegral}}</p>
-              <p class="all-integral">总积分： {{dataArry[1].totalintegral}}</p>
+              <p class="name">{{dataArry[1].studentname}}</p>
+              <p class="className">{{dataArry[1].classname}}</p>
+              <p class="now-integral">当前积分:{{dataArry[1].currentintegral}}</p>
+              <p class="all-integral">总积分:{{dataArry[1].totalintegral}}</p>
             </div>
             <div class="second" v-if="dataArry[0]">
               <div class="ranking-pic yellow-bg">
-                <img src="" alt="">
+                <img src="../assets/img/map/headPic.png" alt="">
               </div>
-              <p>{{dataArry[0].studentname}}</p>
-              <p class="class">{{dataArry[0].classname}}</p>
-              <p class="now-integral">当前积分： {{dataArry[0].currentintegral}}</p>
-              <p class="all-integral">总积分： {{dataArry[0].totalintegral}}</p>
+              <p class="name">{{dataArry[0].studentname}}</p>
+              <p class="className">{{dataArry[0].classname}}</p>
+              <p class="now-integral">当前积分:{{dataArry[0].currentintegral}}</p>
+              <p class="all-integral">总积分:{{dataArry[0].totalintegral}}</p>
             </div>
             <div class="thrid" v-if="dataArry[2]">
               <div class="ranking-pic brown-bg">
-                <img src="" alt="">
+                <img src="../assets/img/map/headPic.png" alt="">
               </div>
-              <p>{{dataArry[2].studentname}}</p>
-              <p class="class">{{dataArry[2].classname}}</p>
-              <p class="now-integral">当前积分： {{dataArry[2].currentintegral}}</p>
-              <p class="all-integral">总积分： {{dataArry[2].totalintegral}}</p>
+              <p class="name">{{dataArry[2].studentname}}</p>
+              <p class="className">{{dataArry[2].classname}}</p>
+              <p class="now-integral">当前积分:{{dataArry[2].currentintegral}}</p>
+              <p class="all-integral">总积分:{{dataArry[2].totalintegral}}</p>
             </div>
           </div>
           <div class="rank-stu">
             <table>
               <tr v-for="(student, index) in dataArry" v-if="index > 2 && index < 8">
-                <th>{{student.ranking}}</th>
+                <th :class="(index == 3 || index == 4) ? 'cur' : 'numColor' ">{{student.ranking}}</th>
                 <th>
                   <div class="ranking-small-pic">
-                    <img src="" alt="">
+                    <img :src="student.picsummary" alt="" v-if="student.picsummary !== ''"/>
+                    <img src="../assets/img/map/headPic.png" alt="" v-else/>
                   </div>
                   <div>
                     <p class="name">{{student.studentname}}</p>
-                    <p>{{student.classname}}</p>
+                    <p class="classname">{{student.classname}}</p>
                   </div>
                 </th>
                 <th>
@@ -70,15 +71,15 @@
         </div>
         <table class="myself-box">
           <tr>
-            <th>
+            <th class="numColor">
               <p>{{myArry.ranking}}</p>
             </th>
-            <th>
+            <th class="myself-th">
               <div class="myself-pic">
-                <img src="" alt="">
+                <img src="../assets/img/map/headPic.png" alt="">
               </div>
-              <p>{{myArry.studentname}}</p>
-              <p class="class">{{myArry.classname}}</p>
+              <p class="name">{{myArry.studentname}}</p>
+              <p class="classname">{{myArry.classname}}</p>
             </th>
             <th><p class="now-integral">当前积分： {{myArry.currentintegral}}</p></th>
             <th><p class="all-integral">总积分： {{myArry.totalintegral}}</p></th>
@@ -180,6 +181,16 @@
     height: 100%;
   }
 
+  .cur {
+    color: #fff000;
+    font-size: 0.32rem;
+    text-shadow: 0 1px #e35b3a, 1px 0 #e35b3a, -1px 0 #e35b3a, 0 -1px #e35b3a;
+  }
+  .numColor{
+    color: #ff4000;
+    text-shadow: 0 1px #fff, 1px 0 #fff, -1px 0 #fff, 0 -1px #fff;
+  }
+
   .integral {
     background-image: url("../assets/img/map/integral.png");
     background-size: 100% 100%;
@@ -190,28 +201,10 @@
     background-size: 100% 100%;
   }
 
-  .blue-bg {
-    background-image: url("../assets/img/map/ranking-lift_bule.png");
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-  }
-
-  .yellow-bg {
-    background-image: url("../assets/img/map/ranking-lift_red.png");
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-  }
-
-  .brown-bg {
-    background-image: url("../assets/img/map/ranking-lift_brown.png");
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-  }
-
   .tab-box {
     margin: 0 0.1rem;
     padding: 0 0.1rem;
-    border: 2px solid #6b3a0f;
+    border: 2px solid #b17238;
     border-radius: 0.2rem;
     padding-top: 0.2rem;
   }
@@ -235,8 +228,8 @@
     color: #fff;
     background: #FEFAE7;
     text-shadow: 0 1px #971E03, 1px 0 #971E03, -1px 0 #971E03, 0 -1px #971E03;
-    height: 0.72rem;
-    line-height: 0.72rem;
+    height: 0.86rem;
+    line-height: 0.86rem;
     border-radius: 0.2rem 0.2rem 0 0;
   }
 
@@ -247,10 +240,10 @@
 
   .con .back {
     position: absolute;
-    left: 0.1rem;
-    top: -1.2rem;
-    width: 1.2rem;
-    height: 0.6rem;
+    left: 0.13rem;
+    top: -2rem;
+    width: 1.25rem;
+    height: 0.64rem;
     display: block;
   }
 
@@ -270,8 +263,9 @@
     background-color: #FEFBE9;
     border-radius: 0.2rem;
     padding-top: 0.2rem;
-    height: 90%;
+    height: 93%;
     overflow-y: scroll;
+    padding-bottom: 0.2rem;
   }
 
   .tab-con .ranking-list {
@@ -292,23 +286,70 @@
     margin: 0 auto;
     text-align: center;
     flex: 1;
-    padding-top: 0.9rem;
   }
-
+  .ranking-list .name{margin-bottom: 0.06rem;}
+  .ranking-stu .name{font-size: 0.28rem;}
+  .ranking-list div img {
+    width: 1rem;
+    height: 1rem;
+    margin-top: .36rem;
+  }
+  .ranking-list .frist{margin-top: 0.76rem;}
+  .ranking-list .thrid{margin-top: 0.76rem;}
   .ranking-list div.second {
     padding-top: 0;
   }
-
+  .ranking-list .name{font-size: 0.3rem;}
+  .ranking-list p{margin-bottom: 0.1rem;}
   .ranking-list div .ranking-pic {
     vertical-align: bottom;
     margin-bottom: 10px;
-    width: 1.3rem;
-    height: 1.5rem;
+    width: 1.22rem;
+    height: 1.56rem;
+    position: relative;
+  }
+
+  .ranking-list div .blue-bg:before {
+    content: '';
+    position: absolute;
+    width: 1.22rem;
+    height: 1.56rem;
+    background-image: url("../assets/img/map/ranking-lift_bule.png");
+    background-size: 100% 100%;
+    left: 0.01rem
+
+  }
+
+  .ranking-list div .yellow-bg:before {
+    content: '';
+    position: absolute;
+    width: 2.02rem;
+    height: 2.11rem;
+    background-image: url("../assets/img/map/ranking-lift_red.png");
+    background-size: 100% 100%;
+    left: 0.01rem;
+
+  }
+
+  .ranking-list div .brown-bg:before {
+    content: '';
+    position: absolute;
+    width: 1.22rem;
+    height: 1.56rem;
+    background-image: url("../assets/img/map/ranking-lift_brown.png");
+    background-size: 100% 100%;
+    left: 0.01rem
+  }
+
+  .ranking-list div .yellow-bg img {
+    width: 1.28rem;
+    height: 1.28rem;
+    margin-top: 0.46rem;
   }
 
   .ranking-list .second .ranking-pic {
-    width: 2.2rem;
-    height: 2.2rem;
+    width: 2.02rem;
+    height: 2.11rem;
   }
 
   .ranking-list div .class {
@@ -318,18 +359,18 @@
   }
 
   .ranking-list div .now-integral {
-    font-size: 4px;
-    color: #797979;
+    font-size: 0.01rem;
+    color: #7a7571;
   }
 
   .ranking-list div .all-integral {
     font-size: 0.1rem;
-    color: #797979;
+    color: #7a7571;
   }
 
   .tab-con table {
     width: 100%;
-    margin-top: 20px;
+    margin-top: 8px;
   }
 
   .tab-con table tr {
@@ -347,6 +388,11 @@
     line-height: 50px;
   }
 
+  .tab-con table th .classname {
+    color: #7e726a;
+    font-size: 0.02rem;
+  }
+
   .tab-con table th span {
     color: #C87A40;
   }
@@ -355,37 +401,55 @@
     flex: 1
   }
 
-  .tab-con table th:nth-child(2) {
+  table th:nth-child(2) {
     line-height: 1;
-    padding-top: 0.18rem;
+    padding-top: 0.19rem;
+    flex: 4;
   }
 
   .tab-con table th:nth-child(2) .ranking-small-pic {
     width: 0.6rem;
     height: 0.6rem;
     border-radius: 50%;
-    background-color: #4e4e4e;
     float: left;
   }
 
   .tab-con table th:nth-child(2) p {
     text-align: left;
     white-space: nowrap;
-  }
-
-  .tab-con table th:nth-child(2) p {
-    font-size: 10px;
     margin-top: 0.06rem;
   }
 
-  .tab-con table th:nth-child(2) p {
-    font-size: 4px;
-    color: #999999;
+  .tab-con table th {
+    font-weight: normal;
   }
 
-  .tab-con table th {
-    font-size: 0.1rem;
-    font-weight: normal;
+  .tab-con table th .name {
+    color: #494645;
+  }
+
+  .second .name {
+    color: #ff5870;
+  }
+
+  .second .className {
+    color: #ff5870;
+  }
+
+  .frist .name {
+    color: #76cbe3;
+  }
+
+  .frist .className {
+    color: #76cbe3
+  }
+
+  .thrid .name {
+    color: #e59f79;
+  }
+
+  .thrid .className {
+    color: #e59f79
   }
 
   /*myself*/
@@ -412,14 +476,32 @@
     display: flex;
     text-align: center;
   }
+  .myself-box .numColor p{font-size: 0.3rem;}
 
   .myself-box .myself-pic {
     float: left;
-    width: 0.6rem;
-    height: 0.6rem;
+    width: 0.7rem;
+    height: 0.7rem;
     background-color: #797979;
     border-radius: 50%;
+    margin-right: 0.2rem;
   }
-  .myself-box p{margin-top: 0.1rem;}
 
+  .myself-pic .name {
+    color: #4c4846;
+  }
+
+  .myself-pic .classname {
+    color: #7c706d;
+  }
+
+  .myself-box p {
+    margin-top: 0.1rem;
+    color: #d06d25;
+  }
+
+  .myself-box tr .myself-th {
+    flex: 3
+  }
+  .mysele-th .name{margin-top: 0.14rem;}
 </style>

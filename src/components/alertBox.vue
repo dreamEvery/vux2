@@ -14,7 +14,10 @@
         <router-link class="giveBtn" :to="{path: '/give', query:{transmission: transmission}}">
           <img src="../assets/img/give-button.png" alt="">
         </router-link>
-        <p class="exchangeBtn" @click="exchange">
+        <p class="receive" v-if="type === 'gift'" @click="receive()">
+          <img src='../assets/img/alert/recive.png' alt="">
+        </p>
+        <p class="exchangeBtn" @click="exchange" v-if="type === 'market'">
           <span class="coinNum">
             {{transmission.integral}}
           </span>
@@ -32,11 +35,14 @@
   import Sussce from '../components/alertSuccess'
   export default {
     name: 'alertbox',
-    props: ['showName', 'type', 'transmission'],
+    props: ['showName', 'type', 'transmission', 'receiveMess'],
     // 子组件接收到父组件传过来的 showName
     data () {
       return {
-        alertSussce: false
+        alertSussce: false,
+        storageMessage: null,
+        exchangerecordid: null,
+        vendingmachineid: null
       }
     },
     components: {
@@ -48,27 +54,66 @@
         // this.$parent[this.showName] 获取父组件中的 isAlertBox
         this.$parent[this.showName] = false
       },
+      // 兑换接口
       exchange () {
         this.$parent[this.showName] = false
         this.alertSussce = true
-        let storageMessage = JSON.parse(sessionStorage.getItem('info'))
-        storageMessage.mallitemsid = this.transmission.mallitemsid
-        console.log(storageMessage, 'nn')
-        this.$http.post('/api/mallItemsManage_updateMallItems.do?method=addExchangeRecord',
-          storageMessage
-        ).then(response => {
+        this.storageMessage.mallitemsid = this.transmission.mallitemsid
+        this.storageMessage.vendingmachineid = this.$parent.rawDataTabs[this.$parent.tabsActive].vendingmachineid
+        console.log(this.storageMessage, 'nn')
+        this.$http.post(this.HOST + '/mallItemsManage_updateMallItems.do?method=addExchangeRecord',
+          this.storageMessage
+        ).then(res => {
           // get body data
-        }, response => {
+          let body = res.body
+          let successCode = 0
+          if (successCode !== body.code) {
+            this.$parent.fail = true
+          }
+        }, res => {
+          // error callback
+        })
+      },
+      // 领取物品
+      receive () {
+        console.log(this.receiveMess, '99')
+        for (let i = 0; i < this.receiveMess.length; i++) {
+          console.log(this.receiveMess[i].exchangerecordid)
+          this.exchangerecordid = this.receiveMess[i].exchangerecordid
+          this.vendingmachineid = this.receiveMess[i].vendingmachineid
+        }
+        this.$http.post(this.HOST + '/exchangeRecordManage_addExchangeRecord.do?method=getGift',
+          {sid: this.storageMessage.sid, userid: this.storageMessage.userid, exchangerecordid: this.exchangerecordid, vendingmachineid: this.vendingmachineid}
+        ).then(res => {
+          // get body data
+          let body = res.body
+          let successCode = 0
+          if (successCode === body.code) {
+            alert('领取成功')
+          } else {
+            alert(body.msg)
+          }
+        }, res => {
           // error callback
         })
       }
     },
-    watch: {}
+    created () {
+      this.storageMessage = JSON.parse(sessionStorage.getItem('info'))
+      console.log(this.transmission, '999999999')
+    }
   }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+  .receive {
+    width: 1.86rem;
+    height: 0.76rem;
+    float: left;
+    margin-top: 0.3rem;
+  }
+
   .masking {
     position: fixed;
     top: 0;
@@ -76,7 +121,7 @@
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.4);
-    z-index: 100;
+    z-index: 999;
     transition: all .3s ease-in-out;
   }
 
@@ -91,25 +136,25 @@
     left: 50%;
     transform: translateX(-50%) translateY(-50%);
     z-index: 999;
-    padding: 1.4rem 0.65rem 0.4rem 0.8rem;
+    padding: 1rem 0.45rem 0.4rem 0.6rem;
   }
 
   .alert .alert-main {
-    background-color: #C19E7A;
-    border: 1px dashed #6b3a0f;
+    background-color: #c79d75;
+    border: 1px dashed #c77325;
     border-radius: 10px;
     padding-bottom: 0.4rem;
     position: relative;
   }
 
   .alert .alert-main .alert-top {
-    font-size: 0.44rem;
+    font-size: 0.42rem;
     color: #fff;
     font-weight: bold;
     text-align: center;
-    width: 60%;
-    line-height: 0.8rem;
-    background-color: #B27A4B;
+    width: 3.7rem;
+    line-height: 0.9rem;
+    background-color: #b66e36;
     border-radius: 30px;
     margin: 0 auto;
     margin-top: 0.4rem;
@@ -135,8 +180,8 @@
 
   .alert-logo {
     position: absolute;
-    top: -38px;
-    right: 36%;
+    top: -58px;
+    right: 33%;
     z-index: 999;
     width: 2.4rem;
     height: 2.4rem;
@@ -149,12 +194,12 @@
 
   .alert-gift {
     overflow: hidden;
-    padding: 0.3rem 0.2rem;
+    padding: 0.3rem 0.26rem;
   }
 
   .alert-gift .gift {
-    width: 2rem;
-    height: 2rem;
+    width: 1.8rem;
+    height: 1.8rem;
     float: left;
   }
 
@@ -164,12 +209,12 @@
   }
 
   .alert-gift .gift-introduce {
-    font-size: 0.30rem;
-    color: #6b3a0f;
+    font-size: 0.28rem;
+    color: #661500;
     font-weight: bold;
     text-align: justify;
-    float: right;
-
+    line-height: 0.38rem;
+    padding-left: 2.3rem;
   }
 
   .alert-gift .gift-introduce a {
@@ -181,16 +226,16 @@
   }
 
   .alertBtn .giveBtn {
-    width: 1.6rem;
-    height: 0.8rem;
+    width: 1.83rem;
+    height: 0.72rem;
     margin-top: 0.3rem;
     display: block;
     float: right;
   }
 
   .alertBtn .exchangeBtn {
-    width: 2.2rem;
-    height: 0.8rem;
+    width: 2.57rem;
+    height: 0.75rem;
     margin-top: 0.3rem;
     float: left;
     position: relative;
@@ -203,5 +248,7 @@
     line-height: 0.7rem;
     color: #fff;
     font-weight: bold;
+    text-shadow: 0.03rem 0.02rem 0.01rem #797979;
+    margin-left: -0.4rem;
   }
 </style>

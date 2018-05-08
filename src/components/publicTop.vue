@@ -2,6 +2,7 @@
   <div class="public-top">
     <div class="public-fl">
       <div class="head-pic">
+        <img src="../assets/img/map/headPic.png" alt="" class="img">
       </div>
       <div class="introduce">
         <p class="name">{{data.stuname}}</p>
@@ -13,7 +14,7 @@
       </div>
       <router-link to="/home/recharge">
         <div class="integral">
-          {{data.totolintegral}}
+          {{data.currentintegral}}
         </div>
       </router-link>
     </div>
@@ -39,6 +40,7 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+   .public-top{height: 55px;}
   .integral {
     background-image: url("../assets/img/map/integral.png");
     background-size: 100% 100%;
@@ -51,7 +53,7 @@
 
   .public-top {
     width: 100%;
-    padding: 10px 20px;
+    padding: 5px 10px;
     overflow: hidden;
     position: relative;
   }
@@ -63,8 +65,7 @@
 
   .public-fr div {
     float: left;
-    width: 1.8rem;
-    height: 0.7rem;
+    width: 1.67rem;
     box-sizing: border-box;
     margin-left: 0.16rem;
     text-align: center;
@@ -72,9 +73,11 @@
     font-size: 0.24rem;
     font-weight: 400;
     position: relative;
+    height: 0.65rem;
     color: #f1e3bb;
     line-height: 0.7rem;
   }
+  .public-fr .integral{width: 2.1rem;}
 
   .public-fl {
     float: left;
@@ -82,17 +85,23 @@
   }
 
   .public-fl .head-pic {
-    width: 0.6rem;
-    height: 0.6rem;
-    background-color: #F8E99E;
+    width: 0.9rem;
+    height: 0.9rem;
     border-radius: 50%;
     display: inline-block;
+    background-image: url("../assets/img/map/exchange_head.png");
+    background-size: 100% 100%;
+    padding: 0.01rem;
+    text-align: center;
   }
-
+  .public-fl .head-pic .img{width: 94%;height: 94%;text-align: center;margin-top: 0.02rem}
   .public-fl .introduce {
+    vertical-align: super;
     font-size: 0.24rem;
     color: #fff;
     display: inline-block;
     text-shadow: 0 1px #652411, 1px 0 #652411, -1px 0 #652411, 0 -1px #652411;
   }
+  .public-fl .introduce .name{font-size: 0.28rem;margin-bottom: 0.16rem}
+   .public-fl .introduce .class{font-size: 0.24rem}
 </style>

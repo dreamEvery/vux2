@@ -1,6 +1,6 @@
 <template>
   <div class="gift-bg">
-    <alert-box v-if='isAlertBox' :showName="'isAlertBox'" :transmission="giftInfo" :type="'gift'">
+    <alert-box v-if='isAlertBox' :showName="'isAlertBox'" :transmission="giftInfo" :receiveMess="message" :type="'gift'">
       <div slot="gift">
         <div class="alert-top">{{giftInfo.mallitemsname}}</div>
         <div class="alert-gift">
@@ -111,8 +111,8 @@
         that.changeRed = index
         let storageMessage = JSON.parse(sessionStorage.getItem('info'))
         if (type === 'Unreceived') storageMessage.status = 1
-        if (type === 'Received') storageMessage.status = 2
-        if (type === 'Send') storageMessage.status = 3
+        if (type === 'Received') storageMessage.status = 3
+        if (type === 'Send') storageMessage.status = 2
         this.$http.get(this.HOST + '/mallItemsManage_listMallItems.do?method=getMyMallItemsList', {
           params: storageMessage
         }).then(res => {
@@ -142,9 +142,15 @@
           console.log(error)
         })
       },
+      // 弹框
       showAlert (item) {
         this.giftInfo = item
-        this.isAlertBox = true
+        console.log(this.giftInfo, 'info')
+        if (item.status === '4' || item.status === '3') {
+          this.isAlertBox = false
+        } else {
+          this.isAlertBox = true
+        }
       }
     },
     created () {
@@ -168,6 +174,7 @@
     margin-top: 0.3rem;
     margin-bottom: 0.3rem;
   }
+  .tab-box{padding-top: 8%;}
 
   .tab-box .red {
     color: #fff;
@@ -206,7 +213,6 @@
   .tab-box > ul {
     height: 0.56rem;
     padding: 0 0.4rem;
-    margin-top: 0.6rem;
   }
 
   .tab-box > ul li {
@@ -218,7 +224,7 @@
     margin-right: 2.65%;
     background: #FAEC99;
     color: #961D00;
-    font-size: 0.28rem;
+    font-size: 0.23rem;
     font-weight: 600;
     border-radius: 0.2rem 0.2rem 0 0;
   }
@@ -271,6 +277,7 @@
     position: absolute;
     top: 0;
     left: 0;
+    width: 100%;
   }
 
   .give-sel-list li {

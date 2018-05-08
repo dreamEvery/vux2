@@ -1,7 +1,7 @@
 <template>
   <div class="give-box">
     <div class="public-top">
-      <div class="public-back" @click="back()">
+      <div class="public-back" @click="back">
         <img src="../assets/img/map/return(2).png"/>
       </div>
     </div>
@@ -11,15 +11,13 @@
       </div>
       <ul class="give-sel-list">
         <li v-for="( item, index ) in giftSelList">
-          <div>
-            <img :src="item.picsummary" @click="gift_sel(item,index)"/>
-            <span>{{item.count}}</span>
-          </div>
+          <router-link class="giveBtn" :to="{path: '/give', query:item}">
+            <img :src="item.picsummary" alt="">
+          </router-link>
         </li>
       </ul>
-
     </div>
-
+    <router-view></router-view>
   </div>
 </template>
 
@@ -55,13 +53,6 @@
       }
     },
     methods: {
-      gift_sel (item, index) {
-        let vm = this
-        console.log(item.name)
-        let giftOn = item.name
-        vm.$root.eventHub.$emit('zidingyi', giftOn)
-        vm.$router.go(-1)
-      },
       back () {
         let vm = this
         vm.$router.go(-1)
@@ -80,7 +71,9 @@
           if (body.code === successCode) {
             // 处理数据
             this.giftSelList = body.data
-            console.log(this.giftSelList, '6678')
+            this.giftSelList.map((value) => {
+              value.content = this.$base64.decode(value.content)
+            })
           } else if (body.code === errorCode) {
             // 处理失败
           }
@@ -101,10 +94,12 @@
     right: 0;
     bottom: 0;
     background: #FFFBE8;
+    padding-top: 0.34rem;
   }
   .give-box .public-back{
-    width: 1.64rem;
-    height: 0.84rem;
+    width: 1.4rem;
+    height: 0.8rem;
+    margin-top: 0.1rem;
   }
 
   .give-bg {
@@ -126,6 +121,7 @@
     top: 0;
     left: 0;
   }
+  .give-sel-list .router{display: block}
 
   .give-sel-list li {
     width: 30%;
@@ -141,7 +137,7 @@
     margin-top: 0.49rem;
   }
 
-  .give-sel-list li div {
+  .give-sel-list li .router {
     position: relative;
     width: 1.3rem;
     margin: 0 auto;

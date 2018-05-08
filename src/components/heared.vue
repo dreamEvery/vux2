@@ -1,14 +1,11 @@
 <template>
   <div class="heared">
     <div class="head-tab">
-      <rout-link to="/login" class="return">
-        <span>
+        <span @click="back" class="return">
           <img src="../assets/img/return.png" alt="">
         </span>
-      </rout-link>
       <span>找回密码</span>
     </div>
-    <router-view></router-view>
   </div>
 </template>
 <script>
@@ -17,6 +14,12 @@
     data () {
       return {
         data: {}
+      }
+    },
+    methods: {
+      back () {
+        let vm = this
+        vm.$router.go(-1)
       }
     }
   }

@@ -38,23 +38,26 @@
     created () {
     },
     methods: {
+      // 验证两次密码
       submission () {
         if (this.newNum === this.confirm) {
-          this.show = false
+          this.num = false
         } else if (this.newNum !== this.confirm) {
           this.num = true
         } else {
-          this.getVerifyCode()
+          this.num = false
+          this.getNewCode()
         }
       },
-      getVerifyCode () {
-        let num = this.$route.params.phone
+      //  提交新密码
+      getNewCode () {
+        let num = this.$route.params.phoneNum
         console.log(num)
         this.$http.post(this.HOST + '/userManage_loginUser.do?method=validMessage',
-          {num: num, newPassword: this.newNum}
+          {phone: num, password: this.newNum}
         ).then(res => {
           // get body data
-          this.$router.push({    // 你需要接受路由的参数再跳转
+          this.$router.push({
             path: '/login'
           })
         }, res => {
