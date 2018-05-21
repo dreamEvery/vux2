@@ -40,21 +40,18 @@
     methods: {
       // 验证两次密码
       submission () {
-        if (this.newNum === this.confirm) {
-          this.num = false
-        } else if (this.newNum !== this.confirm) {
+        if (this.newNum !== this.confirm) {
           this.num = true
-        } else {
+        } else if (this.newNum === this.confirm) {
           this.num = false
+        } else {
           this.getNewCode()
         }
       },
       //  提交新密码
       getNewCode () {
-        let num = this.$route.params.phoneNum
-        console.log(num)
-        this.$http.post(this.HOST + '/userManage_loginUser.do?method=validMessage',
-          {phone: num, password: this.newNum}
+        this.$http.post(this.HOST + '/userManage_loginUser.do?method=retPassWord',
+          {phone: this.$route.query.phoneNum, password: this.newNum}
         ).then(res => {
           // get body data
           this.$router.push({

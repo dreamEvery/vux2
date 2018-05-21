@@ -6,10 +6,13 @@
         <img src="../assets/img/alert/图层-4.png" alt="">
       </p>
       <div class="alert-con">
-        <img src="../assets/img/alert/赠送成功.png" alt="">
+        <div class="giveWin">
+          <img src="../assets/img/alert/赠送成功.png" alt="">
+        </div>
         <p class="cube">
           <img src="../assets/img/alert/魔方.png" alt="">
         </p>
+        <p class="title">已送出，等待小伙伴接受!</p>
         <router-link class="ok" @click="okBtn()" to="/home/index">
           <img src="../assets/img/alert/well_button_n.png" alt="" v-if="ok">
           <img src="../assets/img/alert/well_button_pre.png" alt=""  v-if="!ok">
@@ -44,10 +47,8 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .alertSuccess {
-    position: fixed;
-  }
-
+  .alert-con{width: 100%;height: 5rem;}
+  .alert-con .giveWin{width: 6rem;height: 4rem;margin: 0 auto;}
   .masking {
     position: fixed;
     top: 0;
@@ -56,13 +57,14 @@
     bottom: 0;
     background: rgba(0, 0, 0, 0.4);
     transition: all .3s ease-in-out;
+    z-index: 999;
   }
 
   .successAlert {
     width: 100%;
     height: auto;
     position: fixed;
-    z-index: 10;
+    z-index: 1000;
   }
 
   .successAlert .alert-top {
@@ -74,6 +76,7 @@
     width: 2.93rem;
     height: 2.82rem;
     margin: 0 auto;
+    margin-bottom: 0.4rem;
   }
 
   .cube img {
@@ -89,6 +92,6 @@
     -o-transform: rotate(360deg);
     -ms-transform: rotate(360deg);
   }
-  .alert-con .ok{width: 3.18rem;height: 1.32rem;margin: 0 auto;display: block;}
-
+  .alert-con .ok{width: 2.4rem;height: 0.9rem;margin: 0 auto;display: block;}
+  .alert-con .title{text-align: center;color: #fff;font-size: 0.32rem;margin-bottom: 0.4rem}
 </style>

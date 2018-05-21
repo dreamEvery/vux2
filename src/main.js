@@ -15,7 +15,13 @@ import 'lib-flexible'
 import { rem } from './libs/rem'
 import md5 from 'crypto-js/md5' // 引入 crypto-js/md5 插件
 import { Base64 } from 'js-base64'
-Vue.prototype.HOST = 'http://120.24.178.171:7772'
+import VConsole from 'vconsole'
+/* eslint-disable no-new */
+if (process.env.ENABLE_V_CONSOLE) {
+  // var VConsole = require('vconsole/dist/vconsole.min')
+  new VConsole()
+}
+Vue.prototype.HOST = '/api'
 Object.defineProperty(Vue.prototype, '$md5', {value: md5})
 Object.defineProperty(Vue.prototype, '$base64', {value: Base64})
 // 将引入的插件绑定到 Vue 原型上 相当于全局注册了一个 $md5

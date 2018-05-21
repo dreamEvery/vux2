@@ -3,8 +3,8 @@
     <div class="masking" @click="failBtn"></div>
     <div class="alert">
       <div class="alert-main">
-        <img src="../assets/img/map/asd.gif" alt="">
-        <p class="fail-title">兑换失败</p>
+        <img src="../assets/img/alert/画板-1.gif" alt="">
+        <p class="fail-title">兑换失败，请重新兑换</p>
       </div>
       <div class="alertBtn">
         <img src="../assets/img/map/know-n.png" alt="" v-if="showBtn" @click="failBtn">
@@ -45,7 +45,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.6);
     z-index: 999;
     transition: all .3s ease-in-out;
   }
@@ -56,18 +56,22 @@
     width: 100%;
     background-size: 100% 100%;
     position: absolute;
-    top: 37%;
+    top: 50%;
     left: 50%;
     transform: translateX(-50%) translateY(-50%);
     z-index: 999;
     padding: 1rem 0.45rem 0.4rem 0.6rem;
   }
 
-  .alert-main .fail-title{font-size: 0.44rem;color: #fff;text-align: center;margin-bottom: 0.6rem;}
+  .alert-main .fail-title {
+    font-size: 0.32rem;
+    color: #fff;
+    text-align: center;
+    margin-bottom: 0.6rem;
+  }
 
   .alert .alertBtn {
-    width: 3.68rem;
-    height: 1.08rem;
+    width: 2.6rem;
     margin: 0 auto;
   }
 </style>

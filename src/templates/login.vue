@@ -58,7 +58,8 @@
         btn_type: true,
         data: [],
         show: false,
-        forget: false
+        forget: false,
+        userMess: ''
       }
     },
     components: {
@@ -67,6 +68,10 @@
     },
     created () {
       // console.log(this.$md5('Message').toString(), '加密例子')
+      this.userMess = JSON.parse(localStorage.getItem('user'))
+      console.log(JSON.parse(localStorage.getItem('user')), '9999999')
+      this.phone = this.userMess.username
+      this.password = this.userMess.password
     },
     methods: {
       showModuleAuto () {
@@ -92,6 +97,8 @@
           password: md5Password
         }).then(res => {
           // get body data
+          let userMess = {username: that.phone, password: that.password}
+          localStorage.setItem('user', JSON.stringify(userMess))
           let body = res.body
           that.data = body
           if (body.error !== 'success') {
@@ -127,8 +134,7 @@
                     studentid: that.data.students[i].id,
                     name: that.data.students[i].name,
                     classname: that.data.students[i].classname,
-                    school: that.data.students[i].school,
-                    gradeId: that.data.students[i].gid
+                    school: that.data.students[i].school
                   }
                   let objInfo = JSON.stringify(userInfo)
                   sessionStorage.setItem('info', objInfo)
@@ -144,7 +150,7 @@
             })
           }
         }, response => {
-          alert(this.body.error)
+          alert(this.body)
         })
       }
     }
@@ -251,11 +257,10 @@
   }
 
   .foot-firm {
-    position: absolute;
-    bottom: 0.2rem;
     width: 100%;
     text-align: center;
     color: #666666;
+    margin-top: 56%;
   }
 
   .foot-firm h3 {

@@ -6,12 +6,14 @@
         <img src="../assets/img/map/my_icon_Return.png" alt="">
       </div>
     </router-link>
-    <div class="scroller-box" style="position: relative;height: 76%">
+    <div class="scroller-box" style="position: relative;height: 70%">
       <scroller :on-refresh="refresh" :on-infinite="infinite" class="scroller">
         <div class="my-scroll">
-          <div class="message-state" v-for="(item, index) in items" v-if="index < 4">
+          <div class="message-state" v-for="(item, index) in items">
             <div class="icon">
-              <img src="../assets/img/map/my-news_icon_exchange.png" alt="">
+              <img src="../assets/img/map/my-news_icon_exchange.png" alt="" v-if="item.type === '1' ">
+              <img src="../assets/img/map/my-news_icon_gift.png" alt="" v-if="item.type === '5' "/>
+              <img src="../assets/img/map/my-news_icon_recharge.png" alt="" v-if="item.type === '2'"/>
             </div>
             <div class="mess-list">
               <p class="mess-list-title">{{item.message}}</p>
@@ -25,16 +27,36 @@
       </scroller>
     </div>
     <div class="footer">
-      <div class="all" @click="delectAll">
+      <div class="all" @click="delectBtn()">
         <img src="../assets/img/map/my-news_button_Delete-all_n.png" alt="" v-if="isShow">
         <img src="../assets/img/map/my-news_button_Delete-all_pre.png" alt="" v-else="!isShow">
       </div>
+    </div>
+    <!--弹框-->
+    <div class="deleteAll" v-if="deleteAll">
+      <div class="masking"></div>
+      <div class="alert">
+        <div class="top">
+          全部删除
+        </div>
+        <div class="alert-con">
+          <p class="con-main">确定要删除全部信息吗？</p>
+        </div>
+        <div class="btn">
+          <div class="backBtn" @click="sureBtn">
+            <img src="../assets/img/alert/give-button.png" alt="" slot="icon">
+          </div>
+          <div class="thinkBtn" @click="wait">
+            <img src="../assets/img/alert/button_weit-a-moment_n.png" alt="">
+          </div>
+        </div>
+      </div>
+      <router-view></router-view>
     </div>
   </div>
 </template>
 <script>
   import publicTop from '../components/publicTop'
-
   export default {
     name: 'message',
     data () {
@@ -43,19 +65,39 @@
         items: [],
         num: 10,
         page: 1,
-        storageMessage: null
+        storageMessage: null,
+        deleteAll: false
       }
     },
     methods: {
+      // 全部删除
+      delectBtn () {
+        this.deleteAll = true
+      },
+      sureBtn () {
+        let storageMessage = JSON.parse(sessionStorage.getItem('info'))
+        this.isShow = false
+        this.$http.post(this.HOST + '/mallItemsManage_listMallItems.do?method=deleteAllMallMessage',
+          {sid: storageMessage.sid, userid: storageMessage.userid, studentid: storageMessage.studentid}
+        ).then(response => {
+          // get body data
+          let success = 0
+          let body = response.body
+          if (success === body.code) {
+            this.items = []
+            this.deleteAll = false
+          }
+        }, response => {
+          // error callback
+        })
+      },
+      // 下拉刷新
       refresh (done) {
         console.log('refresh')
         this.page = 1
-        done(true)
-        this.getData(function () {
-        })
+        this.getData(done)
       },
       infinite (done) {
-        console.log('infinite')
         this.page++
         // let that = this
         done(true)
@@ -65,9 +107,8 @@
           }
         })
       },
-      getData (succse) {
+      getData (done) {
         let storageMessage = JSON.parse(sessionStorage.getItem('info'))
-        console.log(storageMessage, '34567')
         this.$http.get(this.HOST + '/mallItemsManage_listMallItems.do?method=getMallMessage', {
           params: storageMessage
         }).then(res => {
@@ -75,15 +116,16 @@
           let successCode = 0
           // 失败的状态
           let errorCode = 1
-          console.log(res, '原始数据')
           let body = res.body
-          console.log(body, '后台返回的数据')
           // 先判断状态
           if (body.code === successCode) {
             // 处理数据
             this.items = body.data
             for (let i = 0; i < this.items.length; i++) {
-              console.log(this.items[i].status, '1223')
+              console.log(this.items[i].type, '1223')
+            }
+            if (done) {
+              done(true)
             }
           } else if (body.code === errorCode) {
             // 处理失败
@@ -92,18 +134,6 @@
         }, error => {
           //   // error callback
           console.log(error)
-        })
-      },
-      // 全部删除
-      delectAll () {
-        this.isShow = false
-        this.$http.post(this.HOST + '/mallItemsManage_listMallItems.do?method=deleteAllMallMessage',
-          {sid: this.storageMessage.sid, userid: this.storageMessage.userid, studentid: this.storageMessage.studentid}
-        ).then(response => {
-          // get body data
-          this.items = []
-        }, response => {
-          // error callback
         })
       },
       // 单个删除
@@ -116,6 +146,9 @@
         }, response => {
           // error callback
         })
+      },
+      wait () {
+        this.deleteAll = false
       }
     },
     components: {
@@ -124,7 +157,6 @@
     created () {
       // this.getData()
       this.storageMessage = JSON.parse(sessionStorage.getItem('info'))
-      console.log(this.storageMessage.studentid, 'student')
     }
   }
 </script>
@@ -160,13 +192,13 @@
 
   .scroller-box {
     position: relative;
+    margin-top: .7rem;
   }
 
   .my-scroll {
     background-color: #f1e3bb;
     padding: 0.2rem 0.1rem 0.05rem;
     border-radius: 10px;
-    margin-top: .7rem;
   }
 
   .icon {
@@ -192,7 +224,6 @@
 
   .message-state {
     overflow: hidden;
-    padding: 0 10px;
     background-color: #fffbe8;
     border-radius: 15px;
     margin-bottom: 0.08rem;
@@ -214,6 +245,7 @@
     width: 1.25rem;
     height: 0.5rem;
     margin-top: 0.6rem;
+    margin-right: 0.1rem;
   }
 
   .message-state .delect img {
@@ -249,6 +281,49 @@
     width: 100%;
     height: 100%;
   }
+  .masking {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 999;
+    transition: all .3s ease-in-out;
+  }
 
+  .alert {
+    text-align: center;
+    color: #652411;
+    width: 86%;
+    height: 3.58rem;
+    background-image: url("../assets/img/alert/leave_bg.png");
+    background-size: 100% 100%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    z-index: 999;
+    padding: 0 0.4rem;
+  }
+
+  .alert .top {
+    font-size: 0.47rem;
+    color: #6d1f07;
+    text-align: center;
+    line-height: 1.3rem;
+    font-weight: bold;
+  }
+
+  .alert-con .con-main {
+    text-align: center;
+    font-size: 0.34rem;
+    font-weight: bold;
+    margin-top: 0.4rem;
+    margin-left: 0.3rem;
+  }
+  .btn{padding: 0.19rem 0.4rem;overflow: hidden;}
+  .btn .thinkBtn{float: right}
+  .btn .backBtn,.thinkBtn{width: 1.6rem;height: 0.7rem;float: left;margin-top: 0.3rem;}
 
 </style>

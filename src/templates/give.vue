@@ -2,6 +2,7 @@
   <div class="give">
     <alert v-if='isSuccess' :show="'isSuccess'">
     </alert>
+    <giveFail v-if="giveFail" :giveName="giveFail" :Erro="erroMess"></giveFail>
     <div class="give-parent">
       <div class="public-top">
         <div class="public-back" @click="goIndex">
@@ -14,17 +15,21 @@
             <div class="give-gift">
               <span>赠送礼品</span>
               <router-link to='/give/giveSel'>
-                <input type="text" readonly :placeholder="$route.query.content||'请选择商品'"/>
+                <input type="text" readonly :placeholder="($route.query.content + $route.query.integral) ||'请选择商品'"/>
+                <!---->
                 <i class="i1">
                   <img src="../assets/img/gift_icon_right.png"/>
                 </i>
               </router-link>
             </div>
           </div>
+          <div class="giveCode" v-if="this.$route.query === null">
+            <span class="Deduct">扣除积分:{{this.deleteCode}}</span>
+          </div>
           <div class="give-list">
             <div class="give-gift">
               <span>赠送积分</span>
-              <input class="jifen-inp" type="text" placeholder="请输入积分" v-model="jifen_inp"/>
+              <input class="jifen-inp" type="text" onkeyup="value=value.replace(/[^\d]/g,'')"   placeholder="请输入积分" v-model="jifen_inp"/>
               <!--<em class="jifen-em" v-show="jifen_type">积分</em>-->
               <i class="i1">
                 <img src="../assets/img/gift_icon_right.png"/>
@@ -46,7 +51,7 @@
                 <p class="coinNum">{{routerParams.integral}}</p>
               </div>
             </div>
-            <div class="rout-integral">
+            <div class="rout-integral" v-if="!this.routerParams.status">
               <span class="nowIntegral">我拥有的积分：{{this.nowNum}}</span>
               <span class="Deduct">扣除积分：{{this.deduction}}</span>
             </div>
@@ -57,8 +62,9 @@
           <div>
             <ul class="toBox-list">
               <li v-for="(item,index) in zengsongList" :key="item.id">
-                <!--<img :src="data.picsummary"/>-->
-                <img src="../assets/img/map/headPic.png" alt=""/>
+                <img
+                  :src="(item.picsummary&&item.picsummary!=='null')?item.picsummary:require('../assets/img/map/headPic.png')"
+                  alt="">
                 <p class="close-img" @click="closes(item,index)">
                   <img src="../assets/img/close.png"/>
                 </p>
@@ -69,7 +75,8 @@
       </div>
       <div class="public-bg">
         <ul class="select-box">
-          <li>
+            <p class="make" v-if="activeType" @click="activeType=false"></p>
+            <li>
             <span>{{school_on.name}}</span>
             <p @click="select(1)"><img src="../assets/img/gift_icon_lower.png"/></p>
             <ul :class="{'dropdown-list_active':activeType==1}" class="dropdown-list">
@@ -99,7 +106,8 @@
         </ul>
         <ul class="img-list">
           <li v-for="(i,index) in classmateList">
-            <img src="../assets/img/map/headPic.png" @click='zengsong(i,index)'/>
+            <img :src="(i.picsummary&&i.picsummary!=='null')?i.picsummary:require('../assets/img/map/headPic.png')"
+                 @click='zengsong(i,index)'/>
             <p>{{i.studentname}}</p>
           </li>
         </ul>
@@ -109,7 +117,7 @@
           <h3>最近赠送人：</h3>
           <ul class="lately-list">
             <li v-for="peopleList in giftPeople">
-              <img :src=peopleList.picsummary alt="" @click='zengsong(i,index)'>
+              <img :src='peopleList.picsummary?peopleList.picsummary:require("../assets/img/map/headPic.png")' alt=""/>
             </li>
           </ul>
         </div>
@@ -135,20 +143,24 @@
 </template>
 <script>
   import Alert from '../components/alertSuccess'
+  import giveFail from '../components/giveFail'
   import { Base64 } from 'js-base64'
 
   export default {
     name: 'give',
     components: {
-      Alert
+      Alert,
+      giveFail
     },
     data () {
       return {
+        inputAlue: '',
+        erroMess: '',
         tostudentids: null,
         jifen_type: false,
-        giftList: null,
+        giveFail: false,
         giftPeople: null,
-        jifen_inp: ' ',
+        jifen_inp: '',
         nowNum: {},
         isSuccess: false,
         routerParams: null,
@@ -190,6 +202,9 @@
       deduction: function () {
         // `this` 指向 vm 实例
         return (this.deductionCode = this.routerParams.integral * this.zengsongList.length)
+      },
+      deleteCode: function () {
+        return (this.deductionCode = this.$route.query.integral * this.zengsongList.length)
       }
     },
     created: function () {
@@ -197,8 +212,6 @@
       if (this.swtich === true) {
         this.swtich = this.on
       }
-      this.giftList = this.$route.query.giftSelList
-      console.log(this.giftList, 'uuu')
       /* 选择赠送 */
       this.$root.eventHub.$on('zidingyi', function (d) {
         _this.gift_selOn = d
@@ -211,12 +224,9 @@
       if (this.$route.query.transmission) {
         // 路由传递的参数
         this.routerParams = this.$route.query.transmission
-        console.log(this.routerParams.mallitemsid, '4567890')
-        console.log(this.routerParams.status, '0000000')
         // 存储总积分
         let stutendMess = JSON.parse(sessionStorage.getItem('stuMessage'))
         this.nowNum = stutendMess.currentintegral
-        console.log(this.nowNum, 'pppp')
       }
       this.storageMessage = JSON.parse(sessionStorage.getItem('info'))
       this.school()
@@ -245,7 +255,7 @@
             } else {
               this.giftPeople = null
             }
-            console.log(this.giftPeople, 'this.giftPeople')
+            // console.log(this.giftPeople, 'this.giftPeople')
           } else if (body.code === errorCode) {
             // 处理失败
             console.log('错误提示：' + body.msg)
@@ -371,19 +381,19 @@
           console.log(error)
         })
       },
-      goIndex: function () {
+      goIndex () {
         this.$router.push({
           path: '/home/index'
         })
       },
-      change: function (index) {
+      change (index) {
         this.changeRed = index
       },
       show () {
         this.give()
       },
-      touch () {
-
+      value () {
+        this.inputValue = this.$route.query.content + this.$route.query.integral
       },
       /* 输入积分 */
       jifens () {
@@ -398,6 +408,7 @@
       schoolOn (item) {
         this.school_on = item
         this.activeType = !this.activeType
+        console.log(this.activeType, 'activeType')
         this.getGradeList(item.id)
       },
       /* 选择年级 */
@@ -410,6 +421,7 @@
       classOn (item) {
         this.class_on = item
         this.activeType = !this.activeType
+        this.getClassmateList()
       },
       /* 赠送 */
       zengsong (i, index) {
@@ -454,31 +466,45 @@
       // 调用赠送接口
       give () {
         let id = this.newList()
-        console.log(this.routerParams, '8888888')
         let obj = {
           sid: this.storageMessage.sid,
           userid: this.storageMessage.userid,
           fromstudentid: this.storageMessage.studentid,
           tostudentids: id
         }
+        // this.$route.query 是赠送页赠送的参数
+        // this.routerParams 是市集和我的礼品的参数
+        // jifen_inp 单独送积分
+        // isanonymous = 1 匿名模式参数
+        if (this.$route.query.mallitemid) {
+          obj.mallitemid = this.$route.query.mallitemsid
+        }
         if (this.routerParams) {
+          obj.mallitemid = this.routerParams.mallitemsid
+        }
+        if (this.routerParams && this.routerParams.status !== '') {
           obj.status = this.routerParams.status
         }
-        if (this.routerParams) {
-          obj.mallitemsid = this.routerParams.mallitemsid
+        if (this.jifen_inp) {
+          obj.integral = this.jifen_inp
         }
-        if (this.$route.query.mallitemsid) {
-          obj.mallitemsid = this.$route.query.mallitemsid
+        if (this.niming_text === '开启') {
+          obj.isanonymous = 1
+        } else {
+          obj.isanonymous = ''
         }
         this.$http.post(this.HOST + '/exchangeRecordManage_addExchangeRecord.do?method=giveGift',
           obj
         ).then(res => {
           // get body data
-          if (this.obj !== '') {
-            this.isSuccess = false
-            alert('赠送错误')
-          } else {
+          let body = res.body
+          let success = '0'
+          if (success === body.code) {
             this.isSuccess = true
+          } else {
+            this.giveFail = true
+            // 报错原因
+            this.erroMess = body.msg
           }
         }, res => {
           // error callback
@@ -494,7 +520,6 @@
 <style scoped>
   .give {
     background: #FFFBE8;
-    bottom: 0;
     left: 0;
     position: absolute;
     top: 0;
@@ -526,6 +551,13 @@
     height: 100%;
   }
 
+  .giveCode {
+    overflow: hidden;
+    padding: 0.1rem 0.2rem;
+    color: #fff;
+    text-shadow: 0 1px #c34d16, 1px 0 #c34d16, -1px 0 #c34d16, 0 -1px #c34d16;
+  }
+  .giveCode .Deduct{float: right}
   .give-con {
     padding: 0;
   }
@@ -552,7 +584,6 @@
     text-align: right;
     margin-right: 0.2rem;
     color: #5F5145;
-    font-weight: 600;
   }
 
   .jifen-em {
@@ -705,7 +736,7 @@
 
   .lately-list {
     padding: 0;
-    border-top: 1px dashed #CCB185;
+    border-bottom: 1px dashed #CCB185;
   }
 
   .niming-box {
@@ -768,6 +799,14 @@
   .select-box {
     padding: 0.1rem;
     height: 0.7rem;
+  }
+
+  .select-box .make {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
   }
 
   .select-box > li {

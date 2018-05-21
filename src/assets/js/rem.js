@@ -3,16 +3,18 @@
   var docEl = doc.documentElement,
     resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
     recalc = function () {
-      var clientWidth = docEl.clientWidth;
-      if (!clientWidth) return;
-      if(clientWidth>=640){
-        docEl.style.fontSize = '100px';
-      }else{
-        docEl.style.fontSize = 100 * (clientWidth / 640) + 'px';
-      }
-    };
+      var clientWidth = docEl.clientWidth
+      if (!clientWidth) return
+      // if (clientWidth >= 640) {
+      //   docEl.style.fontSize = '100px'
+      // } else {
+      //   docEl.style.fontSize = 100 * (clientWidth / 640) + 'px'
+      // }
+      if (clientWidth > 750) clientWidth = 750 // 限制最大宽度，从而实现pc端两边留白
+      docEl.style.fontSize = 100 * (clientWidth / 640) + 'px'
+    }
 
-  if (!doc.addEventListener) return;
-  win.addEventListener(resizeEvt, recalc, false);
-  doc.addEventListener('DOMContentLoaded', recalc, false);
-})(document, window);
+  if (!doc.addEventListener) return
+  win.addEventListener(resizeEvt, recalc, false)
+  doc.addEventListener('DOMContentLoaded', recalc, false)
+})(document, window)

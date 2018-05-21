@@ -5,7 +5,7 @@
       </div>
       <div class="nowPic">
         <div class="head-portrait">
-          <img alt="">
+          <img alt="" :src='pic' />
         </div>
         <p>当前头像</p>
       </div>
@@ -17,53 +17,72 @@
             默认头像
           </div>
           <ul class="defultPic">
-            <li v-for="item in info">
+            <li v-for="item in data">
               <div class="picBox">
-                <img :src="item.picsummary" alt="">
+                <img :src="item.picsummary" alt="" @click="confirmBox(item.picsummary)">
               </div>
             </li>
           </ul>
         </div>
         <!--<div class="box second-box">-->
-          <!--<div class="box-title">-->
-            <!--AR拍照（7）-->
-            <!--<span>去拍照</span>-->
-          <!--</div>-->
-          <!--<flexbox>-->
-            <!--<flexbox-item>-->
-              <!--<div class="flex-demo">头像</div>-->
-            <!--</flexbox-item>-->
-            <!--<flexbox-item>-->
-              <!--<div class="flex-demo">头像</div>-->
-            <!--</flexbox-item>-->
-            <!--<flexbox-item>-->
-              <!--<div class="flex-demo">头像</div>-->
-            <!--</flexbox-item>-->
-            <!--<flexbox-item>-->
-              <!--<div class="flex-demo">头像</div>-->
-            <!--</flexbox-item>-->
-            <!--<flexbox-item>-->
-              <!--<div class="flex-demo">头像</div>-->
-            <!--</flexbox-item>-->
-          <!--</flexbox>-->
-          <!--<flexbox>-->
-            <!--<flexbox-item>-->
-              <!--<div class="flex-demo">头像</div>-->
-            <!--</flexbox-item>-->
-            <!--<flexbox-item>-->
-              <!--<div class="flex-demo">头像</div>-->
-            <!--</flexbox-item>-->
-            <!--<flexbox-item>-->
-              <!--<div class="flex-demo">头像</div>-->
-            <!--</flexbox-item>-->
-            <!--<flexbox-item>-->
-              <!--<div class="flex-demo">头像</div>-->
-            <!--</flexbox-item>-->
-            <!--<flexbox-item>-->
-              <!--<div class="flex-demo">头像</div>-->
-            <!--</flexbox-item>-->
-          <!--</flexbox>-->
+        <!--<div class="box-title">-->
+        <!--AR拍照（7）-->
+        <!--<span>去拍照</span>-->
         <!--</div>-->
+        <!--<flexbox>-->
+        <!--<flexbox-item>-->
+        <!--<div class="flex-demo">头像</div>-->
+        <!--</flexbox-item>-->
+        <!--<flexbox-item>-->
+        <!--<div class="flex-demo">头像</div>-->
+        <!--</flexbox-item>-->
+        <!--<flexbox-item>-->
+        <!--<div class="flex-demo">头像</div>-->
+        <!--</flexbox-item>-->
+        <!--<flexbox-item>-->
+        <!--<div class="flex-demo">头像</div>-->
+        <!--</flexbox-item>-->
+        <!--<flexbox-item>-->
+        <!--<div class="flex-demo">头像</div>-->
+        <!--</flexbox-item>-->
+        <!--</flexbox>-->
+        <!--<flexbox>-->
+        <!--<flexbox-item>-->
+        <!--<div class="flex-demo">头像</div>-->
+        <!--</flexbox-item>-->
+        <!--<flexbox-item>-->
+        <!--<div class="flex-demo">头像</div>-->
+        <!--</flexbox-item>-->
+        <!--<flexbox-item>-->
+        <!--<div class="flex-demo">头像</div>-->
+        <!--</flexbox-item>-->
+        <!--<flexbox-item>-->
+        <!--<div class="flex-demo">头像</div>-->
+        <!--</flexbox-item>-->
+        <!--<flexbox-item>-->
+        <!--<div class="flex-demo">头像</div>-->
+        <!--</flexbox-item>-->
+        <!--</flexbox>-->
+        <!--</div>-->
+      </div>
+    </div>
+    <div class="headPic" v-if="show">
+      <div class="masking"></div>
+      <div class="alert">
+        <div class="top">
+          更换头像
+        </div>
+        <div class="alert-con">
+          <p class="con-main">是否确认更换头像</p>
+        </div>
+        <div class="btn">
+          <div class="backBtn" @click="confirmBtn">
+            <img src="../assets/img/alert/give-button.png" alt="">
+          </div>
+          <div class="thinkBtn" @click="show=!show">
+            <img src="../assets/img/alert/button_weit-a-moment_n.png" alt="">
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -83,12 +102,17 @@
     name: 'head-pic',
     data () {
       return {
-        info: {},
-        pic: ' ',
-        mine: null
+        data: [],
+        pic: '',
+        mine: null,
+        show: false,
+        active: false,
+        storageMessage: null,
+        postPic: ''
       }
     },
     created: function () {
+      console.log(this.$route.query.imgUrl)
       let storageMessage = JSON.parse(sessionStorage.getItem('info'))
       this.mine = JSON.parse(sessionStorage.getItem('stuMessage'))
       this.$http.get(this.HOST + '/headPortraitManage_listHeadPortrait.do?method=getHeadPortraitList', {
@@ -101,7 +125,7 @@
         let body = res.body
         if (body.code === successCode) {
           // 处理数据
-          this.info = body.data
+          this.data = body.data
         } else if (body.code === errorCode) {
           // 处理失败
           console.log('错误提示：' + body.msg)
@@ -110,10 +134,32 @@
         // error callback
         console.log(error)
       })
+      // 获取路由头像
+      this.pic = this.$route.query.imgUrl
     },
     methods: {
       handleSidebar (name) {
         this.$router.push({path: '/' + name})
+      },
+      confirmBtn () {
+        let storageMessage = JSON.parse(sessionStorage.getItem('info'))
+        this.$http.post(this.HOST + '/headPortraitManage_listHeadPortrait.do?method=UpdateDefaultHeadImage',
+          {sid: storageMessage.sid, userid: storageMessage.userid, studentid: storageMessage.studentid, picsummary: this.postPic}
+        ).then(res => {
+          // get body data
+          let body = res.body
+          let successCode = 0
+          if (successCode === body.code) {
+            this.show = false
+            this.pic = this.postPic
+          }
+        }, res => {
+          // error callback
+        })
+      },
+      confirmBox (pic) {
+        this.show = true
+        this.postPic = pic
       }
     }
   }
@@ -167,16 +213,20 @@
     width: 1.4rem;
     height: 1.4rem;
     border-radius: 50%;
-    background-color: #999;
     position: relative;
     top: 40%;
     left: 50%;
     margin-left: -0.7rem;
+    background-image: url("../assets/img/map/exchange_head.png");
+    background-size: 100% 100%;
+    padding: 0.05rem 0.06rem 0.06rem 0.06rem;
   }
 
   .head-top p {
     font-size: 10px;
-    color: #999;
+    color: #fff;
+    text-shadow: 0 1px #9D4C4A, 1px 0 #9D4C4A, -1px 0 #9D4C4A, 0 -1px #9D4C4A;
+    margin-top: 0.2rem;
   }
 
   .box {
@@ -213,8 +263,14 @@
     height: 1.2rem;
     border-radius: 50%;
     float: left;
+    margin-left: 0.03rem;
   }
-  .defultPic li .picBox{width: 1rem;height: 1rem;margin: 0 auto;}
+
+  .defultPic li .picBox {
+    width: 1rem;
+    height: 1rem;
+    margin: 0 auto;
+  }
 
   .defultPic li img {
     border-radius: 50%;
@@ -234,4 +290,61 @@
     float: right;
   }
 
+  .masking {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 999;
+    transition: all .3s ease-in-out;
+  }
+
+  .alert {
+    text-align: center;
+    color: #652411;
+    width: 86%;
+    height: 3.58rem;
+    background-image: url("../assets/img/alert/leave_bg.png");
+    background-size: 100% 100%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    z-index: 999;
+    padding: 0 0.4rem;
+  }
+
+  .alert .top {
+    font-size: 0.47rem;
+    color: #6d1f07;
+    text-align: center;
+    line-height: 1.3rem;
+    font-weight: bold;
+  }
+
+  .alert-con .con-main {
+    text-align: center;
+    font-size: 0.34rem;
+    font-weight: bold;
+    margin-top: 0.4rem;
+    margin-left: 0.3rem;
+  }
+
+  .btn {
+    padding: 0.19rem 0.4rem;
+    overflow: hidden;
+  }
+
+  .btn .thinkBtn {
+    float: right
+  }
+
+  .btn .backBtn, .thinkBtn {
+    width: 1.6rem;
+    height: 0.7rem;
+    float: left;
+    margin-top: 0.3rem;
+  }
 </style>

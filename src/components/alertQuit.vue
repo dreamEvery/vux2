@@ -36,13 +36,12 @@
       wait () {
         // 点击关闭按钮 this.$parent 获取到父组件
         // this.$parent[this.showName] 获取父组件中的 isAlertBox
-        this.$parent[this.name] = false
+        this.$parent.isAlertQuit = false
       },
       back () {
         this.active = true
         this.$router.push({path: '/login'})
-        // sessionStorage.removeItem('stuMessage')
-        // sessionStorage.removeItem('info')
+        sessionStorage.clear()
       }
     }
   }

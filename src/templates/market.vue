@@ -15,7 +15,8 @@
       </div>
     </alert-box>
     <public-top></public-top>
-    <fail v-if="fail" :showName="'fail'"></fail>
+    <exchange v-if="exchangeWin" :showExchange="'exchangeWin'"></exchange>
+    <fail v-if="failCode" :showName="'failCode'"></fail>
     <div class="con">
       <div class="tab">
         <ul>
@@ -26,11 +27,11 @@
         </ul>
       </div>
     </div>
-    <div class="side-con">
+    <div class="side-con">`
       <div class="sidebar">
         <div v-for="(item, index) in rawData" :key="item.id">
           <p class="shelves-name" @click="toggleBars(index, item)" :class="{active:index == nowIndex.index}">
-            {{item.isleft===1?'左侧货架':'右侧货架'}}</p>
+            {{item.isleft===0?'右侧货架':'左侧货架'}}</p>
           <ul v-if="nowIndex.index === index">
             <li class="children-text" v-if="item" v-for="(items, indexs) in item.sidedata"
                 :class="{change:indexs == nowIndex.indexs}" @click="changelist(index, indexs)">
@@ -73,6 +74,7 @@
   import alertBox from '../components/alertBox'
   import publicTop from '../components/publicTop'
   import Fail from '../components/fail'
+  import Exchange from '../components/exchange'
   export default {
     name: 'market',
     components: {
@@ -80,11 +82,12 @@
       FlexboxItem,
       alertBox,
       publicTop,
-      Fail
+      Fail,
+      Exchange
     },
     data () {
       return {
-        fail: false,
+        failCode: false,
         numberToUT: {
           1: '一',
           2: '二',
@@ -100,9 +103,10 @@
         tabs: [],
         tabsActive: 0,
         mrenxs: null,
+        exchangeWin: false,
         sideData: [],
         nowIndex: {
-          index: 1,
+          index: 0,
           indexs: 0
         },
         changeList: 0,
@@ -122,7 +126,7 @@
         that.tabsActive = index
         this.getMallItemsList(id)
         this.nowIndex = {
-          index: 1,
+          index: 0,
           indexs: 0
         }
       },
@@ -152,7 +156,6 @@
       getTabs () {
         // TODO: 在这里调用 api /api/vendingmachinemanage_listVendingMachine.do?method=getVendingMachineList
         let storageMessage = JSON.parse(sessionStorage.getItem('info'))
-        console.log(storageMessage, '34567')
         this.$http.get(this.HOST + '/vendingmachinemanage_listVendingMachine.do?method=getVendingMachineList', {
           params: storageMessage
         }).then(res => {
@@ -242,8 +245,9 @@
   }
 
   .con {
-    margin-top: 1.8rem;
+    margin-top: 22%;
   }
+  .sidebar div{margin-bottom: 0.2rem}
 
   .side-con {
     width: 100%;

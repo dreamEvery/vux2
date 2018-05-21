@@ -16,6 +16,7 @@
     "js-base64": "^2.4.3",
     "js-md5": "^0.7.3",
     "lib-flexible": "^0.3.2",
+    "vconsole": "^3.2.0",
     "vue": "^2.5.2",
     "vue-resource": "^1.5.0",
     "vue-router": "^3.0.1",

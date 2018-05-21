@@ -10,7 +10,7 @@
       <div class="give-bg-bottom">
       </div>
       <ul class="give-sel-list">
-        <li v-for="( item, index ) in giftSelList">
+        <li v-for="( item, index ) in newArry">
           <router-link class="giveBtn" :to="{path: '/give', query:item}">
             <img :src="item.picsummary" alt="">
           </router-link>
@@ -26,7 +26,8 @@
     name: 'gift_sel',
     data () {
       return {
-        giftSelList: []
+        giftSelList: [],
+        newArry: []
       }
     },
     created () {
@@ -74,6 +75,7 @@
             this.giftSelList.map((value) => {
               value.content = this.$base64.decode(value.content)
             })
+            this.removalNum()
           } else if (body.code === errorCode) {
             // 处理失败
           }
@@ -81,6 +83,13 @@
           // error callback
           console.log(error)
         })
+      },
+      removalNum () {
+        for (let i = 0; i < this.giftSelList.length; i++) {
+          if (this.newArry.indexOf(this.giftSelList[i] === -1)) {
+            this.newArry.push(this.giftSelList[i])
+          }
+        }
       }
     }
   }
@@ -120,6 +129,7 @@
     position: absolute;
     top: 0;
     left: 0;
+    width: 100%;
   }
   .give-sel-list .router{display: block}
 

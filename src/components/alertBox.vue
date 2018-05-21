@@ -11,12 +11,9 @@
         <slot name="gift"></slot>
       </div>
       <div class="alertBtn" v-if="type">
-        <router-link class="giveBtn" :to="{path: '/give', query:{transmission: transmission}}">
+        <router-link class="giveBtn" :to="{path: '/give', query:{transmission: transmission}}" v-if="isBtn?isBtn:true">
           <img src="../assets/img/give-button.png" alt="">
         </router-link>
-        <p class="receive" v-if="type === 'gift'" @click="receive()">
-          <img src='../assets/img/alert/recive.png' alt="">
-        </p>
         <p class="exchangeBtn" @click="exchange" v-if="type === 'market'">
           <span class="coinNum">
             {{transmission.integral}}
@@ -35,7 +32,7 @@
   import Sussce from '../components/alertSuccess'
   export default {
     name: 'alertbox',
-    props: ['showName', 'type', 'transmission', 'receiveMess'],
+    props: ['showName', 'type', 'transmission', 'receiveMess', 'isBtn'],
     // 子组件接收到父组件传过来的 showName
     data () {
       return {
@@ -60,15 +57,17 @@
         this.alertSussce = true
         this.storageMessage.mallitemsid = this.transmission.mallitemsid
         this.storageMessage.vendingmachineid = this.$parent.rawDataTabs[this.$parent.tabsActive].vendingmachineid
-        console.log(this.storageMessage, 'nn')
         this.$http.post(this.HOST + '/mallItemsManage_updateMallItems.do?method=addExchangeRecord',
           this.storageMessage
         ).then(res => {
           // get body data
           let body = res.body
-          let successCode = 0
+          let successCode = '0'
           if (successCode !== body.code) {
-            this.$parent.fail = true
+            this.$parent.failCode = true
+          } else {
+            this.$parent.exchangeWin = true
+            this.$root.eventHub.$emit('changeTop')
           }
         }, res => {
           // error callback
@@ -78,7 +77,7 @@
       receive () {
         console.log(this.receiveMess, '99')
         for (let i = 0; i < this.receiveMess.length; i++) {
-          console.log(this.receiveMess[i].exchangerecordid)
+          console.log(this.receiveMess[i].vendingmachineid)
           this.exchangerecordid = this.receiveMess[i].exchangerecordid
           this.vendingmachineid = this.receiveMess[i].vendingmachineid
         }
@@ -87,11 +86,12 @@
         ).then(res => {
           // get body data
           let body = res.body
-          let successCode = 0
+          let successCode = '0'
           if (successCode === body.code) {
             alert('领取成功')
           } else {
-            alert(body.msg)
+            this.$parent[this.showName] = false
+            this.$parent.receive = true
           }
         }, res => {
           // error callback
@@ -100,7 +100,6 @@
     },
     created () {
       this.storageMessage = JSON.parse(sessionStorage.getItem('info'))
-      console.log(this.transmission, '999999999')
     }
   }
 </script>
@@ -120,7 +119,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.6);
     z-index: 999;
     transition: all .3s ease-in-out;
   }
@@ -133,7 +132,7 @@
     background-size: 100% 100%;
     position: absolute;
     top: 50%;
-    left: 50%;
+    left: 49%;
     transform: translateX(-50%) translateY(-50%);
     z-index: 999;
     padding: 1rem 0.45rem 0.4rem 0.6rem;
@@ -180,11 +179,11 @@
 
   .alert-logo {
     position: absolute;
-    top: -58px;
+    top: -62px;
     right: 33%;
     z-index: 999;
     width: 2.4rem;
-    height: 2.4rem;
+    height: 2.6rem;
   }
 
   .alert-logo img {

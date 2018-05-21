@@ -15,7 +15,7 @@
     </div>
     <div class="tab-con">
       <div class="tab-main">
-        <div class="tab-box">
+        <div :class=" this.myArry ? 'tabHight' : 'tab-box' ">
           <div class="ranking-list">
             <div class="frist" v-if="dataArry[1]">
               <div class="ranking-pic blue-bg">
@@ -47,7 +47,8 @@
           </div>
           <div class="rank-stu">
             <table>
-              <tr v-for="(student, index) in dataArry" v-if="index > 2 && index < 8">
+              <tr v-for="(student, index) in dataArry" v-if="index > 2 && index < 15"
+                  class="rank" :class="{myRank:(storageMessage.studentid==student.studentid)}">
                 <th :class="(index == 3 || index == 4) ? 'cur' : 'numColor' ">{{student.ranking}}</th>
                 <th>
                   <div class="ranking-small-pic">
@@ -69,7 +70,7 @@
             </table>
           </div>
         </div>
-        <table class="myself-box">
+        <table class="myself-box" v-if="this.myArry">
           <tr>
             <th class="numColor">
               <p>{{myArry.ranking}}</p>
@@ -98,28 +99,37 @@
     data () {
       return {
         dataArry: [],
-        myArry: {},
+        myArry: null,
         tabs: [
-          {text: '班级', id: this.$route.query.classId, type: 'class'},
-          {text: '年级', id: this.$route.query.gradeId, type: 'grade'},
+          {text: '班级'},
+          {text: '年级'},
           {text: '学校'}
         ],
-        changeRed: 0
+        changeRed: 0,
+        storageMessage: null
       }
     },
     methods: {
       handleSidebar (name) {
         this.$router.push({path: '/' + name})
       },
-      getData (index, id, type) {
+      getData (index) {
         let that = this
+        this.myArry = null
         that.changeRed = index
-        let storageMessage = JSON.parse(sessionStorage.getItem('info'))
-        console.log(storageMessage, '000')
-        if (type === 'class') storageMessage.classid = id
-        if (type === 'grade') storageMessage.gradeid = id
+        let parameter = {
+          sid: this.$route.query.sid,
+          userid: this.$route.query.userid,
+          studentid: this.$route.query.studentid,
+          classid: this.$route.query.classId
+        }
+        if (index === 1) {
+          parameter.gradeid = this.$route.query.gradeId
+          parameter.classid = ''
+        }
+        if (index === 2) { parameter.classid = '' }
         this.$http.get(this.HOST + '/integralManagementOrder.do?method=getIntegralTeamOrderV31', {
-          params: storageMessage
+          params: parameter
         }).then(res => {
           // 成功的状态
           let successCode = 0
@@ -146,7 +156,10 @@
         let storageMessage = JSON.parse(sessionStorage.getItem('info'))
         for (let i = 0; i < this.dataArry.length; i++) {
           if (parseInt(storageMessage.studentid) === this.dataArry[i].studentid) {
-            this.myArry = this.dataArry[i]
+            if (this.dataArry[i].ranking > 15) {
+              this.myArry = this.dataArry.shift()
+              console.log(this.myArry, '1999999')
+            }
           }
         }
       }
@@ -155,9 +168,19 @@
       Base64,
       publicTop
     },
-    computed: {},
+    computed: {
+      // classObj: function () {
+      //   for (let y = 0; y < this.dataArry.length; y++) {
+      //     if (parseInt(this.storageMessage.studentid) === this.dataArry[y].studentid) {
+      //       this.myRank = true
+      //     }
+      //   }
+      // }
+    },
     created () {
-      this.getData(2)
+      console.log(this.$route.query, '000')
+      this.getData(0)
+      this.storageMessage = JSON.parse(sessionStorage.getItem('info'))
     },
     watch: {
       'dataArry' (value) {
@@ -186,7 +209,8 @@
     font-size: 0.32rem;
     text-shadow: 0 1px #e35b3a, 1px 0 #e35b3a, -1px 0 #e35b3a, 0 -1px #e35b3a;
   }
-  .numColor{
+
+  .numColor {
     color: #ff4000;
     text-shadow: 0 1px #fff, 1px 0 #fff, -1px 0 #fff, 0 -1px #fff;
   }
@@ -207,6 +231,18 @@
     border: 2px solid #b17238;
     border-radius: 0.2rem;
     padding-top: 0.2rem;
+    height: 100%;
+    overflow-y: scroll;
+  }
+
+  .tabHight {
+    margin: 0 0.1rem;
+    padding: 0 0.1rem;
+    border: 2px solid #b17238;
+    border-radius: 0.2rem;
+    padding-top: 0.2rem;
+    overflow-y: scroll;
+    height: 92%;
   }
 
   .tab .ul .tab-ranking {
@@ -263,7 +299,7 @@
     background-color: #FEFBE9;
     border-radius: 0.2rem;
     padding-top: 0.2rem;
-    height: 93%;
+    height: 100%;
     overflow-y: scroll;
     padding-bottom: 0.2rem;
   }
@@ -271,11 +307,6 @@
   .tab-con .ranking-list {
     display: flex;
     flex-direction: row;
-  }
-
-  .tab-box {
-    height: 100%;
-    overflow-y: scroll;
   }
 
   .tab-box table {
@@ -287,20 +318,41 @@
     text-align: center;
     flex: 1;
   }
-  .ranking-list .name{margin-bottom: 0.06rem;}
-  .ranking-stu .name{font-size: 0.28rem;}
+
+  .ranking-list .name {
+    margin-bottom: 0.06rem;
+  }
+
+  .ranking-stu .name {
+    font-size: 0.28rem;
+  }
+
   .ranking-list div img {
     width: 1rem;
     height: 1rem;
     margin-top: .36rem;
   }
-  .ranking-list .frist{margin-top: 0.76rem;}
-  .ranking-list .thrid{margin-top: 0.76rem;}
+
+  .ranking-list .frist {
+    margin-top: 0.76rem;
+  }
+
+  .ranking-list .thrid {
+    margin-top: 0.76rem;
+  }
+
   .ranking-list div.second {
     padding-top: 0;
   }
-  .ranking-list .name{font-size: 0.3rem;}
-  .ranking-list p{margin-bottom: 0.1rem;}
+
+  .ranking-list .name {
+    font-size: 0.3rem;
+  }
+
+  .ranking-list p {
+    margin-bottom: 0.1rem;
+  }
+
   .ranking-list div .ranking-pic {
     vertical-align: bottom;
     margin-bottom: 10px;
@@ -359,12 +411,12 @@
   }
 
   .ranking-list div .now-integral {
-    font-size: 0.01rem;
+    font-size: 0.26rem;
     color: #7a7571;
   }
 
   .ranking-list div .all-integral {
-    font-size: 0.1rem;
+    font-size: 0.26rem;
     color: #7a7571;
   }
 
@@ -373,13 +425,18 @@
     margin-top: 8px;
   }
 
-  .tab-con table tr {
+  .tab-con table .rank {
     background-image: url("../assets/img/map/exchange_imgn_weixuanzhong.png");
     background-size: 100% 100%;
     background-repeat: no-repeat;
     width: 100%;
     display: flex;
     margin-bottom: 0.2rem;
+  }
+
+  .tab-con table .myRank {
+    background-image: url("../assets/img/map/Ranking-List_img_Selected.png");
+    background-size: 100% 100%;
   }
 
   .tab-con table th {
@@ -405,6 +462,14 @@
     line-height: 1;
     padding-top: 0.19rem;
     flex: 4;
+  }
+
+  @media screen and (max-width: 320px) {
+    /*.tab-con table th {flex: 2.5}*/
+    .tab-con table th:nth-child(2) {
+      flex: 3
+    }
+
   }
 
   .tab-con table th:nth-child(2) .ranking-small-pic {
@@ -459,6 +524,7 @@
     width: 100%;
     margin-bottom: 0;
     margin-top: 0;
+    display: flex;
   }
 
   .myself-box {
@@ -476,7 +542,10 @@
     display: flex;
     text-align: center;
   }
-  .myself-box .numColor p{font-size: 0.3rem;}
+
+  .myself-box .numColor p {
+    font-size: 0.3rem;
+  }
 
   .myself-box .myself-pic {
     float: left;
@@ -501,7 +570,10 @@
   }
 
   .myself-box tr .myself-th {
-    flex: 3
+    flex: 4
   }
-  .mysele-th .name{margin-top: 0.14rem;}
+
+  .mysele-th .name {
+    margin-top: 0.14rem;
+  }
 </style>

@@ -24,7 +24,7 @@
         </p>
       </div>
       <div class="next">
-          <button @click="next">下一步</button>
+        <button @click="next">下一步</button>
       </div>
     </div>
     <router-view></router-view>
@@ -44,7 +44,8 @@
         num: false,
         disabled: false,
         btnText: '获取验证码',
-        timer: ''
+        timer: '',
+        sendCode: ''
       }
     },
     components: {
@@ -53,41 +54,64 @@
     created () {
     },
     methods: {
-      next: function () {
-        let myReg = /^[1][3,4,5,7,8][0-9]{9}$/
-        if (this.phoneNum === '' || !myReg.test(this.phoneNum)) {
-          this.show = true
-        } else if (this.verificationNum === '' || this.verificationNum === true) {
-          this.num = true
+      // 验证手机号码
+      isPhone: function (tel) {
+        const str = [134, 135, 136, 137, 138, 139, 147, 150, 151, 152, 157, 158, 159, 182, 183, 187, 188, 198, 130, 131, 132, 155, 156, 185, 186, 145, 166, 133, 153, 180, 189, 199, 170].join('|')
+        const reg = new RegExp(`^(${str})\\d{8}`, 'gi')
+        return reg.test(tel)
+      },
+      // 验证验证码
+      isCode: function (code) {
+        const reg = /\d{4}$/
+        return reg.test(code)
+      },
+      // 获取验证码
+      time: function () {
+        this.disabled = true
+        let time = 60
+        this.timer = setInterval(() => {
+          if (time <= 0) {
+            this.disabled = false
+            this.btnText = '重新获取验证码'
+            clearInterval(this.timer)
+          } else {
+            this.btnText = time + 's'
+            time--
+          }
+        }, 1000)
+      },
+      // 验证验证码
+      next () {
+        if (this.isCode(this.verificationNum)) {
+          this.$http.post(this.HOST + '/userManage_loginUser.do?method=validMessage',
+            {phone: this.phoneNum}
+          ).then(res => {
+            // get body data
+          }, res => {
+            // error callback
+            this.disabled = false
+          })
         } else {
-          this.$router.push({path: '/newpassword', params: {phoneNum: this.phoneNum}})
+          this.$router.push({path: '/newpassword', query: {phoneNum: this.phoneNum}})
         }
       },
+      // 验证手机号发送验证码
       getVerifyCode () {
-        this.$http.post(this.HOST + '/userManage_loginUser.do?method=validMessage',
-          {phone: this.phoneNum}
-        ).then(res => {
-          // get body data
-          if (this.num === null) {
-            this.disabled = true
-          } else {
-            this.disabled = true
-            let time = 60
-            this.timer = setInterval(() => {
-              if (time <= 0) {
-                this.disabled = false
-                this.btnText = '重新获取验证码'
-                clearInterval(this.timer)
-              } else {
-                this.btnText = time + 's'
-                time--
-              }
-            }, 1000)
-          }
-        }, res => {
-          // error callback
-          this.disabled = false
-        })
+        if (this.isPhone(this.phoneNum)) {
+          this.$http.post(this.HOST + '/userManage_loginUser.do?method=checkUserName',
+            {username: this.phoneNum}
+          ).then(res => {
+            // get body data
+            this.time()
+            let body = res.body
+            this.sendCode = body.sendcode
+          }, res => {
+            // error callback
+            this.disabled = false
+          })
+        } else {
+          alert('手机号错误')
+        }
       }
     }
   })
@@ -121,7 +145,10 @@
     border-radius: 0.6rem;
     background-color: #fff;
   }
-  .password-con{padding: 1rem 0.4rem}
+
+  .password-con {
+    padding: 1rem 0.4rem
+  }
 
   input {
     padding-left: 14px;

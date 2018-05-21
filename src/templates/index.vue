@@ -53,15 +53,15 @@
     <alert-quit v-if="isAlertQuit" :name="isAlertQuit"></alert-quit>
     <div class="top">
       <div class="back">
-        <span @click="back()">
+        <span @click="back">
           <img src="../assets/img/map/my_button_return.png" alt="">
         </span>
       </div>
-      <div class="header-pic" @click="handleSidebar('head')">
+      <router-link class="header-pic" :to="{path: '/head', query:{imgUrl:data.picsummary}}">
         <div class="head-main">
           <img :src="data.picsummary || 'static/img/headPic.png'" alt="" :onerror="imgError">
         </div>
-      </div>
+      </router-link>
       <div class="introduce">
         <p class="name">{{data.stuname}}</p>
         <p class="class">{{data.classname}}</p>
@@ -78,7 +78,7 @@
           </div>
           <div>
             <router-link
-              :to="{path:'/among',query:{classId: this.data.classid, gradeId: this.data.gradeid, aaa: '123'}}">
+              :to="{path:'/among',query:{studentid: this.data.studentid, classId: this.data.classid, gradeId: this.data.gradeid, sid: this.data.sid, userid: this.data.userid}}">
               <img src="../assets/img/map/my_icon_ranking--list.png" alt="">
             </router-link>
           </div>
@@ -203,9 +203,6 @@
           this.getGrade()
         }
       },
-      handleSidebar (name) {
-        this.$router.push({path: '/' + name})
-      },
       onHide () {
         console.log('on hide')
       },
@@ -237,7 +234,6 @@
             for (let i = 0; i < this.gradeData.length; i++) {
               this.gradeData[i].name = Base64.decode(this.gradeData[i].name)
             }
-            console.log(this.gradeData, 'lv')
           } else if (body.code === errorCode) {
             // 处理失败
             console.log('错误提示：' + body.msg)
@@ -249,51 +245,55 @@
       },
       back () {
         this.isAlertQuit = true
+      },
+      mineMess () {
+        this.storageMessage = JSON.parse(sessionStorage.getItem('info'))
+        this.$http.get(this.HOST + '/vendingMachineInventoryManage_listVendingMachineInventory.do?method=getUserInfoForMobilePhoneLogin', {
+          params: {
+            sid: this.storageMessage.sid,
+            userid: this.storageMessage.userid,
+            studentid: this.storageMessage.studentid
+          }
+        }).then(res => {
+          // 成功的状态
+          let successCode = '0'
+          // 失败的状态
+          let errorCode = '1'
+          // console.log(res, '原始数据')
+          let body = res.body
+          // console.log(body, '后台返回的数据')
+          // 先判断状态
+          // "code":返回状态码,"data":"应该业务数据","msg":"错误提示"
+          // 所以我优先判断 code
+          if (body.code === successCode) {
+            // 处理数据
+            body.stuname = Base64.decode(body.stuname)
+            body.classname = Base64.decode(body.classname)
+            this.data = body
+            let stutent = {
+              stuname: this.data.stuname,
+              classname: this.data.classname,
+              currentintegral: this.data.currentintegral,
+              itemsnum: this.data.itemsnum,
+              picsummary: this.data.picsummary
+            }
+            let stuMessage = JSON.stringify(stutent)
+            sessionStorage.setItem('stuMessage', stuMessage)
+          } else if (body.code === errorCode) {
+            // 处理失败
+            console.log('错误提示：' + body.msg)
+          }
+        }, error => {
+          // error callback
+          console.log(error)
+        })
       }
     },
     created: function () {
-      this.storageMessage = JSON.parse(sessionStorage.getItem('info'))
-      console.log(this.storageMessage, '99')
-      this.$http.get(this.HOST + '/vendingMachineInventoryManage_listVendingMachineInventory.do?method=getUserInfoForMobilePhoneLogin', {
-        params: {
-          sid: this.storageMessage.sid,
-          userid: this.storageMessage.userid,
-          studentid: this.storageMessage.studentid
-        }
-      }).then(res => {
-        // 成功的状态
-        let successCode = '0'
-        // 失败的状态
-        let errorCode = '1'
-        // console.log(res, '原始数据')
-        let body = res.body
-        // console.log(body, '后台返回的数据')
-        // 先判断状态
-        // "code":返回状态码,"data":"应该业务数据","msg":"错误提示"
-        // 所以我优先判断 code
-        if (body.code === successCode) {
-          // 处理数据
-          body.stuname = Base64.decode(body.stuname)
-          body.classname = Base64.decode(body.classname)
-          this.data = body
-          console.log(this.data)
-          let stutent = {
-            stuname: this.data.stuname,
-            classname: this.data.classname,
-            currentintegral: this.data.currentintegral,
-            itemsnum: this.data.itemsnum,
-            picsummary: this.data.picsummary
-          }
-          let stuMessage = JSON.stringify(stutent)
-          sessionStorage.setItem('stuMessage', stuMessage)
-        } else if (body.code === errorCode) {
-          // 处理失败
-          console.log('错误提示：' + body.msg)
-        }
-      }, error => {
-        // error callback
-        console.log(error)
-      })
+      let that = this
+      setTimeout(function () {
+        that.mineMess()
+      }, 100)
     }
   }
 </script>
@@ -315,7 +315,8 @@
     position: relative;
     padding-right: 0.76rem;
     padding-left: 0.76rem;
-    padding-top: 1.38rem;
+    padding-top: 18%;
+    min-height: 3.5rem;
 
   }
 
@@ -332,6 +333,7 @@
   }
 
   .header-pic {
+    display: block;
     padding: 0.054rem 0.04rem;
     width: 1.4rem;
     height: 1.4rem;
@@ -341,12 +343,23 @@
     background-image: url("../assets/img/map/exchange_head.png");
     background-size: 100% 100%;
   }
-  .header-pic .head-main{width: 1.26rem;height: 1.26rem;margin: 0 auto;}
-  .header-pic .head-main img{border-radius: 50%;}
+
+  .header-pic .head-main {
+    width: 1.26rem;
+    height: 1.26rem;
+    margin-top: 0.02rem;
+    margin-left: 0.02rem;
+  }
+
+  .header-pic .head-main img {
+    border-radius: 50%;
+  }
 
   .introduce {
     text-align: center;
     margin-top: 0.1rem;
+    min-height: 0.2rem;
+    padding-top: 0.12rem;
   }
 
   .introduce .name, .class {
@@ -364,7 +377,7 @@
   .central-box {
     padding-left: 0.5rem;
     padding-right: 0.5rem;
-    margin-top: 0.66rem;
+    margin-top: 8%;
   }
 
   .central-main {
@@ -437,7 +450,8 @@
     height: 1.46rem;
     margin: 0 auto;
   }
-  .list-icon .message{
+
+  .list-icon .message {
     width: 1.4rem;
     height: 1.4rem;
   }
@@ -490,5 +504,9 @@
     line-height: 0.8rem;
     text-align: left;
   }
-  .title{overflow: hidden;margin-bottom: 0.3rem;}
+
+  .title {
+    overflow: hidden;
+    margin-bottom: 0.3rem;
+  }
 </style>

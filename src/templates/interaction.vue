@@ -7,10 +7,10 @@
     <div class="in-con">
       <h3 class="ranking">已经击败80%的小伙伴</h3>
       <div class="game-box">
-        <a class="game-1" href="javascript:;">
-          <img src="../assets/img/Game_img_Luck-draw.png"/>
+        <router-link class="game-1" href="javascript:;" :to="{path:'/draw'}">
+          <img src="../assets/img/map/lucky_turntable.png"/>
           <p>幸运大转盘</p>
-        </a>
+        </router-link>
         <a class="game-2" href="javascript:;">
           <img src="../assets/img/Game_img_adventure.png"/>
           <p>奇幻冒险</p>
@@ -56,7 +56,6 @@
     },
     created: function () {
       let storageMessage = JSON.parse(sessionStorage.getItem('info'))
-      console.log(storageMessage, '34567')
       this.$http.get(this.HOST + '/winningRecordManage_listWinningRecord.do?method=getWinningRecordList', {
         params: storageMessage
       }).then(res => {
@@ -64,16 +63,10 @@
         let successCode = 0
         // 失败的状态
         let errorCode = 1
-        console.log(res, '原始数据')
         let body = res.body
-        console.log(body, '后台返回的数据')
-        // 先判断状态
-        // "code":返回状态码,"data":"应该业务数据","msg":"错误提示"
-        // 所以我优先判断 code
         if (body.code === successCode) {
           // 处理数据
           this.items = body.data
-          console.log(this.items, '1111')
         } else if (body.code === errorCode) {
           // 处理失败
           console.log('错误提示：' + body.msg)

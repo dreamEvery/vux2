@@ -1,6 +1,6 @@
 <template>
   <div class="gift-bg">
-    <alert-box v-if='isAlertBox' :showName="'isAlertBox'" :transmission="giftInfo" :receiveMess="message" :type="'gift'">
+    <alert-box v-if='isAlertBox' :showName="'isAlertBox'" :transmission="giftInfo" :receiveMess="message" :type="'gift'" :isBtn="false">
       <div slot="gift">
         <div class="alert-top">{{giftInfo.mallitemsname}}</div>
         <div class="alert-gift">
@@ -10,11 +10,13 @@
           <div class="gift-introduce">
             <p>{{giftInfo.content}}
             </p>
+            <p class="time">{{giftInfo.time}}</p>
           </div>
         </div>
       </div>
     </alert-box>
     <public-top></public-top>
+    <Receive v-if="receive" :receiveWin="receive"></Receive>
     <div class="gift-con">
       <router-link to="/home/index">
         <div class="public-back">
@@ -38,7 +40,7 @@
               <div @click="showAlert(item)">
                 <img :src="item.picsummary"/>
                 <span>{{item.count}}</span>
-                <p class="gift-type">
+                <p class="gift-type" v-if="tabs[tabsIndex].type === 'all'">
                   <img src="../assets/img/my_img_Received.png" alt="" v-if="item.status === '3'">
                   <img src="../assets/img/my_img_No-collar.png" alt="" v-if="item.status === '1'">
                   <img src="../assets/img/my_img_Send.png" alt="" v-if="item.status === '2'"/>
@@ -56,6 +58,7 @@
   import { Grid, GridItem, GroupTitle } from 'vux'
   import publicTop from '../components/publicTop'
   import alertBox from '../components/alertBox'
+  import Receive from '../components/Receive'
 
   export default {
     components: {
@@ -63,7 +66,8 @@
       GridItem,
       GroupTitle,
       alertBox,
-      publicTop
+      publicTop,
+      Receive
     },
     name: 'gift',
     data () {
@@ -77,23 +81,24 @@
           type: 'Unreceived'
         },
         {
-          text: '收到',
-          type: 'Received'
-        },
-        {
           text: '送出',
           type: 'Send'
+        },
+        {
+          text: '收到',
+          type: 'Received'
         }
         ],
         changeRed: 0,
+        tabsIndex: 0,
         isAlertBox: false,
         message: [],
-        giftInfo: {}
+        giftInfo: {},
+        receive: false
       }
     },
     mounted () {
       var MaxH = window.innerHeight
-      console.log(MaxH)
       document.getElementsByClassName('give-bg')[0].style.height = MaxH + 'px'
       // var clearH=document.getElementsByClassName("public-top")[0].offsetHeight+document.getElementsByClassName("give-bg-top")[0].offsetHeight;
       var bottomMinH = MaxH
@@ -108,6 +113,7 @@
     methods: {
       getData (index, type) {
         let that = this
+        that.tabsIndex = index
         that.changeRed = index
         let storageMessage = JSON.parse(sessionStorage.getItem('info'))
         if (type === 'Unreceived') storageMessage.status = 1
@@ -146,11 +152,12 @@
       showAlert (item) {
         this.giftInfo = item
         console.log(this.giftInfo, 'info')
-        if (item.status === '4' || item.status === '3') {
-          this.isAlertBox = false
-        } else {
-          this.isAlertBox = true
-        }
+        this.isAlertBox = true
+        // console.log(this.$refs.childMethod, '33333')
+        // if (item.status === '1' || item.status === '3') {
+        //   let that = this
+        //   that.$refs.childMethod.giveBtn = true
+        // }
       }
     },
     created () {
@@ -174,8 +181,14 @@
     margin-top: 0.3rem;
     margin-bottom: 0.3rem;
   }
-  .tab-box{padding-top: 8%;}
-
+  .tab-box{padding-top: 7.3%;}
+  /*适配手机端*/
+  @media screen and (max-width:360px) {
+    .tab-box{padding-top: 4%;}
+  }
+  @media screen and (max-width:320px) {
+    .tab-box{padding-top: 4%;}
+  }
   .tab-box .red {
     color: #fff;
     background: #FEFAE7;
@@ -262,7 +275,7 @@
   .give-bg {
     position: fixed;
     overflow: scroll;
-    top: 3.9rem;
+    top: 3.8rem;
     left: 0.45rem;
     right: 0.45rem;
     bottom: 0;
@@ -336,4 +349,5 @@
     background: url(../assets/img/gift_bottom2.png) repeat-y;
     background-size: 100% 2.19rem;
   }
+  .gift-introduce .time{margin-top: 0.4rem;font-size: 0.24rem;color: #fff;}
 </style>

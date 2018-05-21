@@ -39,7 +39,7 @@
   }
 </script>
 <style>
-  .home .weui-tabbar{background-color: transparent;height: 15%;}
+  .home .weui-tabbar{background-color: transparent;}
   .weui-tabbar .weui-tabbar__icon {
     width: 0.8rem;
     height: 1rem;

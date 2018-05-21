@@ -2,7 +2,7 @@
   <div class="public-top">
     <div class="public-fl">
       <div class="head-pic">
-        <img src="../assets/img/map/headPic.png" alt="" class="img">
+        <img :src="(data.picsummary&&data.picsummary!=='null')?data.picsummary:require('../assets/img/map/headPic.png')" alt="" class="img">
       </div>
       <div class="introduce">
         <p class="name">{{data.stuname}}</p>
@@ -22,6 +22,7 @@
   </div>
 </template>
 <script>
+  import { Base64 } from 'js-base64'
   export default {
     name: 'publicTop',
     data () {
@@ -29,11 +30,43 @@
         data: {}
       }
     },
+    methods: {
+      pubilTop () {
+        this.storageMessage = JSON.parse(sessionStorage.getItem('info'))
+        this.$http.get(this.HOST + '/vendingMachineInventoryManage_listVendingMachineInventory.do?method=getUserInfoForMobilePhoneLogin', {
+          params: {
+            sid: this.storageMessage.sid,
+            userid: this.storageMessage.userid,
+            studentid: this.storageMessage.studentid
+          }
+        }).then(res => {
+          let successCode = '0'
+          let errorCode = '1'
+          let body = res.body
+          if (body.code === successCode) {
+            // 处理数据
+            body.stuname = Base64.decode(body.stuname)
+            body.classname = Base64.decode(body.classname)
+            this.data = body
+          } else if (body.code === errorCode) {
+            // 处理失败
+            console.log('错误提示：' + body.msg)
+          }
+        }, error => {
+          // error callback
+          console.log(error)
+        })
+      }
+    },
     created () {
-      let stuMessage = JSON.parse(sessionStorage.getItem('stuMessage'))
-      console.log(stuMessage)
-      this.data = stuMessage
-      console.log(this.data, '本地')
+      let that = this
+      that.pubilTop()
+      this.$root.eventHub.$on('changeTop', function () {
+        that.pubilTop()
+      })
+      this.$root.eventHub.$off('changeTop', function () {
+        that.publicTop()
+      })
     }
   }
 </script>
@@ -54,7 +87,6 @@
   .public-top {
     width: 100%;
     padding: 5px 10px;
-    overflow: hidden;
     position: relative;
   }
 
@@ -93,6 +125,7 @@
     background-size: 100% 100%;
     padding: 0.01rem;
     text-align: center;
+    float: left;
   }
   .public-fl .head-pic .img{width: 94%;height: 94%;text-align: center;margin-top: 0.02rem}
   .public-fl .introduce {

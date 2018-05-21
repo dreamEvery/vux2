@@ -18,6 +18,8 @@ import Market from '@/templates/market'
 import Among from '@/templates/among'
 import forgetPassword from '@/templates/forgetPassword'
 import Newpassword from '@/templates/password'
+import luckDraw from '@/templates/luckDraw'
+import Draw from '@/templates/draw'
 Vue.use(Router)
 
 // export 的意思是暴露出来东西
@@ -48,6 +50,16 @@ export default new Router({
       path: '/head',
       name: 'Head',
       component: Head
+    },
+    {
+      path: '/luckDraw',
+      name: 'luckDraw',
+      component: luckDraw
+    },
+    {
+      path: '/draw',
+      name: 'Draw',
+      component: Draw
     },
     {
       path: '/login',
