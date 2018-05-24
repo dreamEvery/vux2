@@ -127,13 +127,21 @@
     text-align: center;
     float: left;
   }
-  .public-fl .head-pic .img{width: 94%;height: 94%;text-align: center;margin-top: 0.02rem}
+
+   .public-fl .head-pic .img {
+     width: 94%;
+     height: 94%;
+     text-align: center;
+     margin-top: 0.02rem;
+     border-radius: 50%;
+   }
   .public-fl .introduce {
     vertical-align: super;
     font-size: 0.24rem;
     color: #fff;
     display: inline-block;
     text-shadow: 0 1px #652411, 1px 0 #652411, -1px 0 #652411, 0 -1px #652411;
+    margin-top: 5%;
   }
   .public-fl .introduce .name{font-size: 0.28rem;margin-bottom: 0.16rem}
    .public-fl .introduce .class{font-size: 0.24rem}

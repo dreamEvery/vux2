@@ -52,4 +52,14 @@
     height: 1.5rem;
     margin-top: 0;
   }
+  .tab-active {
+    animation: mymove  2s linear 2 0s;
+  }
+  @keyframes mymove {
+    0%   {width: 100%;height: 100%;}
+    50%  {width: 85%;height: 85%}
+    100% {width: 100%;height: 100%}
+  }
+
+
 </style>

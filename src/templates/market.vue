@@ -246,6 +246,7 @@
 
   .con {
     margin-top: 22%;
+    padding: 0 0.4rem;
   }
   .sidebar div{margin-bottom: 0.2rem}
 

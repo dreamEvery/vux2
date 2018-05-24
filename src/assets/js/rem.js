@@ -10,7 +10,7 @@
       // } else {
       //   docEl.style.fontSize = 100 * (clientWidth / 640) + 'px'
       // }
-      if (clientWidth > 750) clientWidth = 750 // 限制最大宽度，从而实现pc端两边留白
+      // if (clientWidth > 750) clientWidth = 750 // 限制最大宽度，从而实现pc端两边留白
       docEl.style.fontSize = 100 * (clientWidth / 640) + 'px'
     }
 

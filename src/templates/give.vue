@@ -15,7 +15,7 @@
             <div class="give-gift">
               <span>赠送礼品</span>
               <router-link to='/give/giveSel'>
-                <input type="text" readonly :placeholder="($route.query.content + $route.query.integral) ||'请选择商品'"/>
+                <input type="text" readonly :placeholder="($route.query.mallitemsname + $route.query.integral) ||'请选择商品'"/>
                 <!---->
                 <i class="i1">
                   <img src="../assets/img/gift_icon_right.png"/>
@@ -29,7 +29,7 @@
           <div class="give-list">
             <div class="give-gift">
               <span>赠送积分</span>
-              <input class="jifen-inp" type="text" onkeyup="value=value.replace(/[^\d]/g,'')"   placeholder="请输入积分" v-model="jifen_inp"/>
+              <input class="jifen-inp" type="number" onkeyup="this.value=this.value.replace(/[^0-9]/g,'')"  onafterpaste="this.value=this.value.replace(/[^0-9]/g,'')" placeholder="请输入积分" v-model="jifen_inp"/>
               <!--<em class="jifen-em" v-show="jifen_type">积分</em>-->
               <i class="i1">
                 <img src="../assets/img/gift_icon_right.png"/>
@@ -229,6 +229,7 @@
         this.nowNum = stutendMess.currentintegral
       }
       this.storageMessage = JSON.parse(sessionStorage.getItem('info'))
+      console.log(this.storageMessage, '11111')
       this.school()
       this.getGradeList()
       this.getGiftPeople()
@@ -283,6 +284,11 @@
           if (body.code === successCode) {
             // 处理数据
             this.classmateList = body.data
+            for (let i = 0; i < this.classmateList.length; i++) {
+              if (this.storageMessage.studentid == this.classmateList[i].studentid) {
+                this.classmateList.remove(this.classmateList[i])
+              }
+            }
           } else if (body.code === errorCode) {
             // 处理失败
             console.log('错误提示：' + body.msg)
@@ -310,7 +316,9 @@
             this.gradeList = body.data
             for (let i = 0; i < this.gradeList.length; i++) {
               this.gradeList[i].name = Base64.decode(this.gradeList[i].name)
-              this.grade_on = this.gradeList[0]
+              if (this.storageMessage.gradeid == this.gradeList[i].id) {
+                this.grade_on = this.gradeList[i]
+              }
             }
             this.getClassList()
           } else if (body.code === errorCode) {
@@ -341,7 +349,9 @@
             this.classList = body.data
             for (let i = 0; i < this.classList.length; i++) {
               this.classList[i].name = Base64.decode(this.classList[i].name)
-              this.class_on = this.classList[0]
+              if (this.storageMessage.classname == this.classList[i].name) {
+                this.class_on = this.classList[i]
+              }
             }
             this.getClassmateList()
           } else if (body.code === errorCode) {
@@ -370,7 +380,9 @@
             this.schoolList = body.data
             for (let i = 0; i < this.schoolList.length; i++) {
               this.schoolList[i].name = Base64.decode(this.schoolList[i].name)
-              this.school_on = this.schoolList[0]
+              if (this.storageMessage.sid == this.schoolList[i].sid) {
+                this.school_on = this.schoolList[i]
+              }
             }
           } else if (body.code === errorCode) {
             // 处理失败
@@ -476,14 +488,15 @@
         // this.routerParams 是市集和我的礼品的参数
         // jifen_inp 单独送积分
         // isanonymous = 1 匿名模式参数
-        if (this.$route.query.mallitemid) {
+        if (this.$route.query.mallitemsid) {
           obj.mallitemid = this.$route.query.mallitemsid
         }
         if (this.routerParams) {
           obj.mallitemid = this.routerParams.mallitemsid
         }
-        if (this.routerParams && this.routerParams.status !== '') {
+        if (this.routerParams && this.routerParams.status ) {
           obj.status = this.routerParams.status
+          obj.isgiving = 1
         }
         if (this.jifen_inp) {
           obj.integral = this.jifen_inp
@@ -493,22 +506,30 @@
         } else {
           obj.isanonymous = ''
         }
-        this.$http.post(this.HOST + '/exchangeRecordManage_addExchangeRecord.do?method=giveGift',
-          obj
-        ).then(res => {
-          // get body data
-          let body = res.body
-          let success = '0'
-          if (success === body.code) {
-            this.isSuccess = true
-          } else {
-            this.giveFail = true
-            // 报错原因
-            this.erroMess = body.msg
-          }
-        }, res => {
-          // error callback
-        })
+        if(this.$route.query == '' && this.jifen_inp == '') {
+          this.giveFail = true
+          this.this.erroMess = '请选择礼品或积分'
+        } else if (this.zengsongList == '') {
+          this.giveFail = true
+          this.erroMess = '请选择赠送人'
+        } else {
+          this.$http.post(this.HOST + '/exchangeRecordManage_addExchangeRecord.do?method=giveGift',
+            obj
+          ).then(res => {
+            // get body data
+            let body = res.body
+            let success = '0'
+            if (success === body.code) {
+              this.isSuccess = true
+            } else {
+              // 报错原因
+              this.giveFail = true
+              this.erroMess = body.msg
+            }
+          }, res => {
+            // error callback
+          })
+        }
       }
     },
     beforeDestroy () {
@@ -722,6 +743,11 @@
     font-size: 0.22rem;
     color: rgb(95, 81, 69);
     font-weight: bold;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+    height: 0.3rem;
+    line-height:0.3rem;
   }
 
   .lately-box {

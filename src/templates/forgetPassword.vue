@@ -24,7 +24,7 @@
         </p>
       </div>
       <div class="next">
-        <button @click="next">下一步</button>
+        <button @click="next" :disabled="nextBtn">下一步</button>
       </div>
     </div>
     <router-view></router-view>
@@ -45,7 +45,8 @@
         disabled: false,
         btnText: '获取验证码',
         timer: '',
-        sendCode: ''
+        sendCode: '',
+        nextBtn: false
       }
     },
     components: {
@@ -82,35 +83,33 @@
       },
       // 验证验证码
       next () {
-        if (this.isCode(this.verificationNum)) {
-          this.$http.post(this.HOST + '/userManage_loginUser.do?method=validMessage',
-            {phone: this.phoneNum}
-          ).then(res => {
-            // get body data
-          }, res => {
-            // error callback
-            this.disabled = false
-          })
+        if (this.verificationNum !== this.sendCode){
+          this.num = true
         } else {
+          this.nextBtn = true
           this.$router.push({path: '/newpassword', query: {phoneNum: this.phoneNum}})
         }
       },
       // 验证手机号发送验证码
       getVerifyCode () {
         if (this.isPhone(this.phoneNum)) {
-          this.$http.post(this.HOST + '/userManage_loginUser.do?method=checkUserName',
-            {username: this.phoneNum}
+          this.$http.post(this.HOST + '/userManage_loginUser.do?method=checkUserNameAndValidMessage',
+            {phone: this.phoneNum}
           ).then(res => {
             // get body data
             this.time()
             let body = res.body
-            this.sendCode = body.sendcode
+            if (bode.error === 'fail') {
+              alert('手机号未注册')
+            } else {
+              this.sendCode = body.sendcode
+            }
           }, res => {
             // error callback
             this.disabled = false
           })
         } else {
-          alert('手机号错误')
+           this.show = true
         }
       }
     }

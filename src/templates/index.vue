@@ -59,7 +59,7 @@
       </div>
       <router-link class="header-pic" :to="{path: '/head', query:{imgUrl:data.picsummary}}">
         <div class="head-main">
-          <img :src="data.picsummary || 'static/img/headPic.png'" alt="" :onerror="imgError">
+          <img :src='data.picsummary?data.picsummary:require("../assets/img/map/headPic.png")' alt="" :onerror="imgError"/>
         </div>
       </router-link>
       <div class="introduce">
@@ -317,14 +317,24 @@
     padding-left: 0.76rem;
     padding-top: 18%;
     min-height: 3.5rem;
-
   }
-
+  @media screen and (max-width: 768px) {
+    .top {
+      padding-top: 15%;
+    }
+  }
   .back {
     position: absolute;
     width: 0.7rem;
     right: 0.7rem;
     top: 1.2rem;
+  }
+  @media screen and (min-width: 768px) {
+    .back {
+     right: 0.9rem;
+      margin-right: 2%;
+      margin-top: 2%;
+    }
   }
 
   .back img {

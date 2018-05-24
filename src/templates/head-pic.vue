@@ -5,7 +5,8 @@
       </div>
       <div class="nowPic">
         <div class="head-portrait">
-          <img alt="" :src='pic' />
+          <img alt="" :src="'pic' == '' ?  'pic': ',,/assets/img/map/icon.png' " />
+          <!--pic || ',,/assets/img/map/headPic.png'-->
         </div>
         <p>当前头像</p>
       </div>
@@ -249,10 +250,10 @@
   }
 
   .defultPic {
-    /*display: flex;*/
+    display: flex;
     /*flex-direction: row;*/
-    /*flex-wrap: wrap;*/
-    /*justify-content: space-between;*/
+    flex-wrap: wrap;
+    justify-content: center;
     /*align-content: center;*/
     margin-top: 0.2rem;
     overflow: hidden;

@@ -19,7 +19,8 @@
           <div class="ranking-list">
             <div class="frist" v-if="dataArry[1]">
               <div class="ranking-pic blue-bg">
-                <img src="../assets/img/map/headPic.png" alt="">
+                <img :src="dataArry[1].picsummary" alt="" v-if="dataArry[1].picsummary !== ''"/>
+                <img src="../assets/img/map/headPic.png" alt="" v-else/>
               </div>
               <p class="name">{{dataArry[1].studentname}}</p>
               <p class="className">{{dataArry[1].classname}}</p>
@@ -28,7 +29,8 @@
             </div>
             <div class="second" v-if="dataArry[0]">
               <div class="ranking-pic yellow-bg">
-                <img src="../assets/img/map/headPic.png" alt="">
+                <img :src="dataArry[0].picsummary" alt="" v-if="dataArry[0].picsummary !== ''"/>
+                <img src="../assets/img/map/headPic.png" alt="" v-else/>
               </div>
               <p class="name">{{dataArry[0].studentname}}</p>
               <p class="className">{{dataArry[0].classname}}</p>
@@ -37,7 +39,8 @@
             </div>
             <div class="thrid" v-if="dataArry[2]">
               <div class="ranking-pic brown-bg">
-                <img src="../assets/img/map/headPic.png" alt="">
+                <img :src="dataArry[2].picsummary" alt="" v-if="dataArry[2].picsummary !== ''"/>
+                <img src="../assets/img/map/headPic.png" alt="" v-else/>
               </div>
               <p class="name">{{dataArry[2].studentname}}</p>
               <p class="className">{{dataArry[2].classname}}</p>
@@ -193,7 +196,7 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   .among {
-    background-image: url("../assets/img/map/ranking lift_bg.jpg");
+    background-image: url("../assets/img/map/rankingBg.jpg");
     background-repeat: no-repeat;
     background-size: 100% 100%;
     position: absolute;

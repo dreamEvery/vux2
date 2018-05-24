@@ -73,7 +73,7 @@
             // 处理数据
             this.giftSelList = body.data
             this.giftSelList.map((value) => {
-              value.content = this.$base64.decode(value.content)
+              value.mallitemsname = this.$base64.decode(value.mallitemsname)
             })
             this.removalNum()
           } else if (body.code === errorCode) {

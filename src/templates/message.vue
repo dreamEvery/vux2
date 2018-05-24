@@ -13,7 +13,7 @@
             <div class="icon">
               <img src="../assets/img/map/my-news_icon_exchange.png" alt="" v-if="item.type === '1' ">
               <img src="../assets/img/map/my-news_icon_gift.png" alt="" v-if="item.type === '5' "/>
-              <img src="../assets/img/map/my-news_icon_recharge.png" alt="" v-if="item.type === '2'"/>
+              <img src="../assets/img/map/my-news_icon_recharge.png" alt="" v-if="item.type === '2' || item.type === '0'"/>
             </div>
             <div class="mess-list">
               <p class="mess-list-title">{{item.message}}</p>
@@ -189,6 +189,12 @@
   .scroller {
     padding: 0.2rem 0.4rem;
   }
+  @media screen and (min-width: 768px) {
+   .my-scroll {margin-top: 4%}
+  }
+  @media screen and (min-width: 1024px) {
+    .my-scroll {margin-top: 12.4%}
+  }
 
   .scroller-box {
     position: relative;
@@ -228,6 +234,7 @@
     border-radius: 15px;
     margin-bottom: 0.08rem;
     border: 1px solid #FD8A32;
+    position: relative;
   }
 
   .timer {
@@ -238,14 +245,16 @@
   .message-state .mess-list {
     margin-top: 0.2rem;
     float: left;
+    margin-bottom: 0.3rem;
   }
 
   .message-state .delect {
     float: right;
     width: 1.25rem;
     height: 0.5rem;
-    margin-top: 0.6rem;
-    margin-right: 0.1rem;
+    position: absolute;
+    right:0.02rem;
+    bottom: 0.02rem;
   }
 
   .message-state .delect img {

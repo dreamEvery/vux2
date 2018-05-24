@@ -134,7 +134,8 @@
                     studentid: that.data.students[i].id,
                     name: that.data.students[i].name,
                     classname: that.data.students[i].classname,
-                    school: that.data.students[i].school
+                    school: that.data.students[i].school,
+                    gradeid: that.data.students[i].gid
                   }
                   let objInfo = JSON.stringify(userInfo)
                   sessionStorage.setItem('info', objInfo)

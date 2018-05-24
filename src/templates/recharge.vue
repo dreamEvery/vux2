@@ -89,7 +89,7 @@
   }
 
   .re-con {
-    margin-top: 1rem;
+    margin-top: 12%;
     text-align: center;
     height: auto;
     flex: 1;
@@ -99,14 +99,14 @@
   .re-con p {
     font-weight: bold;
     font-size: 0.42rem;
-    margin-bottom: 30px;
+    margin-bottom: 6%;
     color: #FFF;
     text-shadow: 0 1px #6f3736, 1px 0 #6f3736, -1px 0 #6f3736, 0 -1px #6f3736;
   }
 
   .re-con .code {
-    width: 220px;
-    height: 250px;
+    width: 45%;
+    height: 35%;
     border: 2px dashed skyblue;
     margin: 0 auto;
     margin-bottom: 40px;
@@ -123,5 +123,5 @@
     width: 100%;
     height: 100%;
   }
-  .code{color: #fff;text-align: center;line-height: 250px;font-size: 0.38rem}
+  .code{color: #fff;text-align: center;line-height: 11;font-size: 0.38rem}
 </style>

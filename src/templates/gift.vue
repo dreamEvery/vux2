@@ -18,7 +18,7 @@
     <public-top></public-top>
     <Receive v-if="receive" :receiveWin="receive"></Receive>
     <div class="gift-con">
-      <router-link to="/home/index">
+      <router-link to="/home/index" class="backBtn">
         <div class="public-back">
           <img src="../assets/img/map/my_icon_Return.png" alt="">
         </div>
@@ -177,17 +177,18 @@
     border-radius: 0.1rem 0.1rem 0 0;
     width: 93%;
     }*/
+  .public-top{margin-bottom: 1.7rem}
   .public-back {
     margin-top: 0.3rem;
     margin-bottom: 0.3rem;
   }
-  .tab-box{padding-top: 7.3%;}
+  .tab-box{padding-top: 8.6%;}
   /*适配手机端*/
-  @media screen and (max-width:360px) {
-    .tab-box{padding-top: 4%;}
+  @media screen and (min-width:414px) {
+    .tab-box{padding-top: 9.3%;}
   }
-  @media screen and (max-width:320px) {
-    .tab-box{padding-top: 4%;}
+  @media screen and (max-width:375px) {
+    .tab-box{padding-top: 7.6%;}
   }
   .tab-box .red {
     color: #fff;
@@ -201,6 +202,7 @@
   .gift-con {
     padding: 0 0.3rem;
   }
+  .gift-con .backBtn{position: absolute;top: 1rem;}
 
   .tab-con {
     background-color: #fff;

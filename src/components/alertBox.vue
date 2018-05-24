@@ -21,7 +21,7 @@
         </p>
       </div>
       <span class="close-btn" @click="close">
-        <img src="../assets/img/alert/close.png" alt="">
+        <img src="../assets/img/alert/close.png" alt="" class="aniBtn">
       </span>
     </div>
     <Sussce v-if="alertSussce"></Sussce>
@@ -135,7 +135,7 @@
     left: 49%;
     transform: translateX(-50%) translateY(-50%);
     z-index: 999;
-    padding: 1rem 0.45rem 0.4rem 0.6rem;
+    padding: 12% 7% 6% 8% ;
   }
 
   .alert .alert-main {
@@ -176,7 +176,12 @@
     width: 100%;
     height: 100%;
   }
-
+  .aniBtn {animation: closeBtn  2s linear 2 0s;}
+  @keyframes closeBtn {
+    0%   {width: 100%;height: 100%;}
+    50%  {width: 85%;height: 85%}
+    100% {width: 100%;height: 100%}
+  }
   .alert-logo {
     position: absolute;
     top: -62px;
