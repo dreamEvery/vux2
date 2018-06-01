@@ -64,7 +64,7 @@
         isShow: true,
         items: [],
         num: 10,
-        page: 1,
+        ipage: 1,
         storageMessage: null,
         deleteAll: false
       }
@@ -94,14 +94,18 @@
       // 下拉刷新
       refresh (done) {
         console.log('refresh')
-        this.page = 1
+        this.ipage = 1
         this.getData(done)
       },
       infinite (done) {
-        this.page++
-        // let that = this
-        done(true)
-        this.getData(function (data) {
+        this.ipage = this.ipage + 1
+//        done(true)
+//        this.getData(function (data) {
+//          for (let i = 0; i < data.length; i++) {
+//            this.items.push(data[i])
+//          }
+//        })
+        this.getData(done, function (data) {
           for (let i = 0; i < data.length; i++) {
             this.items.push(data[i])
           }
@@ -109,8 +113,16 @@
       },
       getData (done) {
         let storageMessage = JSON.parse(sessionStorage.getItem('info'))
+//        if (per_page) {
+//          this.storageMessage.ipage = per_page
+//        } else {thia.storageMessage.ipage = 1}
         this.$http.get(this.HOST + '/mallItemsManage_listMallItems.do?method=getMallMessage', {
-          params: storageMessage
+          params: {
+            sid: this.storageMessage.sid,
+            userid: this.storageMessage.userid,
+            studentid: this.storageMessage.studentid,
+            pageIndexName  : this.ipage
+          }
         }).then(res => {
           // 成功的状态
           let successCode = 0
@@ -246,6 +258,7 @@
     margin-top: 0.2rem;
     float: left;
     margin-bottom: 0.3rem;
+    width: 84%;
   }
 
   .message-state .delect {
@@ -334,5 +347,6 @@
   .btn{padding: 0.19rem 0.4rem;overflow: hidden;}
   .btn .thinkBtn{float: right}
   .btn .backBtn,.thinkBtn{width: 1.6rem;height: 0.7rem;float: left;margin-top: 0.3rem;}
+  ._v-container>._v-content>.pull-to-refresh-layer .spinner-holder .text{line-height: 17px;}
 
 </style>

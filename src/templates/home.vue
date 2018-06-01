@@ -1,19 +1,19 @@
 <template>
   <div class="home">
     <tabbar>
-      <tabbar-item link="/home/recharge">
+      <tabbar-item :selected="location==='/home/recharge'" :link="{path:'/home/recharge',replace: true}" >
         <img slot="icon" src="../assets/img/tabBar/recharge_n.png" class="tab-icon">
         <img slot="icon-active" src="../assets/img/tabBar/recharge_s.png" class="tab-active" alt="充值">
       </tabbar-item>
-      <tabbar-item link="/home/market">
+      <tabbar-item :selected="location=== '/home/market'" :link="{path:'/home/market',replace: true}"  >
         <img slot="icon" src="../assets/img/tabBar/a-market_n.png">
         <img slot="icon-active" src="../assets/img/tabBar/a-market_s.png" class="tab-active" alt="市集">
       </tabbar-item>
-      <tabbar-item link="/home/interaction">
+      <tabbar-item :selected="location=== '/home/interaction'" :link="{path:'/home/interaction',replace: true}" >
         <img slot="icon" src="../assets/img/tabBar/game-interaction_n.png">
         <img slot="icon-active" src="../assets/img/tabBar/game-interaction_s.png" alt="游戏互动" class="tab-active">
       </tabbar-item>
-      <tabbar-item selected link="/home/index">
+      <tabbar-item :selected="location=== '/home/index'" :link="{path:'/home/index',replace: true}" >
         <img slot="icon" src="../assets/img/tabBar/my_n.png">
         <img slot="icon-active" src="../assets/img/tabBar/my_s.png" alt="我的" class="tab-active">
       </tabbar-item>
@@ -27,7 +27,8 @@
   export default {
     data () {
       return {
-        active: false
+        active: false,
+        location:this.$route.path
       }
     },
     components: {

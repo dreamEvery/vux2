@@ -9,7 +9,9 @@
           <ul>
             <li>
               <p class="name">芭比娃娃</p>
-              <p class="state">已领取</p>
+              <p class="state">
+                未领取
+              </p>
             </li>
             <li>
               <p class="name">芭比娃娃</p>
@@ -63,10 +65,11 @@
       <div class="draw-core">
         <img src="../assets/img/map/BG.png" alt="" :style="`transform: rotate(${rotate}deg)`">
         <div class="wheel-pointer">
-          <div class="pointGo" @click="drawBtn" :disabled="isDisable">
+          <div class="pointGo" @click="drawBtn" v-if="control">
             <img src="../assets/img/map/GO.png" alt="">
           </div>
         </div>
+        // 样式
         <div class="box">
           <div class="changfangx" :style="`transform: rotate(${45*item}deg)`" v-for="item in items">
             <div class="title">{{item.codeNum}}</div>
@@ -95,10 +98,12 @@
     name: 'draw',
     data () {
       return {
-        rotate: 0,
+        control: true,
+        rotate: 0,  // 旋转角度
+        over: '',
+        overRotate: '',
         alertType: null,
         drawNum: 8,
-        isDisable: true,
         luckNum: 0,
         items: [
           {
@@ -149,18 +154,20 @@
       },
       draw () {
         let drawRotate = 360 / this.drawNum // 奖品度数
-        let overRotate = this.drawNum * 2 * drawRotate - this.rotate
-        console.log(overRotate, '2222')
+        this.overRotate = this.drawNum * 3 * drawRotate - this.rotate  // 结束角度
+        console.log(this.overRotate, '2222')
         let timer = setInterval(res => {
           this.rotate += 1
-          if (this.routate > overRotate) {
+          this.over = this.rotate
+          if (this.rotate >= this.overRotate) {
             clearInterval(timer)
           }
-        }, 10)
+        }, 6)
         console.log(drawRotate)
       },
       drawBtn () {
         this.draw()
+        this.control = false
       },
       back () {
         this.$router.back(-1)
@@ -258,4 +265,6 @@
     background-color: pink;
     position: absolute;
   }
+  .state{width: 1.2rem;height: 0.48rem;}
+  .state img {margin-top: 0.08rem;}
 </style>

@@ -62,10 +62,7 @@ input,button,select,textarea{outline:none;}
 .fr {
   float: right;
 }
- /*禁止滑动*/
-*{
-  -webkit-overflow-scrolling: touch;
-}
+
 /*公共样式*/
 ::-webkit-scrollbar{
   display:none;

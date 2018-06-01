@@ -12,11 +12,11 @@
     <div class="public-fr">
       <div @click="handleSidebar('gift')" class="gift">{{data.itemsnum}}
       </div>
-      <router-link to="/home/recharge">
+      <span>
         <div class="integral">
           {{data.currentintegral}}
         </div>
-      </router-link>
+      </span>
     </div>
     <router-view></router-view>
   </div>

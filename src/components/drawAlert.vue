@@ -12,7 +12,7 @@
       <div class="paging">
         <p>上一页</p>
         <p><span>第</span> {{page}} <span>页</span></p>
-        <p>上一页</p>
+        <p>下一页</p>
       </div>
       <span class="close-btn" @click="close">
         <img src="../assets/img/alert/close.png" alt="">
@@ -169,7 +169,7 @@
   .alert-logo {
     position: absolute;
     top: -62px;
-    right: 33%;
+    right: 29%;
     z-index: 999;
     width: 2.4rem;
     height: 2.6rem;

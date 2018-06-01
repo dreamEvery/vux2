@@ -195,6 +195,7 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+  img{border-radius: 50%;}
   .among {
     background-image: url("../assets/img/map/rankingBg.jpg");
     background-repeat: no-repeat;
@@ -438,7 +439,7 @@
   }
 
   .tab-con table .myRank {
-    background-image: url("../assets/img/map/Ranking-List_img_Selected.png");
+    background-image: url("../assets/img/map/ranking-list.png");
     background-size: 100% 100%;
   }
 
@@ -578,5 +579,18 @@
 
   .mysele-th .name {
     margin-top: 0.14rem;
+  }
+
+  @media screen and (min-width: 768px) {
+    .tab-con table th{
+      padding-top: 0.1rem;
+    }
+    .tab-con table th div:nth-child(2){
+      margin-top: 0.12rem;
+    }
+  }
+  @media screen and (min-width: 768px) {
+    .con{margin-top: 2.8rem;}
+    .tab ul li {height: 32px;line-height: 32px;}
   }
 </style>

@@ -320,7 +320,7 @@
   }
   @media screen and (max-width: 768px) {
     .top {
-      padding-top: 15%;
+      padding-top: 1.4rem;
     }
   }
   .back {
@@ -357,8 +357,7 @@
   .header-pic .head-main {
     width: 1.26rem;
     height: 1.26rem;
-    margin-top: 0.02rem;
-    margin-left: 0.02rem;
+    margin-left: 0.03rem;
   }
 
   .header-pic .head-main img {

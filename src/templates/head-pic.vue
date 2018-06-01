@@ -5,7 +5,7 @@
       </div>
       <div class="nowPic">
         <div class="head-portrait">
-          <img alt="" :src="'pic' == '' ?  'pic': ',,/assets/img/map/icon.png' " />
+          <img alt="" :src='pic' />
           <!--pic || ',,/assets/img/map/headPic.png'-->
         </div>
         <p>当前头像</p>
@@ -193,13 +193,16 @@
 
   .head-top {
     width: 100%;
-    height: 195px;
+    min-height: 4rem;
     text-align: center;
     overflow: hidden;
     vertical-align: middle;
     position: relative;
   }
-
+  @media screen and (min-width: 768px) {
+    .head-top{margin-top: 0.5rem;}
+    .head-content{width: 95%;margin: 0 auto;}
+  }
   .go-back {
     position: absolute;
     width: 1.6rem;
@@ -222,7 +225,7 @@
     background-size: 100% 100%;
     padding: 0.05rem 0.06rem 0.06rem 0.06rem;
   }
-
+  .head-portrait img{border-radius: 50%;}
   .head-top p {
     font-size: 10px;
     color: #fff;
@@ -250,21 +253,18 @@
   }
 
   .defultPic {
-    display: flex;
-    /*flex-direction: row;*/
-    flex-wrap: wrap;
-    justify-content: center;
-    /*align-content: center;*/
+    height: 4.6rem;
+    overflow-y: scroll;
+    width: 100%;
     margin-top: 0.2rem;
-    overflow: hidden;
   }
 
   .defultPic li {
-    width: 1.2rem;
+    width: 20%;
     height: 1.2rem;
     border-radius: 50%;
     float: left;
-    margin-left: 0.03rem;
+    display:table-cell;
   }
 
   .defultPic li .picBox {

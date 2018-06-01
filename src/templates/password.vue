@@ -44,7 +44,6 @@
           this.num = true
         } else if (this.newNum === this.confirm) {
           this.num = false
-        } else {
           this.getNewCode()
         }
       },

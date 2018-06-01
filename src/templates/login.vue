@@ -281,4 +281,11 @@
   :-ms-input-placeholder { /* Internet Explorer 10+ */
     color: #c3c2c9;
   }
+
+  @media only screen and (min-width: 768px) {
+    .foot-firm{margin-top: 45%}
+  }
+  @media only screen and (min-width: 1024px) {
+    .foot-firm{margin-top: 60%;}
+  }
 </style>

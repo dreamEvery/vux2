@@ -48,10 +48,12 @@
 
       /* 判断ul的高度 如果大于 bottomMinH的高度 就把ul的高度赋值给bottomMinH */
       /* ul的高度 */
-      var ulH = document.getElementsByClassName('give-sel-list')[0].offsetHeight
-      if (ulH > document.getElementsByClassName('give-bg-bottom')[0].offsetHeight) {
-        document.getElementsByClassName('give-bg-bottom')[0].style.minHeight = ulH + 'px'
-      }
+      setTimeout (function () {
+        var ulH = document.getElementsByClassName('give-sel-list')[0].offsetHeight
+        if (ulH > document.getElementsByClassName('give-bg-bottom')[0].offsetHeight) {
+          document.getElementsByClassName('give-bg-bottom')[0].style.minHeight = ulH + 'px'
+        }
+      },1000)
     },
     methods: {
       back () {

@@ -15,8 +15,10 @@
             <div class="give-gift">
               <span>赠送礼品</span>
               <router-link to='/give/giveSel'>
-                <input type="text" readonly :placeholder="($route.query.mallitemsname + $route.query.integral) ||'请选择商品'"/>
-                <!---->
+                <input type="text" readonly v-model="$route.query.mallitemsname + $route.query.integral" placeholder="请选择商品"/>
+                <!--<div>-->
+                  <!--{{this.$route.query ? '($route.query.mallitemsname + $route.query.integral)':'请选择商品'}}-->
+                <!--</div>-->
                 <i class="i1">
                   <img src="../assets/img/gift_icon_right.png"/>
                 </i>
@@ -29,7 +31,10 @@
           <div class="give-list">
             <div class="give-gift">
               <span>赠送积分</span>
-              <input class="jifen-inp" type="number" onkeyup="this.value=this.value.replace(/[^0-9]/g,'')"  onafterpaste="this.value=this.value.replace(/[^0-9]/g,'')" placeholder="请输入积分" v-model="jifen_inp"/>
+              <input class="jifen-inp" oninput="if(value.length>3) value=value.slice(0,3)" type="number"
+                     onkeyup="this.value=this.value.replace(/[^0-9]/g,'')"
+                     onafterpaste="this.value=this.value.replace(/[^0-9]/g,'')" placeholder="请输入积分"
+                     v-model="jifen_inp"/>
               <!--<em class="jifen-em" v-show="jifen_type">积分</em>-->
               <i class="i1">
                 <img src="../assets/img/gift_icon_right.png"/>
@@ -65,6 +70,7 @@
                 <img
                   :src="(item.picsummary&&item.picsummary!=='null')?item.picsummary:require('../assets/img/map/headPic.png')"
                   alt="">
+                <span class="stuName">{{item.studentname}}</span>
                 <p class="close-img" @click="closes(item,index)">
                   <img src="../assets/img/close.png"/>
                 </p>
@@ -118,6 +124,7 @@
           <ul class="lately-list">
             <li v-for="peopleList in giftPeople">
               <img :src='peopleList.picsummary?peopleList.picsummary:require("../assets/img/map/headPic.png")' alt=""/>
+              <span>{{peopleList.studentname}}</span>
             </li>
           </ul>
         </div>
@@ -154,7 +161,7 @@
     },
     data () {
       return {
-        inputAlue: '',
+        inputValue: '',
         erroMess: '',
         tostudentids: null,
         jifen_type: false,
@@ -208,6 +215,7 @@
       }
     },
     created: function () {
+      console.log(this.$route.query, '0000')
       let _this = this
       if (this.swtich === true) {
         this.swtich = this.on
@@ -253,6 +261,7 @@
             // 处理数据
             if (body.data.length) {
               this.giftPeople = body.data
+              console.log(this.giftPeople, '000000000')
             } else {
               this.giftPeople = null
             }
@@ -284,9 +293,10 @@
           if (body.code === successCode) {
             // 处理数据
             this.classmateList = body.data
+            // 删除自己
             for (let i = 0; i < this.classmateList.length; i++) {
               if (this.storageMessage.studentid == this.classmateList[i].studentid) {
-                this.classmateList.remove(this.classmateList[i])
+                this.classmateList.splice(i, 1)
               }
             }
           } else if (body.code === errorCode) {
@@ -469,6 +479,7 @@
       newList () {
         let studentid = []
         if (this.zengsongList) {
+          console.log(this.zengsongList, '333333333333')
           for (let i = 0; i < this.zengsongList.length; i++) {
             studentid.push(this.zengsongList[i].studentid)
           }
@@ -545,6 +556,8 @@
     position: absolute;
     top: 0;
     right: 0;
+    overflow: hidden;
+    overflow-y: scroll;
   }
 
   .public-bg {
@@ -646,7 +659,7 @@
 
   .give-toBox {
     padding: 0 0.3rem;
-    line-height: 1.4rem;
+    line-height: 1.6rem;
     overflow: hidden;
   }
 
@@ -666,11 +679,21 @@
 
   .toBox-list li {
     height: 1.4rem;
-    width: 1rem;
+    width: 1.3rem;
     float: left;
     position: relative;
     margin-right: 0.2rem;
 
+  }
+
+  .toBox-list .stuName {
+    position: absolute;
+    top: 0.56rem;
+    text-align: center;
+    width: 1rem;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
   }
 
   .toBox-list li > img {
@@ -692,7 +715,7 @@
     line-height: 0.36rem;
     top: 25%;
     transform: translateY(-50%);
-    right: -0.02rem;
+    right: 0.2rem;
     /*z-index: 20;*/
   }
 
@@ -716,6 +739,8 @@
   .lately-list {
     overflow: hidden;
     padding: 0 0.3rem;
+    height: 1.2rem;
+    overflow-y: scroll;
   }
 
   .img-list {
@@ -762,7 +787,6 @@
 
   .lately-list {
     padding: 0;
-    border-bottom: 1px dashed #CCB185;
   }
 
   .niming-box {
@@ -770,6 +794,7 @@
     padding-left: 0.2rem;
     padding-top: 0.2rem;
     padding-bottom: 0.3rem;
+    border-top: 1px dashed #CCB185;
   }
 
   .niming-box span {
@@ -853,6 +878,11 @@
     text-align: center;
     color: #5F5145;
     font-weight: 600;
+  }
+  @media screen and (min-width: 768px) {
+    .select-box li > span {
+      font-size: 0.32rem;
+    }
   }
 
   .select-box li > p {
@@ -965,5 +995,10 @@
     float: right;
   }
 
+  @media only screen and (min-width: 768px) {
+    input::-webkit-input-placeholder {
+      font-size: 0.26rem;
+    }
+  }
 
 </style>

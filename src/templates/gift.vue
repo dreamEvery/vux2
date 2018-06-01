@@ -1,6 +1,6 @@
 <template>
   <div class="gift-bg">
-    <alert-box v-if='isAlertBox' :showName="'isAlertBox'" :transmission="giftInfo" :receiveMess="message" :type="'gift'" :isBtn="false">
+    <alert-box v-if='isAlertBox' :showName="'isAlertBox'" :transmission="giftInfo" :receiveMess="message" :type="'gift'" :isBtn="true">
       <div slot="gift">
         <div class="alert-top">{{giftInfo.mallitemsname}}</div>
         <div class="alert-gift">
@@ -98,17 +98,18 @@
       }
     },
     mounted () {
-      var MaxH = window.innerHeight
-      document.getElementsByClassName('give-bg')[0].style.height = MaxH + 'px'
-      // var clearH=document.getElementsByClassName("public-top")[0].offsetHeight+document.getElementsByClassName("give-bg-top")[0].offsetHeight;
-      var bottomMinH = MaxH
-      document.getElementsByClassName('give-bg-bottom')[0].style.minHeight = bottomMinH + 'px'
+      var self=this;
+      this.bottomH=document.getElementsByClassName('give-bg')[0].offsetHeight-document.getElementsByClassName('give-bg-top')[0].offsetHeight+7;
+      console.log('bottom高', self.bottomH )
+      document.getElementsByClassName('give-bg-bottom')[0].style.minHeight = self.bottomH + 'px'
       /* 判断ul的高度 如果大于 bottomMinH的高度 就把ul的高度赋值给bottomMinH */
-      /* ul的高度 */
-      var ulH = document.getElementsByClassName('give-sel-list')[0].offsetHeight
-      if (ulH > document.getElementsByClassName('give-bg-bottom')[0].offsetHeight) {
-        document.getElementsByClassName('give-bg-bottom')[0].style.minHeight = ulH + 'px'
-      }
+        /* ul的高度 */
+        setTimeout (function () {
+          var ulH = document.getElementsByClassName('give-sel-list')[0].offsetHeight
+          if (ulH > document.getElementsByClassName('give-bg-bottom')[0].offsetHeight) {
+            document.getElementsByClassName('give-bg-bottom')[0].style.minHeight = ulH + 'px'
+          }
+        },1000)
     },
     methods: {
       getData (index, type) {

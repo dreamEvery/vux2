@@ -7,7 +7,7 @@
     <div class="in-con">
       <h3 class="ranking">已经击败80%的小伙伴</h3>
       <div class="game-box">
-        <router-link class="game-1" href="javascript:;" :to="{path:'/draw'}">
+        <router-link class="game-1" href="javascript:;" :to="{path:'/drawDom'}">
           <img src="../assets/img/map/lucky_turntable.png"/>
           <p>幸运大转盘</p>
         </router-link>

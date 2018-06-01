@@ -24,7 +24,7 @@
         </p>
       </div>
       <div class="next">
-        <button @click="next" :disabled="nextBtn">下一步</button>
+        <button @click="next" :disabled="!phoneNum || !verificationNum" :class="{bgColor:(!phoneNum || !verificationNum)}">下一步</button>
       </div>
     </div>
     <router-view></router-view>
@@ -45,8 +45,7 @@
         disabled: false,
         btnText: '获取验证码',
         timer: '',
-        sendCode: '',
-        nextBtn: false
+        sendCode: ''
       }
     },
     components: {
@@ -57,7 +56,7 @@
     methods: {
       // 验证手机号码
       isPhone: function (tel) {
-        const str = [134, 135, 136, 137, 138, 139, 147, 150, 151, 152, 157, 158, 159, 182, 183, 187, 188, 198, 130, 131, 132, 155, 156, 185, 186, 145, 166, 133, 153, 180, 189, 199, 170].join('|')
+        const str = [134, 135, 136, 137, 138, 139, 147, 150, 151, 152, 157, 158, 159, 182, 183, 187, 188, 198, 130, 131, 132, 155, 156, 185, 186, 145, 166, 133, 153, 180, 189, 181, 199, 170].join('|')
         const reg = new RegExp(`^(${str})\\d{8}`, 'gi')
         return reg.test(tel)
       },
@@ -86,7 +85,7 @@
         if (this.verificationNum !== this.sendCode){
           this.num = true
         } else {
-          this.nextBtn = true
+          this.disabled = !this.disabled
           this.$router.push({path: '/newpassword', query: {phoneNum: this.phoneNum}})
         }
       },
@@ -97,12 +96,13 @@
             {phone: this.phoneNum}
           ).then(res => {
             // get body data
-            this.time()
             let body = res.body
-            if (bode.error === 'fail') {
+            if (body.error === 'fail') {
               alert('手机号未注册')
             } else {
+              this.time()
               this.sendCode = body.sendcode
+              console.log(this.sendCode, '334')
             }
           }, res => {
             // error callback
@@ -163,6 +163,9 @@
     color: #fff;
     border: none;
     font-size: 0.32rem;
+  }
+  .next .bgColor {
+    background-color: chocolate;
   }
 
   .verificationCode {

@@ -39,7 +39,8 @@
         alertSussce: false,
         storageMessage: null,
         exchangerecordid: null,
-        vendingmachineid: null
+        vendingmachineid: null,
+        erroMsg: ''
       }
     },
     components: {
@@ -65,6 +66,7 @@
           let successCode = '0'
           if (successCode !== body.code) {
             this.$parent.failCode = true
+            this.erroMsg = body.msg
           } else {
             this.$parent.exchangeWin = true
             this.$root.eventHub.$emit('changeTop')
@@ -185,10 +187,11 @@
   .alert-logo {
     position: absolute;
     top: -62px;
-    right: 33%;
+    right: 50%;
     z-index: 999;
     width: 2.4rem;
     height: 2.6rem;
+    margin-right: -1.2rem;
   }
 
   .alert-logo img {
