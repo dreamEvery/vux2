@@ -121,7 +121,7 @@
     text-align: center;
     color: #652411;
     width: 82%;
-    background-image: url("../assets/img/alert/a market_BG.png");
+    background-image: url("../assets/img/alert/BG.png");
     background-size: 100% 100%;
     position: absolute;
     top: 50%;

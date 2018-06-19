@@ -1,6 +1,6 @@
 <template>
   <div class="market">
-    <alert-box v-if='isAlertBox' :showName="'isAlertBox'" :type="'market'" :transmission="giftDetail">
+    <alert-box v-if='isAlertBox' :showName="'isAlertBox'" :transmission="giftDetail" :exchangeBtn="true" :giveBtn="true">
       <div slot="market">
         <div class="alert-top">{{giftDetail.mallitemsname}}</div>
         <div class="alert-gift">

@@ -15,10 +15,11 @@
             <div class="give-gift">
               <span>赠送礼品</span>
               <router-link to='/give/giveSel'>
-                <input type="text" readonly v-model="$route.query.mallitemsname + $route.query.integral" placeholder="请选择商品"/>
-                <!--<div>-->
-                  <!--{{this.$route.query ? '($route.query.mallitemsname + $route.query.integral)':'请选择商品'}}-->
-                <!--</div>-->
+                <!--<input type="text" readonly v-model="$route.query.mallitemsname + $route.query.integral" placeholder="请选择商品"/>-->
+                <div class="giftMessage" :class="{changeGift: $route.query.mallitemsname + $route.query.integral}">
+                  {{$route.query.mallitemsname + $route.query.integral || '请选择商品'}}
+
+                </div>
                 <i class="i1">
                   <img src="../assets/img/gift_icon_right.png"/>
                 </i>
@@ -479,7 +480,6 @@
       newList () {
         let studentid = []
         if (this.zengsongList) {
-          console.log(this.zengsongList, '333333333333')
           for (let i = 0; i < this.zengsongList.length; i++) {
             studentid.push(this.zengsongList[i].studentid)
           }
@@ -505,7 +505,7 @@
         if (this.routerParams) {
           obj.mallitemid = this.routerParams.mallitemsid
         }
-        if (this.routerParams && this.routerParams.status ) {
+        if (this.routerParams && this.routerParams.status) {
           obj.status = this.routerParams.status
           obj.isgiving = 1
         }
@@ -517,7 +517,7 @@
         } else {
           obj.isanonymous = ''
         }
-        if(this.$route.query == '' && this.jifen_inp == '') {
+        if (this.$route.query == '' && this.jifen_inp == '') {
           this.giveFail = true
           this.this.erroMess = '请选择礼品或积分'
         } else if (this.zengsongList == '') {
@@ -599,6 +599,18 @@
   .give-list .give-gift {
     color: #4e4e4e;
     margin-right: 0.2rem;
+  }
+
+  .giftMessage {
+    width: 75%;
+    float: right;
+    overflow: hidden;
+    text-align: right;
+    margin-right: 0.2rem;
+    color: darkgrey;
+  }
+  .changeGift{
+    color: #3C3939;
   }
 
   .give-list {
@@ -739,7 +751,7 @@
   .lately-list {
     overflow: hidden;
     padding: 0 0.3rem;
-    height: 1.2rem;
+    height: 2.2rem;
     overflow-y: scroll;
   }
 

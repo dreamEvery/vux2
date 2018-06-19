@@ -95,7 +95,7 @@
       refresh (done) {
         console.log('refresh')
         this.ipage = 1
-        this.getData(done)
+        this.getData()
       },
       infinite (done) {
         this.ipage = this.ipage + 1
@@ -112,7 +112,6 @@
         })
       },
       getData (done) {
-        let storageMessage = JSON.parse(sessionStorage.getItem('info'))
 //        if (per_page) {
 //          this.storageMessage.ipage = per_page
 //        } else {thia.storageMessage.ipage = 1}
@@ -121,7 +120,7 @@
             sid: this.storageMessage.sid,
             userid: this.storageMessage.userid,
             studentid: this.storageMessage.studentid,
-            pageIndexName  : this.ipage
+            pageIndexName: this.ipage
           }
         }).then(res => {
           // 成功的状态
@@ -201,17 +200,20 @@
   .scroller {
     padding: 0.2rem 0.4rem;
   }
-  @media screen and (min-width: 768px) {
-   .my-scroll {margin-top: 4%}
-  }
-  @media screen and (min-width: 1024px) {
-    .my-scroll {margin-top: 12.4%}
-  }
-
   .scroller-box {
     position: relative;
     margin-top: .7rem;
   }
+  @media screen and (min-width: 768px) {
+    .my-scroll {margin-top: 4%}
+    .scroller{padding: 0.1rem 0.6rem 0.2rem 0.6rem}
+    .scroller-box{margin-top: 1rem}
+  }
+  @media screen and (min-width: 1024px) {
+    .my-scroll {margin-top: 12.4%}
+    .scroller{padding: 0.1rem 0.6rem 0.2rem 0.6rem}
+  }
+
 
   .my-scroll {
     background-color: #f1e3bb;

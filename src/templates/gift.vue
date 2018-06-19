@@ -1,6 +1,6 @@
 <template>
   <div class="gift-bg">
-    <alert-box v-if='isAlertBox' :showName="'isAlertBox'" :transmission="giftInfo" :receiveMess="message" :type="'gift'" :isBtn="true">
+    <alert-box v-if='isAlertBox' :showName="'isAlertBox'" :transmission="giftInfo" :giveBtn="typeBtn" :exchangeBtn="false">
       <div slot="gift">
         <div class="alert-top">{{giftInfo.mallitemsname}}</div>
         <div class="alert-gift">
@@ -94,22 +94,23 @@
         isAlertBox: false,
         message: [],
         giftInfo: {},
+        typeBtn: true,
         receive: false
       }
     },
     mounted () {
-      var self=this;
-      this.bottomH=document.getElementsByClassName('give-bg')[0].offsetHeight-document.getElementsByClassName('give-bg-top')[0].offsetHeight+7;
-      console.log('bottom高', self.bottomH )
+      var self = this
+      this.bottomH = document.getElementsByClassName('give-bg')[0].offsetHeight - document.getElementsByClassName('give-bg-top')[0].offsetHeight + 7
+      console.log('bottom高', self.bottomH)
       document.getElementsByClassName('give-bg-bottom')[0].style.minHeight = self.bottomH + 'px'
       /* 判断ul的高度 如果大于 bottomMinH的高度 就把ul的高度赋值给bottomMinH */
         /* ul的高度 */
-        setTimeout (function () {
-          var ulH = document.getElementsByClassName('give-sel-list')[0].offsetHeight
-          if (ulH > document.getElementsByClassName('give-bg-bottom')[0].offsetHeight) {
-            document.getElementsByClassName('give-bg-bottom')[0].style.minHeight = ulH + 'px'
-          }
-        },1000)
+      setTimeout(function () {
+        var ulH = document.getElementsByClassName('give-sel-list')[0].offsetHeight
+        if (ulH > document.getElementsByClassName('give-bg-bottom')[0].offsetHeight) {
+          document.getElementsByClassName('give-bg-bottom')[0].style.minHeight = ulH + 'px'
+        }
+      }, 1000)
     },
     methods: {
       getData (index, type) {
@@ -127,12 +128,7 @@
           let successCode = '0'
           // 失败的状态
           let errorCode = '1'
-          console.log(res, '原始数据')
           let body = res.body
-          console.log(body, '后台返回的数据')
-          // 先判断状态
-          // "code":返回状态码,"data":"应该业务数据","msg":"错误提示"
-          // 所以我优先判断 code
           if (body.code === successCode) {
             // 处理数据
             this.message = body.data
@@ -152,13 +148,11 @@
       // 弹框
       showAlert (item) {
         this.giftInfo = item
+        if (this.giftInfo.status === '2') {
+          this.typeBtn = false
+        }
         console.log(this.giftInfo, 'info')
         this.isAlertBox = true
-        // console.log(this.$refs.childMethod, '33333')
-        // if (item.status === '1' || item.status === '3') {
-        //   let that = this
-        //   that.$refs.childMethod.giveBtn = true
-        // }
       }
     },
     created () {
@@ -190,6 +184,9 @@
   }
   @media screen and (max-width:375px) {
     .tab-box{padding-top: 7.6%;}
+  }
+  @media screen and (max-width:320px) {
+    .tab-box{padding-top: 4.6%;}
   }
   .tab-box .red {
     color: #fff;

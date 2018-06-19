@@ -128,6 +128,9 @@
                   // get body data
                   let body = res.body
                   that.data = body
+                  that.$router.push({   // 你需要接受路由的参数再跳转
+                    path: '/home/index'
+                  })
                   let userInfo = {
                     sid: that.data.students[i].sid,
                     userid: that.data.userid,
@@ -146,9 +149,6 @@
               }
             }
             that.btn_type = false
-            that.$router.push({   // 你需要接受路由的参数再跳转
-              path: '/home/index'
-            })
           }
         }, response => {
           alert(this.body)
@@ -287,5 +287,10 @@
   }
   @media only screen and (min-width: 1024px) {
     .foot-firm{margin-top: 60%;}
+  }
+  @media only screen and (min-width: 768px) {
+    input{
+      font-size: 0.26rem;
+    }
   }
 </style>

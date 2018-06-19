@@ -60,9 +60,16 @@
         <img src="../assets/img/map/外发光.png" alt="">
       </div>
       <div class="draw-core" :style="{transform:rotate_angle,transition:rotate_transition}">
-         <div class="prize-item" v-for="(item,index) in prize_list">
-
-         </div>
+        <div class="prize-list">
+          <div class="prize-item" v-for="(item,index) in prizeList" :style="`transform: rotate(${45*index}deg)`">
+            <div class="prize-count" v-if="item.count">
+              {{item.count}}
+            </div>
+            <div class="prize-pic">
+              <img :src="item.icon">
+            </div>
+          </div>
+        </div>
       </div>
       <div class="award" @click="alertBox('winning')">
         <img src="../assets/img/map/获奖查询_button_n.png" alt="">
@@ -87,6 +94,7 @@
     name: 'draw',
     data () {
       return {
+        index: [1, 2, 3, 4, 5, 6, 7, 8],
         toast: false,
         drawDone: false, // 外发光
         drawAlert: false, // 弹框
@@ -94,16 +102,57 @@
         luckList: [], // 抽奖纪录
         storageMessage: '', // 本地数据
         luckNum: '4',  // 抽奖次数
-        prize_list: [], // 奖品列表
+        prizeList: [
+          {
+            icon: require('../assets/img/map/fifty.png'), // 奖品图片
+            count: '10积分', // 奖品数量
+            isPrize: 1  // 该奖项是否为奖品
+          },
+          {
+            icon: require('../assets/img/map/fifty.png'), // 奖品图片
+            count: '10积分', // 奖品数量
+            isPrize: 1  // 该奖项是否为奖品
+          },
+          {
+            icon: require('../assets/img/map/fifty.png'), // 奖品图片
+            count: '10积分', // 奖品数量
+            isPrize: 1  // 该奖项是否为奖品
+          },
+          {
+            icon: require('../assets/img/map/fifty.png'), // 奖品图片
+            count: '10积分', // 奖品数量
+            isPrize: 1  // 该奖项是否为奖品
+          },
+          {
+            icon: require('../assets/img/map/fifty.png'), // 奖品图片
+            count: '10积分', // 奖品数量
+            isPrize: 1  // 该奖项是否为奖品
+          },
+          {
+            icon: require('../assets/img/map/fifty.png'), // 奖品图片
+            count: '10积分', // 奖品数量
+            isPrize: 1  // 该奖项是否为奖品
+          },
+          {
+            icon: require('../assets/img/map/fifty.png'), // 奖品图片
+            count: '10积分', // 奖品数量
+            isPrize: 1  // 该奖项是否为奖品
+          },
+          {
+            icon: require('../assets/img/map/fifty.png'), // 奖品图片
+            count: '10积分', // 奖品数量
+            isPrize: 1  // 该奖项是否为奖品
+          }
+        ], // 奖品列表
         hasPrize: false, // 是否中奖
         start_rotating_degree: 0, // 初始旋转角度
         rotate_angle: 0, // 旋转角度
         clickFlag: true, // 是否可以旋转抽奖
-        start_rotating_degree_pointer: 0, //指针初始旋转角度
-        rotate_angle_pointer: 0, //指针将要旋转的度数
-        rotate_transition: "transform 6s ease-in-out", //初始化选中的过度属性控制
-        rotate_transition_pointer: "transform 12s ease-in-out", //初始化指针过度属性控制
-        i: 0 //测试使用
+        start_rotating_degree_pointer: 0, // 指针初始旋转角度
+        rotate_angle_pointer: 0, // 指针将要旋转的度数
+        rotate_transition: 'transform 6s ease-in-out', // 初始化选中的过度属性控制
+        rotate_transition_pointer: 'transform 12s ease-in-out', // 初始化指针过度属性控制
+        i: 0  // 测试使用
       }
     },
     created () {
@@ -117,12 +166,11 @@
       alertBox (type) {
         this.drawAlert = true
         this.alertType = type
-        if (type === 'winning'){
+        if (type === 'winning') {
           this.winningList()
         } else {
           this.luckDraw()
         }
-
       },
       back () {
         this.$router.back(-1)
@@ -154,7 +202,7 @@
       },
       // 中奖纪录接口
       winningList () {
-        this.$http.get(this.HOST + '/winningRecordManage_listWinningRecord.do?method=getPrizeGiftList', {
+        this.$http.get(this.HOST + '/winningRecordManage_listWinningRecord.do?method=getWinningRecordList', {
           params: {sid: this.storageMessage.sid, userid: this.storageMessage.userid, studentid: this.storageMessage.studentid}
         }).then(res => {
           // 成功的状态
@@ -177,7 +225,7 @@
           console.log(error)
         })
       },
-      //抽奖纪录
+      // 抽奖纪录
       luckDraw () {
         this.$http.get(this.HOST + '/luckyDrawDetailManage_listLuckyDrawDetail.do?method=getLuckyDrawDetailList', {
           params: {sid: this.storageMessage.sid, userid: this.storageMessage.userid, studentid: this.storageMessage.studentid}
@@ -203,23 +251,23 @@
         })
       },
       // 抽奖
-      rotate_handle() {
-        this.rotating();
-        this.i = this.i + 2;
+      rotate_handle () {
+        this.rotating()
+        this.i = this.i + 2
       },
       rotating (index) {
         if (!this.clickFlag) return
         let type = 0 // 转盘转动为1
         let during_time = 5 // 默认为5s
         let random = Math.floor(Math.random() * 7)  // Math.random * 7 生成0~7之间的随机数，取整
-        let  result_index = index || random;  // 最终要旋转到哪一块，对应prize_list礼品的下标
-        let result_angle = [360, 315, 270, 225, 180, 135, 90, 45];  //最终会旋转到下标的位置所需要的度数
+        let result_index = index || random  // 最终要旋转到哪一块，对应prize_list礼品的下标
+        let result_angle = [360, 315, 270, 225, 180, 135, 90, 45]  // 最终会旋转到下标的位置所需要的度数
         let rand_circle = 6   // 圈数
         this.clickFlag = false  // 旋转结束前不允许触发
         if (type === 0) {
           let rotate_angle = this.start_rotating_degree + rand_circle * 360 + result_angle[result_index] - this.start_rotating_degree % 360
           this.start_rotating_degree = rotate_angle
-          this.rotate_angle = "rotate(" + rotate_angle + "deg)"
+          this.rotate_angle = 'rotate(' + rotate_angle + 'deg)'
           let that = this
           //  旋转结束，再次触发
           setTimeout(function () {
@@ -267,7 +315,7 @@
     text-align: center;
     color: #feffff;
     font-size: 0.2rem;
-    margin-top: 18%;
+    margin-top: 21%;
   }
 
   .draw-title .luckNum {
@@ -300,7 +348,7 @@
     transform-origin: center 60%;
     position: absolute;
     left: 2.5rem;
-    top: 5.34rem;
+    top: 5.6rem;
     z-index: 99;
   }
 
@@ -311,7 +359,26 @@
     left: 20%;
     top: 20%;
   }
+  .prize-list{
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+   .prize-list .prize-item {
+     width: 1rem;
+     height: 2.5rem;
+     position: absolute;
+     bottom: 50%;
+     margin-top: -0.71rem;
+     left: 50%;
+     margin-left: -0.5rem;
+     z-index: 2;
+     transform-origin: bottom center;
+   }
 
+   .prize-list .prize-item .prize-pic{margin-top: 0.3rem}
+   .prize-pic{width: 1rem; height: 0.6rem}
+  .prize-count{text-align: center;color: #502c0f;}
   .award {
     width: 2.56rem;
     height: 0.76rem;

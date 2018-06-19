@@ -10,11 +10,11 @@
         <slot name="market"></slot>
         <slot name="gift"></slot>
       </div>
-      <div class="alertBtn" v-if="type">
-        <router-link class="giveBtn" :to="{path: '/give', query:{transmission: transmission}}" v-if="isBtn?isBtn:true">
+      <div class="alertBtn">
+        <router-link class="giveBtn" :to="{path: '/give', query:{transmission: transmission}}" v-if="giveBtn || false">
           <img src="../assets/img/give-button.png" alt="">
         </router-link>
-        <p class="exchangeBtn" @click="exchange" v-if="type === 'market'">
+        <p class="exchangeBtn" @click="exchange" v-if="exchangeBtn || false">
           <span class="coinNum">
             {{transmission.integral}}
           </span>
@@ -32,7 +32,7 @@
   import Sussce from '../components/alertSuccess'
   export default {
     name: 'alertbox',
-    props: ['showName', 'type', 'transmission', 'receiveMess', 'isBtn'],
+    props: ['showName', 'transmission', 'giveBtn', 'exchangeBtn'],
     // 子组件接收到父组件传过来的 showName
     data () {
       return {
@@ -74,30 +74,6 @@
         }, res => {
           // error callback
         })
-      },
-      // 领取物品
-      receive () {
-        console.log(this.receiveMess, '99')
-        for (let i = 0; i < this.receiveMess.length; i++) {
-          console.log(this.receiveMess[i].vendingmachineid)
-          this.exchangerecordid = this.receiveMess[i].exchangerecordid
-          this.vendingmachineid = this.receiveMess[i].vendingmachineid
-        }
-        this.$http.post(this.HOST + '/exchangeRecordManage_addExchangeRecord.do?method=getGift',
-          {sid: this.storageMessage.sid, userid: this.storageMessage.userid, exchangerecordid: this.exchangerecordid, vendingmachineid: this.vendingmachineid}
-        ).then(res => {
-          // get body data
-          let body = res.body
-          let successCode = '0'
-          if (successCode === body.code) {
-            alert('领取成功')
-          } else {
-            this.$parent[this.showName] = false
-            this.$parent.receive = true
-          }
-        }, res => {
-          // error callback
-        })
       }
     },
     created () {
@@ -130,7 +106,7 @@
     text-align: center;
     color: #652411;
     width: 100%;
-    background-image: url("../assets/img/alert/a market_BG.png");
+    background-image: url("../assets/img/alert/BG.png");
     background-size: 100% 100%;
     position: absolute;
     top: 50%;

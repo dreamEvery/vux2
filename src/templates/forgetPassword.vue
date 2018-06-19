@@ -82,7 +82,7 @@
       },
       // 验证验证码
       next () {
-        if (this.verificationNum !== this.sendCode){
+        if (this.verificationNum !== this.sendCode) {
           this.num = true
         } else {
           this.disabled = !this.disabled
@@ -109,7 +109,7 @@
             this.disabled = false
           })
         } else {
-           this.show = true
+          this.show = true
         }
       }
     }

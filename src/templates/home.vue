@@ -28,7 +28,7 @@
     data () {
       return {
         active: false,
-        location:this.$route.path
+        location: this.$route.path
       }
     },
     components: {
@@ -54,13 +54,13 @@
     margin-top: 0;
   }
   .tab-active {
-    animation: mymove  2s linear 2 0s;
+    animation: mymove  1.5s linear 2 0s;
   }
   @keyframes mymove {
     0%   {width: 100%;height: 100%;}
-    50%  {width: 85%;height: 85%}
+    25% {width: 90%;height: 90%;}
+    50%  {width: 80%;height: 80%}
+    75% {width: 90%;height: 90%}
     100% {width: 100%;height: 100%}
   }
-
-
 </style>
