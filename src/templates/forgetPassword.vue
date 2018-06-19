@@ -15,7 +15,7 @@
       <div class="verificationCode">
         <input type="text" placeholder="请输入验证码" v-model="verificationNum">
         <button class="codeBtn" :disabled="disabled" @click="getVerifyCode">{{btnText}}</button>
-        <p class="falseHints" v-if="num"><span>
+        <p class="falseHints falseHints2" v-if="num"><span>
           <i>
             <img src="../assets/img/notice.png" alt="">
           </i>
@@ -25,6 +25,13 @@
       </div>
       <div class="next">
         <button @click="next" :disabled="!phoneNum || !verificationNum" :class="{bgColor:(!phoneNum || !verificationNum)}">下一步</button>
+      </div>
+    </div>
+    <!--弹框提示-->
+    <div class="erro" v-if="erro">
+      <div class="masking"></div>
+      <div class="erro-main">
+        手机号未注册
       </div>
     </div>
     <router-view></router-view>
@@ -129,6 +136,7 @@
     top: 0;
     bottom: 0;
   }
+  .phoneNum span{font-size: 0.32rem}
 
   /*.password div {*/
   /*text-align: center;*/
@@ -170,6 +178,7 @@
 
   .verificationCode {
     font-size: 0;
+    margin-top: 0.1rem;
   }
 
   .verificationCode input {
@@ -178,6 +187,7 @@
     border-bottom-right-radius: 0;
     float: left;
     display: block;
+    font-size: 0.32rem;
   }
 
   .verificationCode .codeBtn {
@@ -191,7 +201,12 @@
     padding-left: 0;
     border: none;
   }
-
+  .falseHints2{position: relative}
+  .falseHints2 span{
+    position: absolute;
+    left:0;
+    top: 0.2rem
+  }
   .falseHints span {
     font-size: 0.24rem;
     color: red;
@@ -203,5 +218,22 @@
     height: 0.2rem;
     vertical-align: middle;
     margin-top: -0.1rem;
+  }
+  .masking{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 999;
+    transition: all .3s ease-in-out;
+  }
+  .erro-main{
+    position: absolute;
+    top: 42%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    z-index: 2000;
   }
 </style>

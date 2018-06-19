@@ -16,7 +16,7 @@
         </p>
       </div>
       <div class="submission">
-        <button @click="submission">提交</button>
+        <button @click="submission" :disabled="!newNum || !confirm" :class="{bgColor:(!newNum || !confirm)}">提交</button>
       </div>
     </div>
   </div>
@@ -29,7 +29,8 @@
       return {
         newNum: '',
         confirm: '',
-        num: false
+        num: false,
+        disabled: false
       }
     },
     components: {
@@ -44,6 +45,7 @@
           this.num = true
         } else if (this.newNum === this.confirm) {
           this.num = false
+          this.disabled = true
           this.getNewCode()
         }
       },
@@ -97,6 +99,10 @@
     border: none;
     font-size: 0.32rem;
   }
+  .submission .bgColor {
+    background-color: chocolate;
+  }
+
   .falseHints span {
     font-size: 0.24rem;
     color: red;

@@ -1,7 +1,7 @@
 <template>
   <div class="message">
     <public-top></public-top>
-    <router-link to="/home/index">
+    <router-link to="/home/index" class="router">
       <div class="public-back">
         <img src="../assets/img/map/my_icon_Return.png" alt="">
       </div>
@@ -173,6 +173,7 @@
 </script>
 
 <style scoped>
+  .router{display: block;width: 1.4rem;}
   .integral {
     background-image: url("../assets/img/map/integral.png");
     background-size: 100% 100%;
