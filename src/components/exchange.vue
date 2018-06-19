@@ -56,6 +56,7 @@
             </i>
           </div>
         </div>
+        <p>积分-{{}}</p>
         <p class="title">兑换成功，请到兑换机领取</p>
         <div class="ok" @click="okBtn()">
           <img src="../assets/img/alert/well_button_n.png" alt="" v-if="ok">
@@ -78,7 +79,6 @@
     methods: {
       close () {
         // 点击关闭按钮 this.$parent 获取到父组件
-        // this.$parent[this.showName] 获取父组件中的 isAlertBox
         this.$parent.exchangeWin = false
       },
       okBtn: function () {
