@@ -56,7 +56,7 @@
             </i>
           </div>
         </div>
-        <p>积分-{{}}</p>
+        <p class="title">积分-{{integral}}</p>
         <p class="title">兑换成功，请到兑换机领取</p>
         <div class="ok" @click="okBtn()">
           <img src="../assets/img/alert/well_button_n.png" alt="" v-if="ok">
@@ -69,7 +69,7 @@
 <script>
   export default {
     name: 'alertSuccess',
-    props: ['showExchange'],
+    props: ['showExchange', 'integral'],
     // 子组件接收到父组件传过来的 showName
     data () {
       return {

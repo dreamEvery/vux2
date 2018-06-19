@@ -15,7 +15,7 @@
       </div>
     </alert-box>
     <public-top></public-top>
-    <exchange v-if="exchangeWin" :showExchange="'exchangeWin'"></exchange>
+    <exchange v-if="exchangeWin" :showExchange="'exchangeWin'" :integral="giftDetail.integral"></exchange>
     <fail v-if="failCode" :showName="'failCode'"></fail>
     <div class="con">
       <div class="tab">

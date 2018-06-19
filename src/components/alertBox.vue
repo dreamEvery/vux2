@@ -234,4 +234,8 @@
     text-shadow: 0.03rem 0.02rem 0.01rem #797979;
     margin-left: -0.4rem;
   }
+  @media only screen and (min-width: 768px) {
+    .alertBtn .giveBtn{margin-right: 1rem}
+    .alertBtn .exchangeBtn{margin-left: 1rem}
+  }
 </style>
