@@ -4,7 +4,7 @@
     <div class="alert">
       <div class="alert-main">
         <img src="../assets/img/alert/画板-1.gif" alt="">
-        <p class="fail-title">兑换失败，请重新兑换</p>
+        <p class="fail-title">兑换失败，积分不够</p>
       </div>
       <div class="alertBtn">
         <img src="../assets/img/map/know-n.png" alt="" v-if="showBtn" @click="failBtn">

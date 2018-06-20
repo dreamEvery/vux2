@@ -64,7 +64,7 @@
         isShow: true,
         items: [],
         num: 10,
-        ipage: 1,
+        ipage: 0,
         storageMessage: null,
         deleteAll: false
       }
@@ -95,34 +95,7 @@
       refresh (done) {
         console.log('refresh')
         this.ipage = 1
-        this.getData()
-      },
-      infinite (done) {
-        this.ipage = this.ipage + 1
-//        done(true)
-//        this.getData(function (data) {
-//          for (let i = 0; i < data.length; i++) {
-//            this.items.push(data[i])
-//          }
-//        })
-        this.getData(done, function (data) {
-          for (let i = 0; i < data.length; i++) {
-            this.items.push(data[i])
-          }
-        })
-      },
-      getData (done) {
-//        if (per_page) {
-//          this.storageMessage.ipage = per_page
-//        } else {thia.storageMessage.ipage = 1}
-        this.$http.get(this.HOST + '/mallItemsManage_listMallItems.do?method=getMallMessage', {
-          params: {
-            sid: this.storageMessage.sid,
-            userid: this.storageMessage.userid,
-            studentid: this.storageMessage.studentid,
-            pageIndexName: this.ipage
-          }
-        }).then(res => {
+        this.getData(done).then(res => {
           // 成功的状态
           let successCode = 0
           // 失败的状态
@@ -145,6 +118,42 @@
         }, error => {
           //   // error callback
           console.log(error)
+        })
+      },
+      infinite (done) {
+        this.ipage = this.ipage + 1
+        this.getData(done).then(res => {
+          // 成功的状态
+          let successCode = 0
+          // 失败的状态
+          let errorCode = 1
+          let body = res.body
+          // 先判断状态
+          if (body.code === successCode) {
+            // 处理数据
+            for (let i = 0; i < body.data.length; i++) {
+              this.items.push(body.data[i])
+            }
+            if (done) {
+              done(true)
+            }
+          } else if (body.code === errorCode) {
+            // 处理失败
+            console.log('错误提示：' + body.msg)
+          }
+        }, error => {
+          //   // error callback
+          console.log(error)
+        })
+      },
+      getData (done) {
+        return this.$http.get(this.HOST + '/mallItemsManage_listMallItems.do?method=getMallMessage', {
+          params: {
+            sid: this.storageMessage.sid,
+            userid: this.storageMessage.userid,
+            studentid: this.storageMessage.studentid,
+            pageIndexName: this.ipage
+          }
         })
       },
       // 单个删除

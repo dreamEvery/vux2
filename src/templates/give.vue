@@ -17,8 +17,8 @@
               <router-link to='/give/giveSel'>
                 <!--<input type="text" readonly v-model="$route.query.mallitemsname + $route.query.integral" placeholder="请选择商品"/>-->
                 <div class="giftMessage" :class="{changeGift: $route.query.mallitemsname + $route.query.integral}">
-                  {{$route.query.mallitemsname + $route.query.integral || '请选择商品'}}
-
+                  <!--{{$route.query.mallitemsname + '&nbsp' + $route.query.integral || '请选择商品'}}-->
+                  {{rotueMessage || '请选择商品'}}
                 </div>
                 <i class="i1">
                   <img src="../assets/img/gift_icon_right.png"/>
@@ -86,7 +86,7 @@
             <li>
             <span>{{school_on.name}}</span>
             <p @click="select(1)"><img src="../assets/img/gift_icon_lower.png"/></p>
-            <ul :class="{'dropdown-list_active':activeType==1}" class="dropdown-list">
+            <ul :class="{'dropdown-list_active':activeType==1}" class="listName">
               <li @click="schoolOn(item)" v-for="item in schoolList">
                 {{item.name}}
               </li>
@@ -95,7 +95,7 @@
           <li class="grade">
             <span>{{grade_on.name}}</span>
             <p @click="select(2)"><img src="../assets/img/gift_icon_lower.png"/></p>
-            <ul :class="{'dropdown-list_active':activeType==2}" class="dropdown-list">
+            <ul :class="{'dropdown-list_active':activeType==2}" class="dropdown-list listName">
               <li @click="gradeOn(item)" v-for="item in gradeList">
                 {{item.name}}
               </li>
@@ -104,7 +104,7 @@
           <li>
             <span>{{class_on.name}}</span>
             <p @click="select(3)"><img src="../assets/img/gift_icon_lower.png"/></p>
-            <ul :class="{'dropdown-list_active':activeType==3}" class="dropdown-list">
+            <ul :class="{'dropdown-list_active':activeType==3}" class="dropdown-list listName">
               <li @click="classOn(item)" v-for="item in classList">
                 {{item.name}}
               </li>
@@ -213,6 +213,14 @@
       },
       deleteCode: function () {
         return (this.deductionCode = this.$route.query.integral * this.zengsongList.length)
+      },
+      // 选择商品
+      rotueMessage: function () {
+        let text = this.$route.query.mallitemsname + ' ' + this.$route.query.integral
+        if (text !== ' ' && this.$route.query.mallitemsname && this.$route.query.integral) {
+          return text
+        }
+        return undefined
       }
     },
     created: function () {
@@ -517,9 +525,9 @@
         } else {
           obj.isanonymous = ''
         }
-        if (this.$route.query == '' && this.jifen_inp == '') {
+        if (JSON.stringify(this.$route.query) === '{}' && this.jifen_inp == '') {
           this.giveFail = true
-          this.this.erroMess = '请选择礼品或积分'
+          this.erroMess = '请选择礼品或积分'
         } else if (this.zengsongList == '') {
           this.giveFail = true
           this.erroMess = '请选择赠送人'
@@ -603,10 +611,9 @@
 
   .giftMessage {
     width: 75%;
-    float: right;
+    display: inline-block;
     overflow: hidden;
     text-align: right;
-    margin-right: 0.2rem;
     color: darkgrey;
   }
   .changeGift{
@@ -623,6 +630,7 @@
   }
 
   .give-gift input {
+    font-size: 0.3rem;
     width: 70%;
     height: 1rem;
     background: none;
@@ -631,6 +639,14 @@
     margin-right: 0.2rem;
     color: #5F5145;
   }
+  .give-gift input::-webkit-input-placeholder{
+    font-size: 0.26rem;
+  }
+  /*.dropdown-list{*/
+    /*height: 704%;*/
+    /*overflow: hidden;*/
+    /*overflow-y: scroll;*/
+  /*}*/
 
   .jifen-em {
     font-style: normal;
@@ -763,7 +779,7 @@
 
   .img-list li,
   .lately-list li {
-    float: left;
+    display: inline-block;
     width: 20%;
     margin: 0.1rem 0;
     text-align: center;
@@ -916,7 +932,7 @@
     border-right: none;
   }
 
-  .dropdown-list {
+  .listName {
     width: 100%;
     text-align: center;
     position: absolute;
@@ -929,7 +945,7 @@
     display: none;
   }
 
-  .dropdown-list li {
+  .listName li {
     background: #F1E3BB;
     border-bottom: 1px solid #ccc;
 

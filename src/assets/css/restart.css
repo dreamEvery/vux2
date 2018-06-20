@@ -91,7 +91,6 @@ input,button,select,textarea{outline:none;}
 .tab ul li {
   float: left;
   height: 25px;
-  width: 28%;
   line-height: 25px;
   text-align: center;
   margin-right: 0.1rem;

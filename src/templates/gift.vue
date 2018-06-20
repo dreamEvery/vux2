@@ -150,6 +150,8 @@
         this.giftInfo = item
         if (this.giftInfo.status === '2') {
           this.typeBtn = false
+        } else {
+          this.typeBtn = true
         }
         console.log(this.giftInfo, 'info')
         this.isAlertBox = true

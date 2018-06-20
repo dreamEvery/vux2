@@ -262,6 +262,7 @@
     background-color: #F8E99E;
     color: #A63A26;
     font-weight: bold;
+    width: 28%;
   }
 
   .center-ul .red {
@@ -484,7 +485,6 @@
   }
 
   .tab-con table th:nth-child(2) p {
-    text-align: left;
     white-space: nowrap;
     margin-top: 0.06rem;
   }

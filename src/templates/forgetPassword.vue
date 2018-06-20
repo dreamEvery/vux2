@@ -3,7 +3,7 @@
     <heared></heared>
     <div class="password-con">
       <div class="phoneNum">
-        <input type="text" placeholder="请输入手机号码" v-model="phoneNum" maxlength="11">
+        <input type="text" placeholder="请输入手机号码" v-model="phoneNum" maxlength="11" onkeyup="this.value=this.value.replace(/[^0-9]/g,'')" onafterpaste="this.value=this.value.replace(/[^0-9]/g,'')">
         <p class="falseHints" v-if="show"><span>
           <i>
             <img src="../assets/img/notice.png" alt="">
@@ -13,7 +13,7 @@
         </p>
       </div>
       <div class="verificationCode">
-        <input type="text" placeholder="请输入验证码" v-model="verificationNum">
+        <input type="text" placeholder="请输入验证码" v-model="verificationNum" onkeyup="this.value=this.value.replace(/[^0-9]/g,'')">
         <button class="codeBtn" :disabled="disabled" @click="getVerifyCode">{{btnText}}</button>
         <p class="falseHints falseHints2" v-if="num"><span>
           <i>
@@ -32,6 +32,7 @@
       <div class="masking"></div>
       <div class="erro-main">
         手机号未注册
+        <p class="button" @click="closeBtn">确定</p>
       </div>
     </div>
     <router-view></router-view>
@@ -52,7 +53,8 @@
         disabled: false,
         btnText: '获取验证码',
         timer: '',
-        sendCode: ''
+        sendCode: '',
+        erro: false
       }
     },
     components: {
@@ -61,6 +63,10 @@
     created () {
     },
     methods: {
+      // 关闭弹框
+      closeBtn () {
+        this.erro = false
+      },
       // 验证手机号码
       isPhone: function (tel) {
         const str = [134, 135, 136, 137, 138, 139, 147, 150, 151, 152, 157, 158, 159, 182, 183, 187, 188, 198, 130, 131, 132, 155, 156, 185, 186, 145, 166, 133, 153, 180, 189, 181, 199, 170].join('|')
@@ -105,7 +111,7 @@
             // get body data
             let body = res.body
             if (body.error === 'fail') {
-              alert('手机号未注册')
+              this.erro = true
             } else {
               this.time()
               this.sendCode = body.sendcode
@@ -189,6 +195,9 @@
     display: block;
     font-size: 0.32rem;
   }
+  .verificationCode input::-webkit-input-placeholder{
+    font-size: 0.26rem;
+  }
 
   .verificationCode .codeBtn {
     display: inline-block;
@@ -235,5 +244,19 @@
     left: 50%;
     transform: translateX(-50%) translateY(-50%);
     z-index: 2000;
+    background-color: #fff;
+    width: 5rem;
+    text-align: center;
+    font-size: 0.32rem;
+    color: #797979;
+    line-height: 1rem;
   }
+
+  .erro-main .button {
+    font-size: 0.3rem;
+    color: lightskyblue;
+    border-top: 1px solid lightgrey;
+    margin-top: 0.5rem;
+  }
+
 </style>

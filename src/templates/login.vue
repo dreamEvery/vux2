@@ -30,7 +30,6 @@
         </span></p>
       </div>
       <div class="forget-div">
-        <!--<router-link to='/register' class="register-a">去注册</router-link>-->
         <router-link to='/forgetPassword' class="forget-a">忘记密码?</router-link>
       </div>
       <button class="btn-login" type="button" @click="btn_type && login()">登录</button>
@@ -40,7 +39,7 @@
       <h3>客服电话：4006-810-820</h3>
     </div>
     <div>
-      <cell @click.native="showModuleAuto" is-link></cell>
+      <!--<cell @click.native="showModuleAuto" is-link></cell>-->
     </div>
   </div>
 </template>
@@ -182,8 +181,8 @@
   .form-div,
   .forget-div {
     width: 63%;
+    margin-top: 0.1rem;
     margin: 0 auto;
-    overflow: hidden;
     border: none;
   }
 
@@ -261,7 +260,7 @@
     width: 100%;
     text-align: center;
     color: #666666;
-    margin-top: 56%;
+    margin-top: 43%;
   }
 
   .foot-firm h3 {

@@ -48,8 +48,8 @@
             <flexbox-item style="margin-left: 0;margin-bottom: 10px;min-width: 48%;max-width: 48%;margin-right: 2%;"
                           v-if="rawData[nowIndex.index].sidedata[nowIndex.indexs]"
                           v-for="item in rawData[nowIndex.index].sidedata[nowIndex.indexs].malldata" :key="item.id">
-              <div class="flex-demo">
-                <div class="img" @click="showAlert(item)">
+              <div class="flex-demo" @click="showAlert(item)">
+                <div class="img">
                   <img :src=item.picsummary alt="">
                 </div>
                 <p>{{item.mallitemsname}}</p>
@@ -349,6 +349,9 @@
     height: 3.3rem;
     background-color: #E0CC95;
     border-radius: 0.16rem;
+  }
+  @media screen and (min-width: 1024px){
+    .tab ul{padding: 0 0.28rem}
   }
 
   .tab ul li {
