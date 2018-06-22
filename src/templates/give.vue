@@ -615,6 +615,7 @@
     overflow: hidden;
     text-align: right;
     color: darkgrey;
+    font-size: 0.26rem;
   }
   .changeGift{
     color: #3C3939;
@@ -638,9 +639,6 @@
     text-align: right;
     margin-right: 0.2rem;
     color: #5F5145;
-  }
-  .give-gift input::-webkit-input-placeholder{
-    font-size: 0.26rem;
   }
   /*.dropdown-list{*/
     /*height: 704%;*/
@@ -783,6 +781,12 @@
     width: 20%;
     margin: 0.1rem 0;
     text-align: center;
+  }
+  .lately-list li span{
+    overflow: hidden;
+    white-space: normal;
+    text-overflow: ellipsis;
+    display: block;
   }
 
   .img-list li img,

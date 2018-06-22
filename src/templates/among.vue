@@ -452,7 +452,6 @@
 
   .tab-con table th .classname {
     color: #7e726a;
-    font-size: 0.02rem;
   }
 
   .tab-con table th span {
@@ -482,6 +481,7 @@
     height: 0.6rem;
     border-radius: 50%;
     float: left;
+    overflow: hidden;
   }
 
   .tab-con table th:nth-child(2) p {

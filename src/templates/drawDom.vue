@@ -9,9 +9,9 @@
         <div class="record">
           <ul>
             <li v-for="item in winingList">
-              <p class="name">芭比娃娃</p>
+              <p class="name">{{item.note}}</p>
               <p class="state">
-                未领取
+                {{item.inputtime}}
               </p>
             </li>
           </ul>
@@ -62,8 +62,8 @@
       <div class="draw-core" :style="{transform:rotate_angle,transition:rotate_transition}">
         <div class="prize-list">
           <div class="prize-item" v-for="(item,index) in prizeList" :style="`transform: rotate(${45*index}deg)`">
-            <div class="prize-count" v-if="item.count">
-              {{item.count}}
+            <div class="prize-count">
+              {{item.prize_name }}
             </div>
             <div class="prize-pic">
               <img :src="item.icon">
@@ -90,6 +90,7 @@
 </template>
 <script>
   import drawAlert from '../components/drawAlert'
+  import { Base64 } from 'js-base64'
   export default {
     name: 'draw',
     data () {
@@ -187,10 +188,11 @@
           let body = res.body
           if (body.code === successCode) {
             // 处理数据
-            this.prize_list = body.data
-//            this.rawDataTabs.map((value) => {
-//              value.name = Base64.decode(value.name)
-//            })
+            this.prizeList = body.data
+            for (let i = 0; i < this.prizeList.length; i++) {
+              this.prizeList[i].prize_name = Base64.decode(this.prizeList[i].prize_name)
+              console.log(this.prizeList[i].prize_name)
+            }
           } else if (body.code === errorCode) {
             // 处理失败
             console.log('错误提示：' + body.msg)
@@ -213,9 +215,9 @@
           if (body.code === successCode) {
             // 处理数据
             this.winingList = body.data
-//            this.rawDataTabs.map((value) => {
-//              value.name = Base64.decode(value.name)
-//            })
+            for (let i = 0; i < this.winingList.length; i++) {
+              this.winingList[i].note = Base64.decode(this.winingList[i].note)
+            }
           } else if (body.code === errorCode) {
             // 处理失败
             console.log('错误提示：' + body.msg)
@@ -378,7 +380,7 @@
 
    .prize-list .prize-item .prize-pic{margin-top: 0.3rem}
    .prize-pic{width: 1rem; height: 0.6rem}
-  .prize-count{text-align: center;color: #502c0f;}
+  .prize-count{color: #502c0f;width: 1.5rem;text-align: left;}
   .award {
     width: 2.56rem;
     height: 0.76rem;
@@ -407,7 +409,7 @@
     background-color: pink;
     position: absolute;
   }
-  .state{width: 1.2rem;height: 0.48rem;}
+  .state{width: 2rem;height: 0.48rem;font-size: 0.28rem}
   .state img {margin-top: 0.08rem;}
   /*中奖弹框*/
   .masking{

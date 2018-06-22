@@ -143,14 +143,22 @@
   .alert .alert-main .record li {
     font-size: 0.32rem;
     line-height: 0.64rem;
-    padding: 0 0.52rem;
+    padding: 0 0.3rem;
     overflow: hidden;
   }
 
   .alert .alert-main .record li p {
     display: inline-block;
   }
-  .record li .name{float: left}
+
+  .record li .name {
+    float: left;
+    width: 2.4rem;
+    overflow: hidden;
+    white-space: normal;
+    text-overflow: ellipsis;
+    text-align: justify;
+  }
   .record li .state{float: right; color: #9c6848;}
 
   .alert .close-btn {

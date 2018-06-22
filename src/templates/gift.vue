@@ -287,7 +287,7 @@
   }
 
   .give-sel-list {
-    padding: 0 0.6rem;
+    padding: 0.09rem 0.6rem;
     overflow: hidden;
     position: absolute;
     top: 0;
@@ -299,7 +299,7 @@
     width: 30%;
     float: left;
     text-align: center;
-    height: 2.19rem;
+    height: 2.17rem;
     margin-top: 0%;
   }
 

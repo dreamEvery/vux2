@@ -3,7 +3,7 @@
     <heared></heared>
     <div class="password-con">
       <div class="phoneNum">
-        <input type="text" placeholder="请输入手机号码" v-model="phoneNum" maxlength="11" onkeyup="this.value=this.value.replace(/[^0-9]/g,'')" onafterpaste="this.value=this.value.replace(/[^0-9]/g,'')">
+        <input type="tel" placeholder="请输入手机号码" v-model="phoneNum" maxlength="11" @keyup="phoneNum=phoneNum.replace(/[^\d\.]/g,'')" onblur="phoneNum=phoneNum.replace(/[^\d\.]/g,'')">
         <p class="falseHints" v-if="show"><span>
           <i>
             <img src="../assets/img/notice.png" alt="">
@@ -13,7 +13,7 @@
         </p>
       </div>
       <div class="verificationCode">
-        <input type="text" placeholder="请输入验证码" v-model="verificationNum" onkeyup="this.value=this.value.replace(/[^0-9]/g,'')">
+        <input type="tel" placeholder="请输入验证码" v-model="verificationNum" pattern="[0-9]*">
         <button class="codeBtn" :disabled="disabled" @click="getVerifyCode">{{btnText}}</button>
         <p class="falseHints falseHints2" v-if="num"><span>
           <i>
@@ -142,7 +142,7 @@
     top: 0;
     bottom: 0;
   }
-  .phoneNum span{font-size: 0.32rem}
+  .phoneNum input{font-size: 0.32rem}
 
   /*.password div {*/
   /*text-align: center;*/

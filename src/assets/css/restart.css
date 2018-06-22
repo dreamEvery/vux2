@@ -28,6 +28,10 @@ body {
   background-color: #f8f8f8;
 }
 
+input::-webkit-input-placeholder{
+  font-size: 0.26rem;
+}
+
 a {
   color: #333;
   text-decoration: none;

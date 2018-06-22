@@ -222,11 +222,10 @@
   }
 
   .form-div div {
-    padding: 0.16rem;
+    padding: 0.16rem 0.16rem 0.1rem 0;
     margin-bottom: 0.2rem;
     overflow: hidden;
     border-bottom: 1px solid #d2d2d2;
-    padding-left: 0;
   }
 
   .form-div div img {
@@ -234,15 +233,17 @@
     width: 0.4rem;
     height: 0.4rem;
     vertical-align: middle;
+    margin-top: 0.1rem;
   }
 
   .form-div div input {
     float: left;
-    height: 0.4rem;
+    height: 0.6rem;
     margin-left: 0.2rem;
     background: none;
     border: none;
     width: 80%;
+    line-height: 0.6rem;
   }
 
   .register-a {
@@ -260,9 +261,8 @@
     width: 100%;
     text-align: center;
     color: #666666;
-    margin-top: 43%;
+    margin-top: 46%;
   }
-
   .foot-firm h3 {
     font-size: 0.24rem;
     font-weight: normal;
