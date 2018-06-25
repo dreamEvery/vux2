@@ -82,6 +82,9 @@
     <div class="toast" v-if="toast">
        <div class="toastContent">
           <div class="toastMain">
+            <div class="img">
+              <img :src='alertMain.picsummary' alt="">
+            </div>
           </div>
        </div>
       <div class="masking" @click="close"></div>
@@ -103,48 +106,7 @@
         luckList: [], // 抽奖纪录
         storageMessage: '', // 本地数据
         luckNum: '4',  // 抽奖次数
-        prizeList: [
-          {
-            icon: require('../assets/img/map/fifty.png'), // 奖品图片
-            count: '10积分', // 奖品数量
-            isPrize: 1  // 该奖项是否为奖品
-          },
-          {
-            icon: require('../assets/img/map/fifty.png'), // 奖品图片
-            count: '10积分', // 奖品数量
-            isPrize: 1  // 该奖项是否为奖品
-          },
-          {
-            icon: require('../assets/img/map/fifty.png'), // 奖品图片
-            count: '10积分', // 奖品数量
-            isPrize: 1  // 该奖项是否为奖品
-          },
-          {
-            icon: require('../assets/img/map/fifty.png'), // 奖品图片
-            count: '10积分', // 奖品数量
-            isPrize: 1  // 该奖项是否为奖品
-          },
-          {
-            icon: require('../assets/img/map/fifty.png'), // 奖品图片
-            count: '10积分', // 奖品数量
-            isPrize: 1  // 该奖项是否为奖品
-          },
-          {
-            icon: require('../assets/img/map/fifty.png'), // 奖品图片
-            count: '10积分', // 奖品数量
-            isPrize: 1  // 该奖项是否为奖品
-          },
-          {
-            icon: require('../assets/img/map/fifty.png'), // 奖品图片
-            count: '10积分', // 奖品数量
-            isPrize: 1  // 该奖项是否为奖品
-          },
-          {
-            icon: require('../assets/img/map/fifty.png'), // 奖品图片
-            count: '10积分', // 奖品数量
-            isPrize: 1  // 该奖项是否为奖品
-          }
-        ], // 奖品列表
+        prizeList: [], // 奖品列表
         hasPrize: false, // 是否中奖
         start_rotating_degree: 0, // 初始旋转角度
         rotate_angle: 0, // 旋转角度
@@ -153,7 +115,8 @@
         rotate_angle_pointer: 0, // 指针将要旋转的度数
         rotate_transition: 'transform 6s ease-in-out', // 初始化选中的过度属性控制
         rotate_transition_pointer: 'transform 12s ease-in-out', // 初始化指针过度属性控制
-        i: 0  // 测试使用
+        i: 0,  // 测试使用
+        alertMain: {} // 随机数据
       }
     },
     created () {
@@ -252,6 +215,16 @@
           console.log(error)
         })
       },
+      // 添加中奖纪录
+      alert () {
+        this.$http.post(this.HOST + '/mallItemsManage_listMallItems.do?method=deleteMallMessage',
+          {userid: this.storageMessage.userid, sid: this.storageMessage.sid, luckydrawdetailid: this.alertMain.lucky_draw_id}
+        ).then(response => {
+          // get body data
+        }, response => {
+          // error callback
+        })
+      },
       // 抽奖
       rotate_handle () {
         this.rotating()
@@ -268,6 +241,8 @@
         this.clickFlag = false  // 旋转结束前不允许触发
         if (type === 0) {
           let rotate_angle = this.start_rotating_degree + rand_circle * 360 + result_angle[result_index] - this.start_rotating_degree % 360
+          this.alertMain = this.prizeList[result_index]
+          console.log(this.alertMain)
           this.start_rotating_degree = rotate_angle
           this.rotate_angle = 'rotate(' + rotate_angle + 'deg)'
           let that = this
@@ -275,7 +250,10 @@
           setTimeout(function () {
             that.drawDone = true
             that.clickFlag = true
-            that.toast = true
+            setTimeout(() => {
+              that.toast = true
+            }, 2000)
+//
           }, during_time * 1000 + 1500)
         }
       },
@@ -432,5 +410,12 @@
     left: 50%;
     transform: translateX(-50%) translateY(-50%);
     z-index: 2000;
+  }
+  .toastMain .img{
+    width: 2rem;
+    height: 1rem;
+    position: absolute;
+    left: 1.8rem;
+    top: 4.9rem
   }
 </style>
