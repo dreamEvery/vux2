@@ -66,7 +66,7 @@
         <div class="give-toBox">
           <span>赠送给:</span>
           <div>
-            <ul class="toBox-list">
+            <ul class="toBox-list">.
               <li v-for="(item,index) in zengsongList" :key="item.id">
                 <img
                   :src="(item.picsummary&&item.picsummary!=='null')?item.picsummary:require('../assets/img/map/headPic.png')"

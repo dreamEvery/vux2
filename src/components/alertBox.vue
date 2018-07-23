@@ -122,6 +122,7 @@
     border-radius: 10px;
     padding-bottom: 0.4rem;
     position: relative;
+    margin-top: 0.4rem;
   }
 
   .alert .alert-main .alert-top {
@@ -136,10 +137,6 @@
     margin: 0 auto;
     margin-top: 0.4rem;
     margin-bottom: 0.1rem;
-  }
-
-  .alert .alert-main ul li {
-
   }
 
   .alert .close-btn {

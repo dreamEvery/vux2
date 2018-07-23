@@ -85,6 +85,30 @@
             <div class="img">
               <img :src='alertMain.picsummary' alt="">
             </div>
+            <div class="luckStar">
+              <p class="luckTitle">
+                幸运指数：
+              </p>
+              <span>
+               <img src="../assets/img/alert/stars_pre.png" alt="">
+              </span>
+              <span>
+               <img src="../assets/img/alert/stars_pre.png" alt="">
+              </span>
+              <span>
+               <img src="../assets/img/alert/stars_pre.png" alt="">
+              </span>
+              <span>
+               <img src="../assets/img/alert/stars_pre.png" alt="">
+              </span>
+              <span>
+                <img src="../assets/img/alert/stars_pre.png" alt="">
+              </span>
+            </div>
+            <div class="again">
+              <img src="../assets/img/alert/在抽一次_button_n.png" alt="" @click="againBtn">
+              <!--<img src="../assets/img/alert/在抽一次_button_pre.png" alt="">-->
+            </div>
           </div>
        </div>
       <div class="masking" @click="close"></div>
@@ -217,8 +241,8 @@
       },
       // 添加中奖纪录
       alert () {
-        this.$http.post(this.HOST + '/mallItemsManage_listMallItems.do?method=deleteMallMessage',
-          {userid: this.storageMessage.userid, sid: this.storageMessage.sid, luckydrawdetailid: this.alertMain.lucky_draw_id}
+        this.$http.post(this.HOST + '/winningRecordManage_listWinningRecord.do?method=addWinningRecord',
+          {userid: this.storageMessage.userid, sid: this.storageMessage.sid, luckydrawdetailid: this.alertMain.id,studentid: this.storageMessage.studentid}
         ).then(response => {
           // get body data
         }, response => {
@@ -243,6 +267,7 @@
           let rotate_angle = this.start_rotating_degree + rand_circle * 360 + result_angle[result_index] - this.start_rotating_degree % 360
           this.alertMain = this.prizeList[result_index]
           console.log(this.alertMain)
+          this.alert()  // 获取到的时候添加中奖纪录
           this.start_rotating_degree = rotate_angle
           this.rotate_angle = 'rotate(' + rotate_angle + 'deg)'
           let that = this
@@ -252,7 +277,7 @@
             that.clickFlag = true
             setTimeout(() => {
               that.toast = true
-            }, 2000)
+            }, 1000)
 //
           }, during_time * 1000 + 1500)
         }
@@ -261,6 +286,11 @@
       close () {
         this.drawDone = false
         this.toast = false
+      },
+      // 再次抽奖
+      againBtn () {
+        this.toast = false
+        this.drawDone = false
       }
     },
     computed: {
@@ -402,8 +432,8 @@
   }
   .toastMain{
     background-image: url('../assets/img/map/toast.png');
-    width: 74%;
-    height: 61%;
+    width: 89%;
+    height: 68%;
     background-size: 100% 100%;
     position: absolute;
     top: 42%;
@@ -412,10 +442,37 @@
     z-index: 2000;
   }
   .toastMain .img{
-    width: 2rem;
-    height: 1rem;
+    width: 2.4rem;
+    height: 1.6rem;
     position: absolute;
-    left: 1.8rem;
-    top: 4.9rem
+    left: 2.2rem;
+    top: 5.1rem;
   }
+
+   /*幸运星星*/
+   .luckStar {
+     position: absolute;
+     left: 1.5rem;
+     top: 7rem;
+   }
+   .luckStar .luckTitle{
+     font-size: 0.32rem;
+     font-weight: bold;
+     color: #6b3a0f;
+     display: inline;
+   }
+
+   .luckStar span {
+     display: inline-block;
+     width: 0.3rem;
+     height: 0.3rem;
+     vertical-align: middle;
+   }
+   .again{
+     width: 2.1rem;
+     height: 0.8rem;
+     position: absolute;
+     top: 7.8rem;
+     left: 2.3rem;
+   }
 </style>

@@ -491,7 +491,6 @@
     background-color: #B27A4B;
     border-radius: 30px;
     margin: 0 auto;
-    margin-top: 0.4rem;
     margin-bottom: 0.1rem;
   }
 
